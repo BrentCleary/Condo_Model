@@ -5,11 +5,15 @@ using UnityEngine;
 namespace CondoUnityModel
 {
 
-    //? ChatGPT Conversion Link: https://chatgpt.com/share/695b374f-f3f4-8008-87e3-786437ffd0cb 
+    // ChatGPT Conversation Link: https://chatgpt.com/share/695b374f-f3f4-8008-87e3-786437ffd0cb 
     // 
     // Note: The following code defines a data model for representing building structures in Unity, focusing on rooms, walls, junctions, and ceiling profiles. It includes utilities for unit conversion and a builder for constructing the building graph from placed rectangular rooms.
 
     /// <summary>
+    /// Following methods are for unit conversions of the base measurement of 1/16th of an inch.
+    /// Example:
+    ///     int value = Units16.Inches(120);
+    ///     returns value = 1920 (units) (120 * 16)
     /// Integer "sixteenths of an inch" everywhere for precision and consistency.
     /// 1 inch = 16 units.
     /// </summary>
