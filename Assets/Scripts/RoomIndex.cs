@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class RoomIndex : MonoBehaviour
+public class Index : MonoBehaviour
 {
 	// Walls - inches
 	private static int _nextID = 1;

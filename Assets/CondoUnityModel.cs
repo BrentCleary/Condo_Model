@@ -71,6 +71,7 @@ namespace CondoUnityModel
 
         /// <summary>
         /// Boundary walls referenced by this room (rooms do not own walls).
+        /// 
         /// </summary>
         public List<RoomWallRef> BoundaryWalls = new();
 
