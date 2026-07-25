@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,17 +13,21 @@ public class FloorGenerator : MonoBehaviour
 		// You can move the creation code into a public static method on RoomIndex if you prefer
 		if (RoomIndex.FloorSectionList.Count == 0)
 		{
-			// Temporary: force the initialization that used to be in RoomIndex.Start()
-			// Better long-term: extract that code into a public static Initialize() method
-			new RoomIndex().Start();   // works only because Start is public
+			Console.Write("FloorSectionList is empty, populating it now...");
+			// RoomIndex.PopulateFloorSectionList();
 		}
 
 		// Example: generate the Kitchen by looking it up in the list
 		RoomIndex.FloorSection livingRoom = RoomIndex.FloorSectionList
 				.Find(s => s.Name == "LivingRoom");
 
+		//RoomIndex.FloorSection diningRoom = RoomIndex.FloorSectionList
+		//		.Find(s => s.Name == "DiningRoom");
+
 		if (livingRoom != null)
 			GenerateFloor(livingRoom);
+		//if (diningRoom != null)
+		//	GenerateFloor(diningRoom);
 	}
 
 
@@ -40,6 +45,7 @@ public class FloorGenerator : MonoBehaviour
 		floorTile.transform.localPosition = floor.SpawnPos
 																			+ new Vector3(width * 0.5f, 0.05f, length * 0.5f);
 		floorTile.transform.localScale = new Vector3(width, 0.1f, length);
+
 		floorTile.GetComponent<Renderer>().material.color = Color.blueViolet;
 
 	}

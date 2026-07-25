@@ -19,14 +19,14 @@ public class RoomIndex
 		public	string	Name; 
 		public	int			Level;
 		public  Vector3	SpawnPos;
-		public	float		Length; // North - South
-		public	float		Width;  // East - West 
+		public	float		Width;  // North - South 
+		public	float		Length; // East - West
 		public	float		Sqft;
 		private float		sqftConversion = 144f; // 12x12 inches
 		public	string	FloorType;
 
 		// -----  Constructor ----- 
-		public FloorSection(string name, int level, Vector3 spawnPos, float length, float width, string floorType)
+		public FloorSection(string name, int level, Vector3 spawnPos, float width, float length, string floorType)
 		{
 			ID				= _nextID;
 			_nextID		= _nextID + 1;
@@ -34,8 +34,8 @@ public class RoomIndex
 			Name			= name;
 			Level			= level;
 			SpawnPos	= spawnPos;
-			Length		= length;
 			Width			= width;
+			Length		= length;
 			Sqft			= length * width / sqftConversion;
 			FloorType = floorType;
 
@@ -72,33 +72,51 @@ public class RoomIndex
 		FloorSection Kitchen							= new FloorSection("Kitchen",							1, new Vector3(0, 0, 0), 90.5f, 114f, "LTV");
 		FloorSection LaundrySpace					= new FloorSection("LaundrySpace",				1, new Vector3(0, 0, 0), 89.5f, 31.25f, "LTV");
 		FloorSection LivingRoom						= new FloorSection("LivingRoom",					1, new Vector3(0, 0, 0), 151.75f, 152f, "LTV");
-		FloorSection DiningRoom						= new FloorSection("Dining Room",					1, new Vector3(0, 0, 0), 95.25f, 125.75f, "LTV");
+		FloorSection DiningRoom						= new FloorSection("DiningRoom",					1, new Vector3(0, 0, 0), 95.25f, 125.75f, "LTV");
 		FloorSection Loft									= new FloorSection("Loft",								2, new Vector3(0, 0, 0), 137f, 183f, "Carpet");
 		FloorSection SecondBedroom				= new FloorSection("SecondBedroom",				2, new Vector3(0, 0, 0), 130.5f, 165f, "Carpet");
 		FloorSection SecondBedroomCloset	= new FloorSection("SecondBedroomCloset", 2, new Vector3(0, 0, 0), 76f, 23.75f, "Carpet");
 
 
-	public void LivingRoom_Vertices()
+	public void Calculate_Vertices()
 	{
-		Vector3 LivingRoom_SpawnPos			= new Vector3(0, 1, 0); // Starting Reference (Furthest North-West Corner of the House)
 
-		Vector3 LivingRoom_TopLeft			= new Vector3(LivingRoom_SpawnPos.x, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Width);
+		// LivingRoom_Vertices;
+		Vector3 LivingRoom_SpawnPos = new Vector3(0, 1, 0); // Starting Reference (Furthest North-West Corner of the House)
+
+		Vector3 LivingRoom_TopLeft			= new Vector3(LivingRoom_SpawnPos.x,										 LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Width);
 		Vector3 LivingRoom_TopRight			= new Vector3(LivingRoom_SpawnPos.x + LivingRoom.Length, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Width);
-		Vector3 LivingRoom_BottomLeft		= new Vector3(LivingRoom_SpawnPos.x, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
+		Vector3 LivingRoom_BottomLeft		= new Vector3(LivingRoom_SpawnPos.x,										 LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
 		Vector3 LivingRoom_BottomRight	= new Vector3(LivingRoom_SpawnPos.x + LivingRoom.Length, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
+
+
+		//DiningRoom_Vertices()
+		Vector3 DiningRoom_SpawnPos = LivingRoom_TopLeft;
+
+		Vector3 DiningRoom_TopLeft			= new Vector3(DiningRoom_SpawnPos.x,										 DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + DiningRoom.Width);
+		Vector3 DiningRoom_TopRight			= new Vector3(DiningRoom_SpawnPos.x + DiningRoom.Length, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + DiningRoom.Width);
+		Vector3 DiningRoom_BottomLeft		= new Vector3(DiningRoom_SpawnPos.x,										 DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
+		Vector3 DiningRoom_BottomRight	= new Vector3(DiningRoom_SpawnPos.x + DiningRoom.Length, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
+
+		UpdateSpawnPos("LivingRoom", LivingRoom_SpawnPos);
+		UpdateSpawnPos("DiningRoom", DiningRoom_SpawnPos);
+
 	}
 
-	public void DiningRoom_Vertices()
+
+	void UpdateSpawnPos(string name, Vector3 newPos)
 	{
-		Vector3 DiningRoom_SpawnPos = new Vector3(152f, 1, 0); // Starting Reference (Furthest North-West Corner of the House)
-
-		Vector3 DiningRoom_TopLeft = new Vector3(DiningRoom_SpawnPos.x, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + 95.25f);
-		Vector3 DiningRoom_TopRight = new Vector3(DiningRoom_SpawnPos.x + 125.75f, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + 95.25f);
-		Vector3 DiningRoom_BottomLeft = new Vector3(DiningRoom_SpawnPos.x, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
-		Vector3 DiningRoom_BottomRight = new Vector3(DiningRoom_SpawnPos.x + 125.75f, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
+		var section = RoomIndex.FloorSectionList.Find(s => s.Name == name);
+		if (section != null)
+			section.SpawnPos = newPos;
 	}
 
 
+
+	public void Start()
+	{
+		Calculate_Vertices();
+	}
 
 
 
