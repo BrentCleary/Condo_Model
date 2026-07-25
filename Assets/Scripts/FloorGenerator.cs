@@ -18,11 +18,11 @@ public class FloorGenerator : MonoBehaviour
 		}
 
 		// Example: generate the Kitchen by looking it up in the list
-		RoomIndex.FloorSection kitchen = RoomIndex.FloorSectionList
-				.Find(s => s.Name == "Kitchen");
+		RoomIndex.FloorSection livingRoom = RoomIndex.FloorSectionList
+				.Find(s => s.Name == "LivingRoom");
 
-		if (kitchen != null)
-			GenerateFloor(kitchen);
+		if (livingRoom != null)
+			GenerateFloor(livingRoom);
 	}
 
 
@@ -30,11 +30,15 @@ public class FloorGenerator : MonoBehaviour
 
   public void GenerateFloor(RoomIndex.FloorSection floor)
 	{
-		float width = floor.Width;
+		float width  = floor.Width;
 		float length = floor.Length;
 
 		GameObject floorTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		floorTile.transform.localPosition = new Vector3(0, 1, 0);
+		
+		// Move the center so the lowest-left corner lands on SpawnPos
+		// (X = width, Z = length, Y = thickness)
+		floorTile.transform.localPosition = floor.SpawnPos
+																			+ new Vector3(width * 0.5f, 0.05f, length * 0.5f);
 		floorTile.transform.localScale = new Vector3(width, 0.1f, length);
 		floorTile.GetComponent<Renderer>().material.color = Color.blueViolet;
 

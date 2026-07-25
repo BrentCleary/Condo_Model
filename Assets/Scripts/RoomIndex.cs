@@ -18,7 +18,7 @@ public class RoomIndex
 		public	int			ID;
 		public	string	Name; 
 		public	int			Level;
-		public  Vector3	Position;
+		public  Vector3	SpawnPos;
 		public	float		Length; // North - South
 		public	float		Width;  // East - West 
 		public	float		Sqft;
@@ -26,42 +26,80 @@ public class RoomIndex
 		public	string	FloorType;
 
 		// -----  Constructor ----- 
-		public FloorSection(string name, int level, Vector3 position, float length, float width, string floorType)
+		public FloorSection(string name, int level, Vector3 spawnPos, float length, float width, string floorType)
 		{
-			ID = _nextID;
-			_nextID = _nextID + 1;
+			ID				= _nextID;
+			_nextID		= _nextID + 1;
 
-			Name	 = name;
-			Level	 = level;
-			Position = position;
-			Length = length;
-			Width  = width;
-			Sqft   = Length * width / sqftConversion;
+			Name			= name;
+			Level			= level;
+			SpawnPos	= spawnPos;
+			Length		= length;
+			Width			= width;
+			Sqft			= length * width / sqftConversion;
 			FloorType = floorType;
 
 			FloorSectionList.Add(this);
 		}
 	}
 
+	
+
+	Vector3 EntryWay_Pos = new Vector3(); 
+	Vector3 Hallway_Pos = new Vector3();
+	Vector3 Bathroom_Pos = new Vector3();
+	Vector3 Bedroom_Pos = new Vector3();
+	Vector3 BedroomCloset_Pos = new Vector3();
+	Vector3 StoreRoom_Pos = new Vector3();
+	Vector3 Kitchen_Pos = new Vector3();
+	Vector3 LaundrySpace_Pos = new Vector3();
+	Vector3 Loft_Pos = new Vector3();
+	Vector3 SecondBedroom_Pos = new Vector3();
+	Vector3 SecondBedroomCloset_Pos = new Vector3();
+
+
+
 	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
 
 
-	public void Start(){ 
-		FloorSection EntryWay							= new FloorSection("EntryWay", 1, new Vector3(0, 0, 0), 40.25f, 43f, "LTV");
-		FloorSection EntryCloset					= new FloorSection("EntryCloset", 1, new Vector3(0, 0, 0), 35f, 57f, "LTV");
-		FloorSection Hallway							= new FloorSection("Hallway", 1, new Vector3(0, 0, 0), 36f, 229f, "LTV");
-		FloorSection Bathroom							= new FloorSection("Bathroom", 1, new Vector3(0, 0, 0), 63.75f, 71.25f, "LTV");
-		FloorSection Bedroom							= new FloorSection("Bedroom", 1, new Vector3(0, 0, 0), 157f, 148f, "LTV");
-		FloorSection BedroomCloset				= new FloorSection("BedroomCloset", 1, new Vector3(0, 0, 0), 78f, 71f, "LTV");
-		FloorSection StoreRoom						= new FloorSection("Storeroom", 1, new Vector3(0, 0, 0), 126f, 200f, "Carpet");
-		FloorSection Kitchen							= new FloorSection("Kitchen", 1, new Vector3(0, 0, 0), 90.5f, 114f, "LTV");
-		FloorSection LaundrySpace					= new FloorSection("LaundrySpace", 1, new Vector3(0, 0, 0), 89.5f, 31.25f, "LTV");
-		FloorSection LivingRoom						= new FloorSection("LivingRoom", 1, new Vector3(0, 0, 0), 158.25f, 152f, "LTV");
-		FloorSection DiningRoom						= new FloorSection("Dining Room", 1, new Vector3(0, 0, 0), 95.25f, 125.75f, "LTV");
-		FloorSection Loft									= new FloorSection("Loft", 2, new Vector3(0, 0, 0), 137f, 183f, "Carpet");
-		FloorSection SecondBedroom				= new FloorSection("SecondBedroom", 2, new Vector3(0, 0, 0), 130.5f, 165f, "Carpet");
+		FloorSection EntryWay							= new FloorSection("EntryWay",						1, new Vector3(0, 0, 0), 40.25f, 43f, "LTV");
+		FloorSection EntryCloset					= new FloorSection("EntryCloset",					1, new Vector3(0, 0, 0), 35f, 57f, "LTV");
+		FloorSection Hallway							= new FloorSection("Hallway",							1, new Vector3(0, 0, 0), 36f, 229f, "LTV");
+		FloorSection Bathroom							= new FloorSection("Bathroom",						1, new Vector3(0, 0, 0), 63.75f, 71.25f, "LTV");
+		FloorSection Bedroom							= new FloorSection("Bedroom",							1, new Vector3(0, 0, 0), 157f, 148f, "LTV");
+		FloorSection BedroomCloset				= new FloorSection("BedroomCloset",				1, new Vector3(0, 0, 0), 78f, 71f, "LTV");
+		FloorSection StoreRoom						= new FloorSection("Storeroom",						1, new Vector3(0, 0, 0), 126f, 200f, "Carpet");
+		FloorSection Kitchen							= new FloorSection("Kitchen",							1, new Vector3(0, 0, 0), 90.5f, 114f, "LTV");
+		FloorSection LaundrySpace					= new FloorSection("LaundrySpace",				1, new Vector3(0, 0, 0), 89.5f, 31.25f, "LTV");
+		FloorSection LivingRoom						= new FloorSection("LivingRoom",					1, new Vector3(0, 0, 0), 151.75f, 152f, "LTV");
+		FloorSection DiningRoom						= new FloorSection("Dining Room",					1, new Vector3(0, 0, 0), 95.25f, 125.75f, "LTV");
+		FloorSection Loft									= new FloorSection("Loft",								2, new Vector3(0, 0, 0), 137f, 183f, "Carpet");
+		FloorSection SecondBedroom				= new FloorSection("SecondBedroom",				2, new Vector3(0, 0, 0), 130.5f, 165f, "Carpet");
 		FloorSection SecondBedroomCloset	= new FloorSection("SecondBedroomCloset", 2, new Vector3(0, 0, 0), 76f, 23.75f, "Carpet");
+
+
+	public void LivingRoom_Vertices()
+	{
+		Vector3 LivingRoom_SpawnPos			= new Vector3(0, 1, 0); // Starting Reference (Furthest North-West Corner of the House)
+
+		Vector3 LivingRoom_TopLeft			= new Vector3(LivingRoom_SpawnPos.x, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Width);
+		Vector3 LivingRoom_TopRight			= new Vector3(LivingRoom_SpawnPos.x + LivingRoom.Length, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Width);
+		Vector3 LivingRoom_BottomLeft		= new Vector3(LivingRoom_SpawnPos.x, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
+		Vector3 LivingRoom_BottomRight	= new Vector3(LivingRoom_SpawnPos.x + LivingRoom.Length, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
 	}
+
+	public void DiningRoom_Vertices()
+	{
+		Vector3 DiningRoom_SpawnPos = new Vector3(152f, 1, 0); // Starting Reference (Furthest North-West Corner of the House)
+
+		Vector3 DiningRoom_TopLeft = new Vector3(DiningRoom_SpawnPos.x, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + 95.25f);
+		Vector3 DiningRoom_TopRight = new Vector3(DiningRoom_SpawnPos.x + 125.75f, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + 95.25f);
+		Vector3 DiningRoom_BottomLeft = new Vector3(DiningRoom_SpawnPos.x, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
+		Vector3 DiningRoom_BottomRight = new Vector3(DiningRoom_SpawnPos.x + 125.75f, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
+	}
+
+
+
 
 
 	// NOTES
