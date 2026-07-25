@@ -3,59 +3,68 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class Index : MonoBehaviour
+public class RoomIndex
 {
 	// Walls - inches
 	private static int _nextID = 1;
 
-	List<string> FloorType = new List<string>() { "LTV", "Carpet", "Tile"};
-	public static List<FloorSection> FloorSections = new List<FloorSection>();
+	public List<string> FloorType = new List<string>() { "LTV", "Carpet", "Tile"};
+	public static List<FloorSection> FloorSectionList = new List<FloorSection>();
 
 	// ----- ----- ----- ----- ----- ----- ----- FloorSection Class ----- ----- ----- ----- ----- ----- ----- 
 
 	public class FloorSection{
 
-		public int ID;
-		public string Name; 
-		public int Level;
-		public float Height; // North - South
-		public float Width;  // East - West 
-		public float Sqft;
-		private float sqftConversion = 144f; // 12x12 inches
-		public string FloorType;
+		public	int			ID;
+		public	string	Name; 
+		public	int			Level;
+		public  Vector3	Position;
+		public	float		Length; // North - South
+		public	float		Width;  // East - West 
+		public	float		Sqft;
+		private float		sqftConversion = 144f; // 12x12 inches
+		public	string	FloorType;
 
-		// ----- ----- ----- ----- ----- ----- ----- Constructor ----- ----- ----- ----- ----- ----- -----
-		public FloorSection(string name, int level, float height, float width, string floorType)
+		// -----  Constructor ----- 
+		public FloorSection(string name, int level, Vector3 position, float length, float width, string floorType)
 		{
 			ID = _nextID;
 			_nextID = _nextID + 1;
 
 			Name	 = name;
 			Level	 = level;
-			Height = height;
+			Position = position;
+			Length = length;
 			Width  = width;
-			Sqft   = height * width / sqftConversion;
+			Sqft   = Length * width / sqftConversion;
 			FloorType = floorType;
-		
-			FloorSections.Add(this);
+
+			FloorSectionList.Add(this);
 		}
 	}
 
+	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
 
-	FloorSection EntryWay							= new FloorSection("EntryWay", 1,  40.25f, 43f, "LTV");
-	FloorSection EntryCloset					= new FloorSection("EntryCloset", 1, 35f, 57f, "LTV");
-	FloorSection Hallway							= new FloorSection("Hallway", 1, 36f, 229f, "LTV");
-	FloorSection Bathroom							= new FloorSection("Bathroom", 1, 63.75f, 71.25f, "LTV");
-	FloorSection Bedroom							= new FloorSection("Bedroom", 1, 157f, 148f, "LTV");
-	FloorSection BedroomCloset				= new FloorSection("BedroomCloset", 1, 78f, 71f, "LTV");
-	FloorSection StoreRoom						= new FloorSection("Storeroom", 1, 126f, 200f, "Carpet");
-	FloorSection Kitchen							= new FloorSection("Kitchen", 1, 90.5f, 114f, "LTV");
-	FloorSection LaundrySpace					= new FloorSection("LaundrySpace", 1, 89.5f, 31.25f, "LTV");
-	FloorSection LivingRoom						= new FloorSection("LivingRoom", 1, 158.25f, 152f, "LTV");
-	FloorSection DiningRoom						= new FloorSection("Dining Room", 1, 95.25f, 125.75f, "LTV");
-	FloorSection Loft									= new FloorSection("Loft", 2, 137f, 183f, "Carpet");
-	FloorSection SecondBedroom				= new FloorSection("SecondBedroom", 2, 130.5f, 165f, "Carpet");
-	FloorSection SecondBedroomCloset	= new FloorSection("SecondBedroomCloset", 2, 76f, 23.75f, "Carpet");
+
+	public void Start(){ 
+		FloorSection EntryWay							= new FloorSection("EntryWay", 1, new Vector3(0, 0, 0), 40.25f, 43f, "LTV");
+		FloorSection EntryCloset					= new FloorSection("EntryCloset", 1, new Vector3(0, 0, 0), 35f, 57f, "LTV");
+		FloorSection Hallway							= new FloorSection("Hallway", 1, new Vector3(0, 0, 0), 36f, 229f, "LTV");
+		FloorSection Bathroom							= new FloorSection("Bathroom", 1, new Vector3(0, 0, 0), 63.75f, 71.25f, "LTV");
+		FloorSection Bedroom							= new FloorSection("Bedroom", 1, new Vector3(0, 0, 0), 157f, 148f, "LTV");
+		FloorSection BedroomCloset				= new FloorSection("BedroomCloset", 1, new Vector3(0, 0, 0), 78f, 71f, "LTV");
+		FloorSection StoreRoom						= new FloorSection("Storeroom", 1, new Vector3(0, 0, 0), 126f, 200f, "Carpet");
+		FloorSection Kitchen							= new FloorSection("Kitchen", 1, new Vector3(0, 0, 0), 90.5f, 114f, "LTV");
+		FloorSection LaundrySpace					= new FloorSection("LaundrySpace", 1, new Vector3(0, 0, 0), 89.5f, 31.25f, "LTV");
+		FloorSection LivingRoom						= new FloorSection("LivingRoom", 1, new Vector3(0, 0, 0), 158.25f, 152f, "LTV");
+		FloorSection DiningRoom						= new FloorSection("Dining Room", 1, new Vector3(0, 0, 0), 95.25f, 125.75f, "LTV");
+		FloorSection Loft									= new FloorSection("Loft", 2, new Vector3(0, 0, 0), 137f, 183f, "Carpet");
+		FloorSection SecondBedroom				= new FloorSection("SecondBedroom", 2, new Vector3(0, 0, 0), 130.5f, 165f, "Carpet");
+		FloorSection SecondBedroomCloset	= new FloorSection("SecondBedroomCloset", 2, new Vector3(0, 0, 0), 76f, 23.75f, "Carpet");
+	}
+
+
+	// NOTES
 
 	// EntryWay						— 40.25" × 43"				= 12.01		//sqft
 	// EntryCloset					— 35" × 57"						= 13.85		//sqft
@@ -75,9 +84,9 @@ public class Index : MonoBehaviour
 	// LTV SQFT = 659.06
 
 
-	public class Hallway
+	public class Hallway_Measurements
 	{
-		float height = 36;
+		float length = 36;
 		float width = 229;
 
 		public float wall_hallway_south = 36;
@@ -99,7 +108,7 @@ public class Index : MonoBehaviour
 			public float wall_hallway_west_closetWall = 37.5f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Living Room Orginal Measurements ----- ----- ----- ----- ----- ----- ----- 
-	public class LivingRoomFullAreaMeasurements // Room measured as two rooms. Original one room measurements saved here.
+	public class LivingRoomFullArea_Measurements // Room measured as two rooms. Original one room measurements saved here.
 	{
 		public float wall_livingroom_north = 253.25f;
 			public float wall_livingroom_north_left_east = 58;
@@ -124,9 +133,9 @@ public class Index : MonoBehaviour
 
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Living Room ----- ----- ----- ----- ----- ----- ----- 
-	public class LivingRoom
+	public class LivingRoom_Measurements
 	{
-		float height = 158.25f;
+		float length = 158.25f;
 		float width = 152;
 
 		public float wall_livingRoom_north = 158.25f;
@@ -140,9 +149,9 @@ public class Index : MonoBehaviour
 		public float wall_livingRoom_west = 152;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Dining Room ----- ----- ----- ----- ----- ----- ----- 
-	public class DiningRoom
+	public class DiningRoom_Measurements
 	{
-		float height = 95.25f;
+		float length = 95.25f;
 		float width = 125.75f;
 
 		public float wall_diningRoom_north = 95.25f;
@@ -157,9 +166,9 @@ public class Index : MonoBehaviour
 
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Entry Way ----- ----- ----- ----- ----- ----- ----- 
-	public class EntryWay
+	public class EntryWay_Measurements
 	{
-		float height = 40.25f;
+		float length = 40.25f;
 		float width = 43;
 
 		public float wall_entryway_north = 40.25f;
@@ -177,9 +186,9 @@ public class Index : MonoBehaviour
 		public float wall_entryway_west_gap = 43;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Entry Way Closet ----- ----- ----- ----- ----- ----- ----- 
-	public class EntryCloset
+	public class EntryCloset_Measurements
 	{
-		float height = 35;
+		float length = 35;
 		float width = 57;
 
 		public float wall_entrywayCloset_south = 35;
@@ -195,9 +204,9 @@ public class Index : MonoBehaviour
 		public float wall_entrywayCloset_west_post = 5;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Bathroom ----- ----- ----- ----- ----- ----- ----- 
-	public class Bathroom
+	public class Bathroom_Measurements
 	{
-		float height = 63.75f;
+		float length = 63.75f;
 		float width = 71.25f;
 
 		public float wall_bathroom_north = 63.75f;
@@ -217,9 +226,9 @@ public class Index : MonoBehaviour
 			public float wall_bathroom_west_tub = 58.5f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Bedroom ----- ----- ----- ----- ----- ----- ----- 
-	public class Bedroom
+	public class Bedroom_Measurements
 	{
-		float height = 157;
+		float length = 157;
 		float width = 148;
 
 		public float wall_bedroom_north = 157;
@@ -238,9 +247,9 @@ public class Index : MonoBehaviour
 		public float wall_bedroom_west = 148;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- BedroomCloset ----- ----- ----- ----- ----- ----- ----- 
-	public class BedroomCloset
+	public class BedroomCloset_Measurements
 	{
-		float height = 78;
+		float length = 78;
 		float width = 71;
 
 		public float wall_closet_north = 78;
@@ -258,9 +267,9 @@ public class Index : MonoBehaviour
 			public float wall_closet_west_right = 23.12f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Storeroom ----- ----- ----- ----- ----- ----- ----- 
-	public class Storeroom
+	public class Storeroom_Measurements
 	{
-		float height = 126;
+		float length = 126;
 		float width = 200;
 
 		public float wall_storeroom_north = 126;
@@ -274,9 +283,9 @@ public class Index : MonoBehaviour
 		public float wall_storeroom_west = 200f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Kitchen ----- ----- ----- ----- ----- ----- ----- 
-	public class Kitchen
+	public class Kitchen_Measurements
 	{
-		float height = 90.5f;
+		float length = 90.5f;
 		float width = 114f;
 
 		public float wall_kitchen_north_kitchenShelf = 90.5f; // where living room wall meets kitchen wall
@@ -288,9 +297,9 @@ public class Index : MonoBehaviour
 		public float wall_kitchen_west = 114; // where laundry space starts
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Laundry Space ----- ----- ----- ----- ----- ----- ----- 
-	public class LaundrySpace
+	public class LaundrySpace_Measurements
 	{
-		float height = 89.5f;
+		float length = 89.5f;
 		float width = 31.25f;
 
 		public float wall_laundrySpace_north = 89.5f;
@@ -304,56 +313,56 @@ public class Index : MonoBehaviour
 		public float wall_laundrySpace_west = 31.25f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Loft ----- ----- ----- ----- ----- ----- ----- 
-	public class Loft 
+	public class Loft_Measurements
 	{
-		float height = 137;
+		float length = 137;
 		float width = 183;
 
 		public float wall_loft_north = 137;
 
 		public float wall_loft_south = 137;
-		public float wall_loft_south_doorEdge = 3.25f;
-		public float wall_loft_south_doorGap = 30f;
-		public float wall_loft_south_middle = 97.75f;
-		public float wall_loft_south_railingEdge = 6;
+			public float wall_loft_south_doorEdge = 3.25f;
+			public float wall_loft_south_doorGap = 30f;
+			public float wall_loft_south_middle = 97.75f;
+			public float wall_loft_south_railingEdge = 6;
 
 		public float wall_loft_east = 183;
-		public float wall_loft_east_left = 27.5f;
-		public float wall_loft_east_railng = 118;
-		public float wall_loft_east_right = 37.5f;
+			public float wall_loft_east_left = 27.5f;
+			public float wall_loft_east_railng = 118;
+			public float wall_loft_east_right = 37.5f;
 
 		public float wall_loft_west = 183;
-		public float wall_loft_west_sidewall = 31.75f;
-		public float wall_loft_west_railing = 151.75f;
+			public float wall_loft_west_sidewall = 31.75f;
+			public float wall_loft_west_railing = 151.75f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Second Bedroom ----- ----- ----- ----- ----- ----- ----- 
-	public class SecondBedroom
+	public class SecondBedroom_Measurements
 	{
-		float height = 130.5f;
+		float length = 130.5f;
 		float width = 165;
 
 		public float wall_north = 130.5f;
 
 		public float wall_south = 130.5f;
-		public float wall_south_doorWall = 54.75f;
-		public float wall_south_closetWall = 76;
+			public float wall_south_doorWall = 54.75f;
+			public float wall_south_closetWall = 76;
 
 		public float wall_east = 165;
-		public float wall_secondBedroom_east_doorWall = 87; // door wall
-		public float wall_secondBedroom_east_windowWall = 78.25f; // window wall
+			public float wall_secondBedroom_east_doorWall = 87; // door wall
+			public float wall_secondBedroom_east_windowWall = 78.25f; // window wall
 
 		public float wall_west = 165;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Second Bedroom Closet ----- ----- ----- ----- ----- ----- ----- 
-	public class SecondBedroomCloset
+	public class SecondBedroomCloset_Measurements
 	{
-		float height = 76;
+		float length = 76;
 		float width = 23.75f;
 
 		public float wall_north = 76;
-		public float wall_north_right = 15;
-		public float wall_north_left = 15;
-		public float wall_north_gap = 46;
+			public float wall_north_right = 15;
+			public float wall_north_left = 15;
+			public float wall_north_gap = 46;
 
 		public float wall_south = 76;
 
@@ -361,7 +370,23 @@ public class Index : MonoBehaviour
 
 		public float wall_west = 23.75f;
 	}
+	// ----- ----- ----- ----- ----- ----- ----- Deck ----- ----- ----- ----- ----- ----- ----- 
+	public class Deck_Measurements
+	{
+		float length = 185f;
+		float width = 68.5f;
 
+		public float railing_west = 185f;
+
+		public float railing_north = 68.5f;
+
+		public float wall_door_east = 152.5f;
+		public float wall_window_east = 27f;
+
+		public float wall_window_south = 28f;
+		public float wall_south = 40f;
+
+	}
 
 	// ----- ----- ----- ----- ----- ----- ----- Second Bedroom Closet Doorframe----- ----- ----- ----- ----- ----- ----- 
 
