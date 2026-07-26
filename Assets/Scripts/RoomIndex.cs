@@ -61,7 +61,7 @@ public class RoomIndex
 
 	public static FloorSection EntryWay							= new FloorSection("EntryWay",						1, Vector3.zero, 40.25f, 43f, "LTV");
 	public static FloorSection EntryCloset					= new FloorSection("EntryCloset",					1, Vector3.zero, 35f, 57f, "LTV");
-	public static FloorSection Hallway							= new FloorSection("Hallway",							1, Vector3.zero, 36f, 229f, "LTV");
+	public static FloorSection Hallway							= new FloorSection("Hallway",							1, Vector3.zero, 229f, 36f, "LTV");
 	public static FloorSection Bathroom							= new FloorSection("Bathroom",						1, Vector3.zero, 63.75f, 71.25f, "LTV");
 	public static FloorSection Bedroom							= new FloorSection("Bedroom",							1, Vector3.zero, 157f, 148f, "LTV");
 	public static FloorSection BedroomCloset				= new FloorSection("BedroomCloset",				1, Vector3.zero, 78f, 71f, "LTV");
@@ -106,7 +106,7 @@ public class RoomIndex
 		Vector3 DiningRoom_BottomRight	= new Vector3(DiningRoom_SpawnPos.x + DiningRoom.Length, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
 
 		//Bedroom_Vertices()
-		Vector3 Bedroom_SpawnPos				= new Vector3(LivingRoom_BottomRight.x, 1, LivingRoom_BottomRight.z - Hallway.Width);
+		Vector3 Bedroom_SpawnPos				= new Vector3(LivingRoom_BottomRight.x, 1, LivingRoom_BottomRight.z - Hallway.Length);
 
 		Vector3 Bedroom_TopLeft					= new Vector3(Bedroom_SpawnPos.x,									 Bedroom_SpawnPos.y, Bedroom_SpawnPos.z + Bedroom.Width);
 		Vector3 Bedroom_TopRight				= new Vector3(Bedroom_SpawnPos.x + Bedroom.Length, Bedroom_SpawnPos.y, Bedroom_SpawnPos.z + Bedroom.Width);
