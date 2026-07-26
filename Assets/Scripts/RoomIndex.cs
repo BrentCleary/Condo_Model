@@ -50,7 +50,7 @@ public class RoomIndex
 			FloorSectionList.Add(this);
 		}
 	}
-
+	 
 
 
 	Vector3 EntryWay_Pos = new Vector3();
