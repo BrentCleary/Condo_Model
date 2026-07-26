@@ -13,7 +13,7 @@ public class RoomIndex
 	// Walls - inches
 	private static int _nextID = 1;
 
-	public List<string> FloorType = new List<string>() { "LVP", "Carpet", "Tile" };
+	public List<string> FloorType = new List<string>() { "LVP", "Carpet", "Tile", "Rubber" };
 	public static List<FloorSection> FloorSectionList = new List<FloorSection>();
 
 	// ----- ----- ----- ----- ----- ----- ----- FloorSection Class ----- ----- ----- ----- ----- ----- ----- 
@@ -84,6 +84,9 @@ public class RoomIndex
 	public static FloorSection UpperBedroom = new FloorSection("UpperBedroom", 2, Vector3.zero, 165f, 76f, "Carpet");
 	public static FloorSection UpperBedroomEntry = new FloorSection("UpperBedroomEntry", 2, Vector3.zero, 87f, 54.75f, "Carpet");
 	public static FloorSection UpperBedroomCloset = new FloorSection("UpperBedroomCloset", 2, Vector3.zero, 23.75f, 76f, "Carpet");
+	public static FloorSection DeckCovered = new FloorSection("DeckCovered", 1, Vector3.zero, 158f, 40f, "Rubber");
+	public static FloorSection DeckUncovered = new FloorSection("DeckUncovered", 1, Vector3.zero, 185f, 28f, "Rubber");
+
 
 
 
@@ -222,12 +225,26 @@ public class RoomIndex
 		//UpperBedroomCloset_Vertices()
 		Vector3 UpperBedroomCloset_SpawnPos = new Vector3(UpperBedroom_BottomRight.x, LevelTwoHeight, UpperBedroom_BottomRight.z);
 
-		Vector3 UpperBedroomCloset_TopLeft = new Vector3(UpperBedroomCloset_SpawnPos.x, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
-		Vector3 UpperBedroomCloset_TopRight = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
-		Vector3 UpperBedroomCloset_BottomLeft = new Vector3(UpperBedroomCloset_SpawnPos.x, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
+		Vector3 UpperBedroomCloset_TopLeft		 = new Vector3(UpperBedroomCloset_SpawnPos.x,														 UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
+		Vector3 UpperBedroomCloset_TopRight		 = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
+		Vector3 UpperBedroomCloset_BottomLeft	 = new Vector3(UpperBedroomCloset_SpawnPos.x,														 UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
 		Vector3 UpperBedroomCloset_BottomRight = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
 
+		//DeckCovered_Vertices()
+		Vector3 DeckCovered_SpawnPos = new Vector3(LivingRoom_BottomLeft.x, LevelOneHeight, LivingRoom_BottomLeft.z - DeckCovered.Length);
 
+		Vector3 DeckCovered_TopLeft				= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
+		Vector3	DeckCovered_TopRight			= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
+		Vector3 DeckCovered_BottomLeft		= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
+		Vector3 DeckCovered_BottomRight		= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
+
+		//DeckUncovered_Vertices()
+		Vector3 DeckUncovered_SpawnPos		= new Vector3(DeckCovered_SpawnPos.x, LevelOneHeight, DeckCovered_SpawnPos.z - DeckUncovered.Length);
+
+		Vector3 DeckUncovered_TopLeft			= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
+		Vector3	DeckUncovered_TopRight		= new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
+		Vector3 DeckUncovered_BottomLeft	= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
+		Vector3 DeckUncovered_BottomRight = new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
 
 
 		UpdateSpawnPos("LivingRoom", LivingRoom_SpawnPos);
@@ -242,10 +259,13 @@ public class RoomIndex
 		UpdateSpawnPos("BedroomCloset", BedroomCloset_SpawnPos);
 		UpdateSpawnPos("StoreroomEntry", StoreRoomEntry_SpawnPos);
 		UpdateSpawnPos("Storeroom", StoreRoom_SpawnPos);
+		UpdateSpawnPos("DeckCovered", DeckCovered_SpawnPos);
+		UpdateSpawnPos("DeckUncovered", DeckUncovered_SpawnPos);
 		UpdateSpawnPos("Loft", Loft_SpawnPos);
 		UpdateSpawnPos("UpperBedroomEntry", UpperBedroomEntry_SpawnPos);
 		UpdateSpawnPos("UpperBedroom", UpperBedroom_SpawnPos);
 		UpdateSpawnPos("UpperBedroomCloset", UpperBedroomCloset_SpawnPos);
+
 
 
 
@@ -591,11 +611,30 @@ public class RoomIndex
 
 			public float wall_west = 23.75f;
 		}
-		// ----- ----- ----- ----- ----- ----- ----- Deck ----- ----- ----- ----- ----- ----- ----- 
-		public class Deck_Measurements
+		// ----- ----- ----- ----- ----- ----- ----- Deck Covered ----- ----- ----- ----- ----- ----- ----- 
+		public class DeckCovered_Measurements
 		{
-			float length = 185f;
-			float width = 68.5f;
+			float length = 40f;
+			float width	 = 158f;
+
+			public float railing_west = 185f;
+
+			public float railing_north = 68.5f;
+
+			public float wall_door_east = 152.5f;
+			public float wall_window_east = 27f;
+
+			public float wall_south = 40f;
+			public float wall_window_south = 28f;
+
+		}
+
+		// ----- ----- ----- ----- ----- ----- ----- Deck Uncovered ----- ----- ----- ----- ----- ----- ----- 
+		public class DeckUncovered_Measurements
+		{
+
+			float length = 28f;
+			float width = 185f;
 
 			public float railing_west = 185f;
 
@@ -608,8 +647,6 @@ public class RoomIndex
 			public float wall_south = 40f;
 
 		}
-
-		// ----- ----- ----- ----- ----- ----- ----- Second Bedroom Closet Doorframe----- ----- ----- ----- ----- ----- ----- 
 
 
 
