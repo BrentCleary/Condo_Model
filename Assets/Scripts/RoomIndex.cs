@@ -7,6 +7,8 @@ public class RoomIndex
 {
 
 	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
+	public float LevelTwoHeight = 1.0f + 10f; // Height of the second floor in Unity units
+
 
 	// Walls - inches
 	private static int _nextID = 1;
@@ -79,8 +81,9 @@ public class RoomIndex
 	public static FloorSection LivingRoom = new FloorSection("LivingRoom", 1, Vector3.zero, 151.75f, 152f, "LVP");
 	public static FloorSection DiningRoom = new FloorSection("DiningRoom", 1, Vector3.zero, 125.75f, 95.25f, "LVP");
 	public static FloorSection Loft = new FloorSection("Loft", 2, Vector3.zero, 183f, 137f, "Carpet");
-	public static FloorSection UpperBedroom = new FloorSection("UpperBedroom", 2, Vector3.zero, 130.5f, 165f, "Carpet");
-	public static FloorSection UpperBedroomCloset = new FloorSection("UpperBedroomCloset", 2, Vector3.zero, 76f, 23.75f, "Carpet");
+	public static FloorSection UpperBedroom = new FloorSection("UpperBedroom", 2, Vector3.zero, 165f, 76f, "Carpet");
+	public static FloorSection UpperBedroomEntry = new FloorSection("UpperBedroomEntry", 2, Vector3.zero, 87f, 54.75f, "Carpet");
+	public static FloorSection UpperBedroomCloset = new FloorSection("UpperBedroomCloset", 2, Vector3.zero, 23.75f, 76f, "Carpet");
 
 
 
@@ -136,7 +139,6 @@ public class RoomIndex
 		Vector3 Kitchen_BottomLeft = new Vector3(Kitchen_SpawnPos.x, Kitchen_SpawnPos.y, Kitchen_SpawnPos.z);
 		Vector3 Kitchen_BottomRight = new Vector3(Kitchen_SpawnPos.x + Kitchen.Width, Kitchen_SpawnPos.y, Kitchen_SpawnPos.z);
 
-
 		//Laundry_Vertices()
 		Vector3 Laundry_SpawnPos = new Vector3(Kitchen_BottomRight.x, LevelOneHeight, Kitchen_BottomRight.z);
 
@@ -169,7 +171,6 @@ public class RoomIndex
 		Vector3 Bathroom_BottomLeft = new Vector3(Bathroom_SpawnPos.x, Bathroom_SpawnPos.y, Bathroom_SpawnPos.z);
 		Vector3 Bathroom_BottomRight = new Vector3(Bathroom_SpawnPos.x + Bathroom.Width, Bathroom_SpawnPos.y, Bathroom_SpawnPos.z);
 
-
 		//BedroomCloset_Vertices()
 		Vector3 BedroomCloset_SpawnPos = new Vector3(Bathroom_BottomRight.x - BedroomCloset.Width, LevelOneHeight, Bathroom_BottomRight.z - BedroomCloset.Length);
 
@@ -177,7 +178,6 @@ public class RoomIndex
 		Vector3 BedroomCloset_TopRight = new Vector3(BedroomCloset_SpawnPos.x + BedroomCloset.Width, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z + BedroomCloset.Length);
 		Vector3 BedroomCloset_BottomLeft = new Vector3(BedroomCloset_SpawnPos.x, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z);
 		Vector3 BedroomCloset_BottomRight = new Vector3(BedroomCloset_SpawnPos.x + BedroomCloset.Width, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z);
-
 
 		//StoreRoomEntry_Vertices()
 		Vector3 StoreRoomEntry_SpawnPos = new Vector3(BedroomCloset_BottomRight.x - StoreRoomEntry.Width, LevelOneHeight, BedroomCloset_BottomRight.z - StoreRoomEntry.Length);
@@ -187,7 +187,6 @@ public class RoomIndex
 		Vector3 StoreRoomEntry_BottomLeft = new Vector3(StoreRoomEntry_SpawnPos.x, StoreRoomEntry_SpawnPos.y, StoreRoomEntry_SpawnPos.z);
 		Vector3 StoreRoomEntry_BottomRight = new Vector3(StoreRoomEntry_SpawnPos.x + StoreRoomEntry.Width, StoreRoomEntry_SpawnPos.y, StoreRoomEntry_SpawnPos.z);
 
-
 		//StoreRoom_Vertices()
 		Vector3 StoreRoom_SpawnPos = new Vector3(StoreRoomEntry_BottomLeft.x - StoreRoom.Width, LevelOneHeight, StoreRoomEntry_BottomLeft.z);
 
@@ -195,6 +194,39 @@ public class RoomIndex
 		Vector3 StoreRoom_TopRight = new Vector3(StoreRoom_SpawnPos.x + StoreRoom.Width, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z + StoreRoom.Length);
 		Vector3 StoreRoom_BottomLeft = new Vector3(StoreRoom_SpawnPos.x, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z);
 		Vector3 StoreRoom_BottomRight = new Vector3(StoreRoom_SpawnPos.x + StoreRoom.Width, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z);
+
+		// Loft_Vertices()
+		Vector3 Loft_SpawnPos = new Vector3(DiningRoom_TopLeft.x, LevelTwoHeight, DiningRoom_TopLeft.z - Loft.Length); // Loft is on the second floor, so we add height
+
+		Vector3 Loft_TopLeft = new Vector3(Loft_SpawnPos.x, Loft_SpawnPos.y, Loft_SpawnPos.z + Loft.Length);
+		Vector3 Loft_TopRight = new Vector3(Loft_SpawnPos.x + Loft.Width, Loft_SpawnPos.y, Loft_SpawnPos.z + Loft.Length);
+		Vector3 Loft_BottomLeft = new Vector3(Loft_SpawnPos.x, Loft_SpawnPos.y, Loft_SpawnPos.z);
+		Vector3 Loft_BottomRight = new Vector3(Loft_SpawnPos.x + Loft.Width, Loft_SpawnPos.y, Loft_SpawnPos.z);
+
+		// UpperBedroomEntry_Vertices()
+		Vector3 UpperBedroomEntry_SpawnPos = new Vector3(Loft_TopRight.x, LevelTwoHeight, Loft_TopRight.z - UpperBedroomEntry.Length);
+
+		Vector3 UpperBedroomEntry_TopLeft = new Vector3(UpperBedroomEntry_SpawnPos.x, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z + UpperBedroomEntry.Length);
+		Vector3 UpperBedroomEntry_TopRight = new Vector3(UpperBedroomEntry_SpawnPos.x + UpperBedroomEntry.Width, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z + UpperBedroomEntry.Length);
+		Vector3 UpperBedroomEntry_BottomLeft = new Vector3(UpperBedroomEntry_SpawnPos.x, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z);
+		Vector3 UpperBedroomEntry_BottomRight = new Vector3(UpperBedroomEntry_SpawnPos.x + UpperBedroomEntry.Width, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z);
+
+		// UpperBedroom_Vertices()
+		Vector3 UpperBedroom_SpawnPos = new Vector3(UpperBedroomEntry_BottomLeft.x, LevelTwoHeight, UpperBedroomEntry_BottomLeft.z - UpperBedroom.Length);
+
+		Vector3 UpperBedroom_TopLeft = new Vector3(UpperBedroom_SpawnPos.x, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z + UpperBedroom.Length);
+		Vector3 UpperBedroom_TopRight = new Vector3(UpperBedroom_SpawnPos.x + UpperBedroom.Width, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z + UpperBedroom.Length);
+		Vector3 UpperBedroom_BottomLeft = new Vector3(UpperBedroom_SpawnPos.x, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z);
+		Vector3 UpperBedroom_BottomRight = new Vector3(UpperBedroom_SpawnPos.x + UpperBedroom.Width, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z);
+
+		//UpperBedroomCloset_Vertices()
+		Vector3 UpperBedroomCloset_SpawnPos = new Vector3(UpperBedroom_BottomRight.x, LevelTwoHeight, UpperBedroom_BottomRight.z);
+
+		Vector3 UpperBedroomCloset_TopLeft = new Vector3(UpperBedroomCloset_SpawnPos.x, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
+		Vector3 UpperBedroomCloset_TopRight = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
+		Vector3 UpperBedroomCloset_BottomLeft = new Vector3(UpperBedroomCloset_SpawnPos.x, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
+		Vector3 UpperBedroomCloset_BottomRight = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
+
 
 
 
@@ -210,6 +242,10 @@ public class RoomIndex
 		UpdateSpawnPos("BedroomCloset", BedroomCloset_SpawnPos);
 		UpdateSpawnPos("StoreroomEntry", StoreRoomEntry_SpawnPos);
 		UpdateSpawnPos("Storeroom", StoreRoom_SpawnPos);
+		UpdateSpawnPos("Loft", Loft_SpawnPos);
+		UpdateSpawnPos("UpperBedroomEntry", UpperBedroomEntry_SpawnPos);
+		UpdateSpawnPos("UpperBedroom", UpperBedroom_SpawnPos);
+		UpdateSpawnPos("UpperBedroomCloset", UpperBedroomCloset_SpawnPos);
 
 
 
@@ -510,23 +546,33 @@ public class RoomIndex
 			public float wall_loft_west_sidewall = 31.75f;
 			public float wall_loft_west_railing = 151.75f;
 		}
+		public class UpperBedroomEntry_Measurements
+		{
+			float length = 54.75f;
+			float width = 87f;
+
+			public float wall_south_doorWall = 54.75f;
+
+			public float wall_upperBedroom_east_doorWall = 87; // door wall
+
+		}
+
 		// ----- ----- ----- ----- ----- ----- ----- Upper Bedroom ----- ----- ----- ----- ----- ----- ----- 
 		public class UpperBedroom_Measurements
 		{
-			float length = 130.5f;
-			float width = 165;
+			float length = 75.75f;
+			float width = 165f;
 
-			public float wall_north = 130.5f;
+			public float wall_north = 130.5f - 54.75f;
 
-			public float wall_south = 130.5f;
-			public float wall_south_doorWall = 54.75f;
-			public float wall_south_closetWall = 76;
+			public float wall_south = 76f;
+				public float wall_south_closetWall = 76f;
 
-			public float wall_east = 165;
-			public float wall_secondBedroom_east_doorWall = 87; // door wall
-			public float wall_secondBedroom_east_windowWall = 78.25f; // window wall
+			public float wall_east = 165f;
+				public float wall_upperBedroom_east_doorWall = 87f; // door wall
+				public float wall_upperBedroom_east_windowWall = 78.25f; // window wall
 
-			public float wall_west = 165;
+			public float wall_west = 165f;
 		}
 		// ----- ----- ----- ----- ----- ----- ----- Upper Bedroom Closet ----- ----- ----- ----- ----- ----- ----- 
 		public class UpperBedroomCloset_Measurements
