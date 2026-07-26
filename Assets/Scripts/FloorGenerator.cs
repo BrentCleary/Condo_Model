@@ -19,25 +19,7 @@ public class FloorGenerator : MonoBehaviour
 			}
 		}
 
-
-			//RoomIndex.FloorSection livingRoom = RoomIndex.FloorSectionList
-			//		.Find(s => s.Name == "LivingRoom");
-
-			//RoomIndex.FloorSection diningRoom = RoomIndex.FloorSectionList
-			//		.Find(s => s.Name == "DiningRoom");
-
-			//RoomIndex.FloorSection bedroom		= RoomIndex.FloorSectionList
-			//		.Find(s => s.Name == "Bedroom");
-
-			//if (livingRoom != null)
-			//	GenerateFloor(livingRoom);
-			//if (diningRoom != null)
-			//	GenerateFloor(diningRoom);
-			//if (bedroom != null)
-			//	GenerateFloor(bedroom);
 	}
-
-
 
 
 

@@ -68,24 +68,24 @@ public class RoomIndex
 
 	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
 
-	public static FloorSection EntryWay = new FloorSection("EntryWay", 1, Vector3.zero, 43f, 40.25f, "LVP");
-	public static FloorSection EntryCloset = new FloorSection("EntryCloset", 1, Vector3.zero, 57f, 35f, "LVP");
-	public static FloorSection Hallway = new FloorSection("Hallway", 1, Vector3.zero, 229f, 36f, "LVP");
-	public static FloorSection Bathroom = new FloorSection("Bathroom", 1, Vector3.zero, 71.25f, 87f, "LVP");
-	public static FloorSection Bedroom = new FloorSection("Bedroom", 1, Vector3.zero, 157f, 148f, "LVP");
-	public static FloorSection BedroomCloset = new FloorSection("BedroomCloset", 1, Vector3.zero, 71f, 78f, "LVP");
-	public static FloorSection StoreRoomEntry = new FloorSection("StoreroomEntry", 1, Vector3.zero, 65.5f, 103f, "Carpet");
-	public static FloorSection StoreRoom = new FloorSection("Storeroom", 1, Vector3.zero, 120f, 127.5f, "Carpet");
-	public static FloorSection Kitchen = new FloorSection("Kitchen", 1, Vector3.zero, 114f, 90.5f, "LVP");
-	public static FloorSection Laundry = new FloorSection("Laundry", 1, Vector3.zero, 31.25f, 89.5f, "LVP");
-	public static FloorSection LivingRoom = new FloorSection("LivingRoom", 1, Vector3.zero, 151.75f, 152f, "LVP");
-	public static FloorSection DiningRoom = new FloorSection("DiningRoom", 1, Vector3.zero, 125.75f, 95.25f, "LVP");
-	public static FloorSection Loft = new FloorSection("Loft", 2, Vector3.zero, 183f, 137f, "Carpet");
-	public static FloorSection UpperBedroom = new FloorSection("UpperBedroom", 2, Vector3.zero, 165f, 76f, "Carpet");
-	public static FloorSection UpperBedroomEntry = new FloorSection("UpperBedroomEntry", 2, Vector3.zero, 87f, 54.75f, "Carpet");
-	public static FloorSection UpperBedroomCloset = new FloorSection("UpperBedroomCloset", 2, Vector3.zero, 23.75f, 76f, "Carpet");
-	public static FloorSection DeckCovered = new FloorSection("DeckCovered", 1, Vector3.zero, 158f, 40f, "Rubber");
-	public static FloorSection DeckUncovered = new FloorSection("DeckUncovered", 1, Vector3.zero, 185f, 28f, "Rubber");
+	public static FloorSection EntryWay						= new FloorSection("EntryWay",						1, Vector3.zero, 43f, 40.25f, "LVP");
+	public static FloorSection EntryCloset				= new FloorSection("EntryCloset",					1, Vector3.zero, 57f, 35f, "LVP");
+	public static FloorSection Hallway						= new FloorSection("Hallway",							1, Vector3.zero, 229f, 36f, "LVP");
+	public static FloorSection Bathroom						= new FloorSection("Bathroom",						1, Vector3.zero, 71.25f, 87f, "LVP");
+	public static FloorSection Bedroom						= new FloorSection("Bedroom",							1, Vector3.zero, 157f, 148f, "LVP");
+	public static FloorSection BedroomCloset			= new FloorSection("BedroomCloset",				1, Vector3.zero, 71f, 78f, "LVP");
+	public static FloorSection StoreRoomEntry			= new FloorSection("StoreroomEntry",			1, Vector3.zero, 65.5f, 103f, "Carpet");
+	public static FloorSection StoreRoom					= new FloorSection("Storeroom",						1, Vector3.zero, 120f, 127.5f, "Carpet");
+	public static FloorSection Kitchen						= new FloorSection("Kitchen",							1, Vector3.zero, 114f, 90.5f, "LVP");
+	public static FloorSection Laundry						= new FloorSection("Laundry",							1, Vector3.zero, 31.25f, 89.5f, "LVP");
+	public static FloorSection LivingRoom					= new FloorSection("LivingRoom",					1, Vector3.zero, 151.75f, 152f, "LVP");
+	public static FloorSection DiningRoom					= new FloorSection("DiningRoom",					1, Vector3.zero, 125.75f, 95.25f, "LVP");
+	public static FloorSection DeckCovered				= new FloorSection("DeckCovered",					1, Vector3.zero, 158f, 40f, "Rubber");
+	public static FloorSection DeckUncovered			= new FloorSection("DeckUncovered",				1, Vector3.zero, 185f, 28f, "Rubber");
+	public static FloorSection Loft								= new FloorSection("Loft",								2, Vector3.zero, 183f, 137f, "Carpet");
+	public static FloorSection UpperBedroom				= new FloorSection("UpperBedroom",				2, Vector3.zero, 165f, 76f, "Carpet");
+	public static FloorSection UpperBedroomEntry	= new FloorSection("UpperBedroomEntry",		2, Vector3.zero, 87f, 54.75f, "Carpet");
+	public static FloorSection UpperBedroomCloset = new FloorSection("UpperBedroomCloset",	2, Vector3.zero, 23.75f, 76f, "Carpet");
 
 
 
@@ -198,6 +198,22 @@ public class RoomIndex
 		Vector3 StoreRoom_BottomLeft = new Vector3(StoreRoom_SpawnPos.x, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z);
 		Vector3 StoreRoom_BottomRight = new Vector3(StoreRoom_SpawnPos.x + StoreRoom.Width, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z);
 
+		//DeckCovered_Vertices()
+		Vector3 DeckCovered_SpawnPos = new Vector3(LivingRoom_BottomLeft.x, LevelOneHeight, LivingRoom_BottomLeft.z - DeckCovered.Length);
+
+		Vector3 DeckCovered_TopLeft				= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
+		Vector3	DeckCovered_TopRight			= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
+		Vector3 DeckCovered_BottomLeft		= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
+		Vector3 DeckCovered_BottomRight		= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
+
+		//DeckUncovered_Vertices()
+		Vector3 DeckUncovered_SpawnPos		= new Vector3(DeckCovered_SpawnPos.x, LevelOneHeight, DeckCovered_SpawnPos.z - DeckUncovered.Length);
+
+		Vector3 DeckUncovered_TopLeft			= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
+		Vector3	DeckUncovered_TopRight		= new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
+		Vector3 DeckUncovered_BottomLeft	= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
+		Vector3 DeckUncovered_BottomRight = new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
+		
 		// Loft_Vertices()
 		Vector3 Loft_SpawnPos = new Vector3(DiningRoom_TopLeft.x, LevelTwoHeight, DiningRoom_TopLeft.z - Loft.Length); // Loft is on the second floor, so we add height
 
@@ -230,21 +246,6 @@ public class RoomIndex
 		Vector3 UpperBedroomCloset_BottomLeft	 = new Vector3(UpperBedroomCloset_SpawnPos.x,														 UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
 		Vector3 UpperBedroomCloset_BottomRight = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
 
-		//DeckCovered_Vertices()
-		Vector3 DeckCovered_SpawnPos = new Vector3(LivingRoom_BottomLeft.x, LevelOneHeight, LivingRoom_BottomLeft.z - DeckCovered.Length);
-
-		Vector3 DeckCovered_TopLeft				= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
-		Vector3	DeckCovered_TopRight			= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
-		Vector3 DeckCovered_BottomLeft		= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
-		Vector3 DeckCovered_BottomRight		= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
-
-		//DeckUncovered_Vertices()
-		Vector3 DeckUncovered_SpawnPos		= new Vector3(DeckCovered_SpawnPos.x, LevelOneHeight, DeckCovered_SpawnPos.z - DeckUncovered.Length);
-
-		Vector3 DeckUncovered_TopLeft			= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
-		Vector3	DeckUncovered_TopRight		= new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
-		Vector3 DeckUncovered_BottomLeft	= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
-		Vector3 DeckUncovered_BottomRight = new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
 
 
 		UpdateSpawnPos("LivingRoom", LivingRoom_SpawnPos);
