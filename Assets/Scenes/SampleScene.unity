@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 118118583}
   - component: {fileID: 118118582}
   m_Layer: 0
-  m_Name: FloorGenerator
+  m_Name: FloorGeneratorObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -260,37 +260,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &778098328
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 778098329}
-  m_Layer: 0
-  m_Name: RoomGeneratorObj
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &778098329
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 778098328}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &906521545
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +273,7 @@ GameObject:
   - component: {fileID: 906521547}
   - component: {fileID: 906521546}
   m_Layer: 0
-  m_Name: Reference Cube
+  m_Name: Reference_Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -397,7 +366,7 @@ Transform:
   m_GameObject: {fileID: 906521545}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -80, y: 6, z: -80}
+  m_LocalPosition: {x: 0, y: 6, z: 0}
   m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -505,7 +474,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1151293104}
   m_Layer: 0
-  m_Name: Bedroom
+  m_Name: PlaneSpace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -540,7 +509,7 @@ GameObject:
   - component: {fileID: 1253525798}
   - component: {fileID: 1253525797}
   m_Layer: 0
-  m_Name: Bdrm - Floor
+  m_Name: PlaneSpaceObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -555,8 +524,8 @@ Transform:
   m_GameObject: {fileID: 1253525795}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 160, y: 1, z: 160}
+  m_LocalPosition: {x: 250, y: 0, z: 250}
+  m_LocalScale: {x: 500, y: 1, z: 500}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1151293104}
@@ -648,4 +617,3 @@ SceneRoots:
   - {fileID: 1151293104}
   - {fileID: 906521549}
   - {fileID: 118118583}
-  - {fileID: 778098329}

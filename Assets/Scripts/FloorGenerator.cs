@@ -9,25 +9,24 @@ public class FloorGenerator : MonoBehaviour
 
 	void Start()
 	{
-		// Make sure the list has been populated (call this once)
-		// You can move the creation code into a public static method on RoomIndex if you prefer
-		if (RoomIndex.FloorSectionList.Count == 0)
-		{
-			Console.Write("FloorSectionList is empty, populating it now...");
-			// RoomIndex.PopulateFloorSectionList();
-		}
-
+		new RoomIndex().Start();          // ← actually populate the list
+	
 		// Example: generate the Kitchen by looking it up in the list
 		RoomIndex.FloorSection livingRoom = RoomIndex.FloorSectionList
 				.Find(s => s.Name == "LivingRoom");
 
-		//RoomIndex.FloorSection diningRoom = RoomIndex.FloorSectionList
-		//		.Find(s => s.Name == "DiningRoom");
+		RoomIndex.FloorSection diningRoom = RoomIndex.FloorSectionList
+				.Find(s => s.Name == "DiningRoom");
+
+		RoomIndex.FloorSection bedroom		= RoomIndex.FloorSectionList
+				.Find(s => s.Name == "Bedroom");
 
 		if (livingRoom != null)
 			GenerateFloor(livingRoom);
-		//if (diningRoom != null)
-		//	GenerateFloor(diningRoom);
+		if (diningRoom != null)
+			GenerateFloor(diningRoom);
+		if (bedroom != null)
+			GenerateFloor(bedroom);
 	}
 
 
@@ -47,6 +46,27 @@ public class FloorGenerator : MonoBehaviour
 		floorTile.transform.localScale = new Vector3(width, 0.1f, length);
 
 		floorTile.GetComponent<Renderer>().material.color = Color.blueViolet;
+
+		if(floor.Name == "LivingRoom")
+		{
+			floorTile.GetComponent<Renderer>().material.color = Color.green;
+		}
+		else if (floor.Name == "DiningRoom")
+		{
+			floorTile.GetComponent<Renderer>().material.color = Color.yellow;
+		}
+		else if (floor.Name == "Kitchen")
+		{
+			floorTile.GetComponent<Renderer>().material.color = Color.red;
+		}
+		else if (floor.Name == "Bathroom")
+		{
+			floorTile.GetComponent<Renderer>().material.color = Color.cyan;
+		}
+		else if (floor.Name == "Bedroom")
+		{
+			floorTile.GetComponent<Renderer>().material.color = Color.orange;
+		}
 
 	}
 
