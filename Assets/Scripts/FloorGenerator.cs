@@ -36,7 +36,7 @@ public class FloorGenerator : MonoBehaviour
 		// Move the center so the lowest-left corner lands on SpawnPos
 		// (X = width, Z = length, Y = thickness)
 		floorTile.transform.localPosition = floor.SpawnPos
-																			+ new Vector3(width * 0.5f, 0.05f, length * 0.5f);
+																			+ new Vector3(width * 0.5f, 1f, length * 0.5f);
 		floorTile.transform.localScale = new Vector3(width, 0.1f, length);
 
 		floorTile.GetComponent<Renderer>().material.color = Color.blueViolet;

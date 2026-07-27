@@ -21,71 +21,114 @@ public class RoomIndex
 	public class FloorSection
 	{
 
-		public int ID;
-		public string Name;
-		public int Level;
-		public Vector3 SpawnPos;
-		public float Width;  // North - South 
-		public float Length; // East - West
-		public float Sqft;
-		private float sqftConversion = 144f; // 12x12 inches
-		public string FloorType;
-		public bool IsActive;
+		public  int     ID;
+		public  string  Name;
+		public  int     Level;
+		public  Vector3 SpawnPos;
+		public  float   Width;  // North - South 
+		public  float   Length; // East - West
+		public  float   Sqft;
+		public  string  FloorType;
+		public  bool	  IsActive;
+
+		// Always returns the real runtime class name (e.g. "Rm_Bath")
+		public string ClassRef => GetType().Name;
+
+		private const float SqftConversion = 144f; // 12x12 inches
 
 		// -----  Constructor ----- 
 		public FloorSection(string name, int level, Vector3 spawnPos, float width, float length, string floorType, bool isActive = true)
+		{
+			ID        = _nextID;
+			_nextID   = _nextID + 1;
+
+			Name      = name;
+			Level     = level;
+			SpawnPos  = spawnPos;
+			Width     = width;
+			Length    = length;
+			Sqft      = length * width / SqftConversion;
+			FloorType = floorType;
+			IsActive  = isActive;
+
+			FloorSectionList.Add(this);
+		}
+	}
+	
+
+
+	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
+
+	public static FloorSection Rm_EntryWay			 = new FloorSection("EntryWay",					 	1, new Vector3(0,0,0),     43f, 40.25f, "LVP");
+	public static FloorSection Rm_EntryCloset		 = new FloorSection("EntryCloset",			 	1, new Vector3(0,0,0),     57f,    35f, "LVP");
+	public static FloorSection Rm_Hallway				 = new FloorSection("Hallway",					  1, new Vector3(0,0,0),    229f,    36f, "LVP");
+	public static FloorSection Rm_Bath					 = new FloorSection("Bathroom",					  1, new Vector3(0,0,0),  71.25f,    87f, "LVP");
+	public static FloorSection Rm_Bed						 = new FloorSection("Bedroom",					  1, new Vector3(0,0,0),    157f,   148f, "LVP");
+	public static FloorSection Rm_BedCloset			 = new FloorSection("BedroomCloset",		 	1, new Vector3(0,0,0),     71f,    78f, "LVP");
+	public static FloorSection Rm_StoreEntry		 = new FloorSection("StoreroomEntry",		  1, new Vector3(0,0,0),   65.5f,   103f, "Carpet");
+	public static FloorSection Rm_Store					 = new FloorSection("Storeroom",				  1, new Vector3(0,0,0),    120f, 127.5f, "Carpet");
+	public static FloorSection Rm_Kitchen				 = new FloorSection("Kitchen",					  1, new Vector3(0,0,0),    114f,  90.5f, "LVP");
+	public static FloorSection Rm_Laundry				 = new FloorSection("Laundry",					  1, new Vector3(0,0,0),  31.25f,  89.5f, "LVP");
+	public static FloorSection Rm_Living				 = new FloorSection("LivingRoom",				  1, new Vector3(0,0,0), 151.75f,   152f, "LVP");
+	public static FloorSection Rm_Dining				 = new FloorSection("DiningRoom",				  1, new Vector3(0,0,0), 125.75f, 95.25f, "LVP");
+	public static FloorSection Rm_DeckCovered		 = new FloorSection("DeckCovered",			 	1, new Vector3(0,0,0),    158f,    40f, "Rubber");
+	public static FloorSection Rm_DeckUncovered	 = new FloorSection("DeckUncovered",		  1, new Vector3(0,0,0),    185f,    28f, "Rubber");
+	public static FloorSection Rm_Loft					 = new FloorSection("Loft",								2, new Vector3(0,0,0),    183f,   137f, "Carpet");
+	public static FloorSection Rm_UpperBed			 = new FloorSection("UpperBedroom",				2, new Vector3(0,0,0),    165f,    76f, "Carpet");
+	public static FloorSection Rm_UpperBedEntry	 = new FloorSection("UpperBedroomEntry",	2, new Vector3(0,0,0),     87f, 54.75f, "Carpet");
+	public static FloorSection Rm_UpperBedCloset = new FloorSection("UpperBedroomCloset", 2, new Vector3(0,0,0),  23.75f,    76f, "Carpet");
+
+
+
+
+
+
+
+	// ----- ----- ----- ----- ----- ----- ----- WallSection Class ----- ----- ----- ----- ----- ----- ----- 
+
+	public enum WL_Direction
+	{
+		NorthSouth = 1,
+		EastWest = 2
+	}
+		
+	public static float WL_Thick = 5; // Wall thickness in inches
+
+	public class WallSection
+	{
+
+		public int		 ID;
+		public string  Name;
+		public int		 Level;
+		public WL_Direction Direction;
+		public Vector3 SpawnPos;
+		public float	 Width;
+		public float	 Length;
+		public bool		 IsActive;
+
+
+
+		// -----  Constructor ----- 
+		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive)
 		{
 			ID = _nextID;
 			_nextID = _nextID + 1;
 
 			Name = name;
 			Level = level;
-			SpawnPos = spawnPos;
+			Direction = direction;
 			Width = width;
 			Length = length;
-			Sqft = length * width / sqftConversion;
-			FloorType = floorType;
-			IsActive = isActive;
-
-			FloorSectionList.Add(this);
 		}
 	}
-	 
-
-
-	Vector3 EntryWay_Pos = new Vector3();
-	Vector3 Hallway_Pos = new Vector3();
-	Vector3 Bathroom_Pos = new Vector3();
-	Vector3 Bedroom_Pos = new Vector3();
-	Vector3 BedroomCloset_Pos = new Vector3();
-	Vector3 StoreRoom_Pos = new Vector3();
-	Vector3 Kitchen_Pos = new Vector3();
-	Vector3 Laundry_Pos = new Vector3();
-	Vector3 Loft_Pos = new Vector3();
-	Vector3 SecondBedroom_Pos = new Vector3();
-	Vector3 SecondBedroomCloset_Pos = new Vector3();
 
 
 	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
 
-	public static FloorSection EntryWay						= new FloorSection("EntryWay",						1, Vector3.zero, 43f, 40.25f, "LVP");
-	public static FloorSection EntryCloset				= new FloorSection("EntryCloset",					1, Vector3.zero, 57f, 35f, "LVP");
-	public static FloorSection Hallway						= new FloorSection("Hallway",							1, Vector3.zero, 229f, 36f, "LVP");
-	public static FloorSection Bathroom						= new FloorSection("Bathroom",						1, Vector3.zero, 71.25f, 87f, "LVP");
-	public static FloorSection Bedroom						= new FloorSection("Bedroom",							1, Vector3.zero, 157f, 148f, "LVP");
-	public static FloorSection BedroomCloset			= new FloorSection("BedroomCloset",				1, Vector3.zero, 71f, 78f, "LVP");
-	public static FloorSection StoreRoomEntry			= new FloorSection("StoreroomEntry",			1, Vector3.zero, 65.5f, 103f, "Carpet");
-	public static FloorSection StoreRoom					= new FloorSection("Storeroom",						1, Vector3.zero, 120f, 127.5f, "Carpet");
-	public static FloorSection Kitchen						= new FloorSection("Kitchen",							1, Vector3.zero, 114f, 90.5f, "LVP");
-	public static FloorSection Laundry						= new FloorSection("Laundry",							1, Vector3.zero, 31.25f, 89.5f, "LVP");
-	public static FloorSection LivingRoom					= new FloorSection("LivingRoom",					1, Vector3.zero, 151.75f, 152f, "LVP");
-	public static FloorSection DiningRoom					= new FloorSection("DiningRoom",					1, Vector3.zero, 125.75f, 95.25f, "LVP");
-	public static FloorSection DeckCovered				= new FloorSection("DeckCovered",					1, Vector3.zero, 158f, 40f, "Rubber");
-	public static FloorSection DeckUncovered			= new FloorSection("DeckUncovered",				1, Vector3.zero, 185f, 28f, "Rubber");
-	public static FloorSection Loft								= new FloorSection("Loft",								2, Vector3.zero, 183f, 137f, "Carpet");
-	public static FloorSection UpperBedroom				= new FloorSection("UpperBedroom",				2, Vector3.zero, 165f, 76f, "Carpet");
-	public static FloorSection UpperBedroomEntry	= new FloorSection("UpperBedroomEntry",		2, Vector3.zero, 87f, 54.75f, "Carpet");
-	public static FloorSection UpperBedroomCloset = new FloorSection("UpperBedroomCloset",	2, Vector3.zero, 23.75f, 76f, "Carpet");
+	WallSection WL_Entryway_EntrywayCloset = new WallSection("EntryClosetEast", 1, WL_Direction.NorthSouth, WL_Thick,    5f, true);
+	WallSection WL_EntryWay_Laundry				 = new WallSection("EntryClosetWest", 1, WL_Direction.NorthSouth, WL_Thick, 39.5f, true);
+
+
 
 
 
@@ -98,174 +141,190 @@ public class RoomIndex
 
 
 
-
 	public void Calculate_Vertices()
 	{
 
-		// LivingRoom_Vertices;
-		Vector3 LivingRoom_SpawnPos = new Vector3(0, LevelOneHeight, 0); // Starting Reference (Furthest North-West Corner of the House)
+		// Rm_Living_Vertices;
+		Vector3 Rm_Living_SpawnPos = new Vector3(0, LevelOneHeight, 0); // Starting Reference (Furthest North-West Corner of the House)
 
-		Vector3 LivingRoom_TopLeft = new Vector3(LivingRoom_SpawnPos.x, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Length);
-		Vector3 LivingRoom_TopRight = new Vector3(LivingRoom_SpawnPos.x + LivingRoom.Width, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z + LivingRoom.Length);
-		Vector3 LivingRoom_BottomLeft = new Vector3(LivingRoom_SpawnPos.x, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
-		Vector3 LivingRoom_BottomRight = new Vector3(LivingRoom_SpawnPos.x + LivingRoom.Width, LivingRoom_SpawnPos.y, LivingRoom_SpawnPos.z);
+		Vector3 Rm_Living_TopLeft     = new Vector3(Rm_Living_SpawnPos.x,										Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z + Rm_Living.Length);
+		Vector3 Rm_Living_TopRight    = new Vector3(Rm_Living_SpawnPos.x + Rm_Living.Width, Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z + Rm_Living.Length);
+		Vector3 Rm_Living_BottomLeft  = new Vector3(Rm_Living_SpawnPos.x,										Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
+		Vector3 Rm_Living_BottomRight = new Vector3(Rm_Living_SpawnPos.x + Rm_Living.Width, Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 
-		//DiningRoom_Vertices()
-		Vector3 DiningRoom_SpawnPos = LivingRoom_TopLeft;
 
-		Vector3 DiningRoom_TopLeft = new Vector3(DiningRoom_SpawnPos.x, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + DiningRoom.Length);
-		Vector3 DiningRoom_TopRight = new Vector3(DiningRoom_SpawnPos.x + DiningRoom.Width, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z + DiningRoom.Length);
-		Vector3 DiningRoom_BottomLeft = new Vector3(DiningRoom_SpawnPos.x, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
-		Vector3 DiningRoom_BottomRight = new Vector3(DiningRoom_SpawnPos.x + DiningRoom.Width, DiningRoom_SpawnPos.y, DiningRoom_SpawnPos.z);
+		//Rm_Dining_Vertices()
+		Vector3 Rm_Dining_SpawnPos = Rm_Living_TopLeft;
 
-		//Bedroom_Vertices()
-		Vector3 Bedroom_SpawnPos = new Vector3(LivingRoom_BottomRight.x, LevelOneHeight, LivingRoom_BottomRight.z - Hallway.Length);
+		Vector3 Rm_Dining_TopLeft			= new Vector3(Rm_Dining_SpawnPos.x,										Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z + Rm_Dining.Length);
+		Vector3 Rm_Dining_TopRight		= new Vector3(Rm_Dining_SpawnPos.x + Rm_Dining.Width, Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z + Rm_Dining.Length);
+		Vector3 Rm_Dining_BottomLeft	= new Vector3(Rm_Dining_SpawnPos.x,										Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z);
+		Vector3 Rm_Dining_BottomRight	= new Vector3(Rm_Dining_SpawnPos.x + Rm_Dining.Width, Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z);
 
-		Vector3 Bedroom_TopLeft = new Vector3(Bedroom_SpawnPos.x, Bedroom_SpawnPos.y, Bedroom_SpawnPos.z + Bedroom.Length);
-		Vector3 Bedroom_TopRight = new Vector3(Bedroom_SpawnPos.x + Bedroom.Width, Bedroom_SpawnPos.y, Bedroom_SpawnPos.z + Bedroom.Length);
-		Vector3 Bedroom_BottomLeft = new Vector3(Bedroom_SpawnPos.x, Bedroom_SpawnPos.y, Bedroom_SpawnPos.z);
-		Vector3 Bedroom_BottomRight = new Vector3(Bedroom_SpawnPos.x + Bedroom.Width, Bedroom_SpawnPos.y, Bedroom_SpawnPos.z);
 
 		//Hallway_Vertices()
-		Vector3 Hallway_SpawnPos = new Vector3(LivingRoom_TopRight.x, LevelOneHeight, LivingRoom_TopRight.z - Hallway.Length);
+		Vector3 Rm_Hallway_SpawnPos		 = new Vector3(Rm_Living_TopRight.x, LevelOneHeight, Rm_Living_TopRight.z - Rm_Hallway.Length);
 
-		Vector3 Hallway_TopLeft = new Vector3(Hallway_SpawnPos.x, Hallway_SpawnPos.y, Hallway_SpawnPos.z + Hallway.Length);
-		Vector3 Hallway_TopRight = new Vector3(Hallway_SpawnPos.x + Hallway.Width, Hallway_SpawnPos.y, Hallway_SpawnPos.z + Hallway.Length);
-		Vector3 Hallway_BottomLeft = new Vector3(Hallway_SpawnPos.x, Hallway_SpawnPos.y, Hallway_SpawnPos.z);
-		Vector3 Hallway_BottomRight = new Vector3(Hallway_SpawnPos.x + Hallway.Width, Hallway_SpawnPos.y, Hallway_SpawnPos.z);
+		Vector3 Rm_Hallway_TopLeft		 = new Vector3(Rm_Hallway_SpawnPos.x,										 Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z + Rm_Hallway.Length);
+		Vector3 Rm_Hallway_TopRight		 = new Vector3(Rm_Hallway_SpawnPos.x + Rm_Hallway.Width, Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z + Rm_Hallway.Length);
+		Vector3 Rm_Hallway_BottomLeft	 = new Vector3(Rm_Hallway_SpawnPos.x,										 Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z);
+		Vector3 Rm_Hallway_BottomRight = new Vector3(Rm_Hallway_SpawnPos.x + Rm_Hallway.Width, Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z);
+
+
+		//Bedroom_Vertices()
+		Vector3 Rm_Bed_SpawnPos				 = new Vector3(Rm_Living_BottomRight.x, LevelOneHeight, Rm_Living_BottomRight.z - Rm_Hallway.Length);
+
+		Vector3 Rm_Bedroom_TopLeft		 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z + Rm_Bed.Length);
+		Vector3 Rm_Bedroom_TopRight		 = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z + Rm_Bed.Length);
+		Vector3 Rm_Bedroom_BottomLeft	 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
+		Vector3 Rm_Bedroom_BottomRight = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
+
 
 		//Kitchen_Vertices()
-		Vector3 Kitchen_SpawnPos = new Vector3(DiningRoom_BottomRight.x, LevelOneHeight, DiningRoom_BottomRight.z);
+		Vector3 Rm_Kitchen_SpawnPos		 = new Vector3(Rm_Dining_TopRight.x, LevelOneHeight, Rm_Dining_TopRight.z - Rm_Kitchen.Length);
 
-		Vector3 Kitchen_TopLeft = new Vector3(Kitchen_SpawnPos.x, Kitchen_SpawnPos.y, Kitchen_SpawnPos.z + Kitchen.Length);
-		Vector3 Kitchen_TopRight = new Vector3(Kitchen_SpawnPos.x + Kitchen.Width, Kitchen_SpawnPos.y, Kitchen_SpawnPos.z + Kitchen.Length);
-		Vector3 Kitchen_BottomLeft = new Vector3(Kitchen_SpawnPos.x, Kitchen_SpawnPos.y, Kitchen_SpawnPos.z);
-		Vector3 Kitchen_BottomRight = new Vector3(Kitchen_SpawnPos.x + Kitchen.Width, Kitchen_SpawnPos.y, Kitchen_SpawnPos.z);
+		Vector3 Rm_Kitchen_TopLeft		 = new Vector3(Rm_Kitchen_SpawnPos.x,										 Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z + Rm_Kitchen.Length);
+		Vector3 Rm_Kitchen_TopRight		 = new Vector3(Rm_Kitchen_SpawnPos.x + Rm_Kitchen.Width, Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z + Rm_Kitchen.Length);
+		Vector3 Rm_Kitchen_BottomLeft	 = new Vector3(Rm_Kitchen_SpawnPos.x,										 Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z);
+		Vector3 Rm_Kitchen_BottomRight = new Vector3(Rm_Kitchen_SpawnPos.x + Rm_Kitchen.Width, Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z);
+
 
 		//Laundry_Vertices()
-		Vector3 Laundry_SpawnPos = new Vector3(Kitchen_BottomRight.x, LevelOneHeight, Kitchen_BottomRight.z);
+		Vector3 Rm_Laundry_SpawnPos		 = new Vector3(Rm_Kitchen_TopRight.x, LevelOneHeight, Rm_Kitchen_TopRight.z - Rm_Laundry.Length);
 
-		Vector3 Laundry_TopLeft = new Vector3(Laundry_SpawnPos.x, Laundry_SpawnPos.y, Laundry_SpawnPos.z + Laundry.Length);
-		Vector3 Laundry_TopRight = new Vector3(Laundry_SpawnPos.x + Laundry.Width, Laundry_SpawnPos.y, Laundry_SpawnPos.z + Laundry.Length);
-		Vector3 Laundry_BottomLeft = new Vector3(Laundry_SpawnPos.x, Laundry_SpawnPos.y, Laundry_SpawnPos.z);
-		Vector3 Laundry_BottomRight = new Vector3(Laundry_SpawnPos.x + Laundry.Width, Laundry_SpawnPos.y, Laundry_SpawnPos.z);
+		Vector3 Rm_Laundry_TopLeft		 = new Vector3(Rm_Laundry_SpawnPos.x,										 Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z + Rm_Laundry.Length);
+		Vector3 Rm_Laundry_TopRight		 = new Vector3(Rm_Laundry_SpawnPos.x + Rm_Laundry.Width, Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z + Rm_Laundry.Length);
+		Vector3 Rm_Laundry_BottomLeft	 = new Vector3(Rm_Laundry_SpawnPos.x,										 Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z);
+		Vector3 Rm_Laundry_BottomRight = new Vector3(Rm_Laundry_SpawnPos.x + Rm_Laundry.Width, Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z);
+
 
 		//EntryWay_Vertices()
-		Vector3 EntryWay_SpawnPos = new Vector3(Laundry_BottomRight.x, LevelOneHeight, Laundry_BottomRight.z);
+		Vector3 Rm_EntryWay_SpawnPos		= new Vector3(Rm_Laundry_BottomRight.x, LevelOneHeight, Rm_Laundry_BottomRight.z);
 
-		Vector3 EntryWay_TopLeft = new Vector3(EntryWay_SpawnPos.x, EntryWay_SpawnPos.y, EntryWay_SpawnPos.z + EntryWay.Length);
-		Vector3 EntryWay_TopRight = new Vector3(EntryWay_SpawnPos.x + EntryWay.Width, EntryWay_SpawnPos.y, EntryWay_SpawnPos.z + EntryWay.Length);
-		Vector3 EntryWay_BottomLeft = new Vector3(EntryWay_SpawnPos.x, EntryWay_SpawnPos.y, EntryWay_SpawnPos.z);
-		Vector3 EntryWay_BottomRight = new Vector3(EntryWay_SpawnPos.x + EntryWay.Width, EntryWay_SpawnPos.y, EntryWay_SpawnPos.z);
+		Vector3 Rm_EntryWay_TopLeft			= new Vector3(Rm_EntryWay_SpawnPos.x,											Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z + Rm_EntryWay.Length);
+		Vector3 Rm_EntryWay_TopRight		= new Vector3(Rm_EntryWay_SpawnPos.x + Rm_EntryWay.Width, Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z + Rm_EntryWay.Length);
+		Vector3 Rm_EntryWay_BottomLeft	= new Vector3(Rm_EntryWay_SpawnPos.x,											Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z);
+		Vector3 Rm_EntryWay_BottomRight = new Vector3(Rm_EntryWay_SpawnPos.x + Rm_EntryWay.Width, Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z);
 
-		//EntryWayCloset_Vertices()
-		Vector3 EntryWayCloset_SpawnPos = new Vector3(EntryWay_TopRight.x, LevelOneHeight, EntryWay_TopRight.z - EntryCloset.Length);
 
-		Vector3 EntryWayCloset_TopLeft = new Vector3(EntryWayCloset_SpawnPos.x, EntryWayCloset_SpawnPos.y, EntryWayCloset_SpawnPos.z + EntryCloset.Length);
-		Vector3 EntryWayCloset_TopRight = new Vector3(EntryWayCloset_SpawnPos.x + EntryCloset.Width, EntryWayCloset_SpawnPos.y, EntryWayCloset_SpawnPos.z + EntryCloset.Length);
-		Vector3 EntryWayCloset_BottomLeft = new Vector3(EntryWayCloset_SpawnPos.x, EntryWayCloset_SpawnPos.y, EntryWayCloset_SpawnPos.z);
-		Vector3 EntryWayCloset_BottomRight = new Vector3(EntryWayCloset_SpawnPos.x + EntryCloset.Width, EntryWayCloset_SpawnPos.y, EntryWayCloset_SpawnPos.z);
+		//EntryWayCloset_Vertices()Rm_
+		Vector3 Rm_EntryWayCloset_SpawnPos		= new Vector3(Rm_EntryWay_TopRight.x, LevelOneHeight, Rm_EntryWay_TopRight.z - Rm_EntryCloset.Length);
+
+		Vector3 Rm_EntryWayCloset_TopLeft			= new Vector3(Rm_EntryWayCloset_SpawnPos.x,												 Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z + Rm_EntryCloset.Length);
+		Vector3 Rm_EntryWayCloset_TopRight		= new Vector3(Rm_EntryWayCloset_SpawnPos.x + Rm_EntryCloset.Width, Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z + Rm_EntryCloset.Length);
+		Vector3 Rm_EntryWayCloset_BottomLeft	= new Vector3(Rm_EntryWayCloset_SpawnPos.x,												 Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z);
+		Vector3 Rm_EntryWayCloset_BottomRight = new Vector3(Rm_EntryWayCloset_SpawnPos.x + Rm_EntryCloset.Width, Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z);
+
 
 		//Bathroom_Vertices()
-		Vector3 Bathroom_SpawnPos = new Vector3(Hallway_BottomRight.x - Bathroom.Width, LevelOneHeight, Hallway_BottomRight.z - Bathroom.Length);
+		Vector3 Rm_Bath_SpawnPos		= new Vector3(Rm_Hallway_BottomRight.x - Rm_Bath.Width, LevelOneHeight, Rm_Hallway_BottomRight.z - Rm_Bath.Length);
 
-		Vector3 Bathroom_TopLeft = new Vector3(Bathroom_SpawnPos.x, Bathroom_SpawnPos.y, Bathroom_SpawnPos.z + Bathroom.Length);
-		Vector3 Bathroom_TopRight = new Vector3(Bathroom_SpawnPos.x + Bathroom.Width, Bathroom_SpawnPos.y, Bathroom_SpawnPos.z + Bathroom.Length);
-		Vector3 Bathroom_BottomLeft = new Vector3(Bathroom_SpawnPos.x, Bathroom_SpawnPos.y, Bathroom_SpawnPos.z);
-		Vector3 Bathroom_BottomRight = new Vector3(Bathroom_SpawnPos.x + Bathroom.Width, Bathroom_SpawnPos.y, Bathroom_SpawnPos.z);
+		Vector3 Rm_Bath_TopLeft			= new Vector3(Rm_Bath_SpawnPos.x,									Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z + Rm_Bath.Length);
+		Vector3 Rm_Bath_TopRight		= new Vector3(Rm_Bath_SpawnPos.x + Rm_Bath.Width, Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z + Rm_Bath.Length);
+		Vector3 Rm_Bath_BottomLeft	= new Vector3(Rm_Bath_SpawnPos.x,									Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z);
+		Vector3 Rm_Bath_BottomRight = new Vector3(Rm_Bath_SpawnPos.x + Rm_Bath.Width, Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z);
 
-		//BedroomCloset_Vertices()
-		Vector3 BedroomCloset_SpawnPos = new Vector3(Bathroom_BottomRight.x - BedroomCloset.Width, LevelOneHeight, Bathroom_BottomRight.z - BedroomCloset.Length);
 
-		Vector3 BedroomCloset_TopLeft = new Vector3(BedroomCloset_SpawnPos.x, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z + BedroomCloset.Length);
-		Vector3 BedroomCloset_TopRight = new Vector3(BedroomCloset_SpawnPos.x + BedroomCloset.Width, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z + BedroomCloset.Length);
-		Vector3 BedroomCloset_BottomLeft = new Vector3(BedroomCloset_SpawnPos.x, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z);
-		Vector3 BedroomCloset_BottomRight = new Vector3(BedroomCloset_SpawnPos.x + BedroomCloset.Width, BedroomCloset_SpawnPos.y, BedroomCloset_SpawnPos.z);
+		//Rm_BedCloset_Vertices()
+		Vector3 Rm_BedCloset_SpawnPos			= new Vector3(Rm_Bath_BottomRight.x - Rm_BedCloset.Width, LevelOneHeight, Rm_Bath_BottomRight.z - Rm_BedCloset.Length);
 
-		//StoreRoomEntry_Vertices()
-		Vector3 StoreRoomEntry_SpawnPos = new Vector3(BedroomCloset_BottomRight.x - StoreRoomEntry.Width, LevelOneHeight, BedroomCloset_BottomRight.z - StoreRoomEntry.Length);
+		Vector3 Rm_BedCloset_TopLeft			= new Vector3(Rm_BedCloset_SpawnPos.x,											Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z + Rm_BedCloset.Length);
+		Vector3 Rm_BedCloset_TopRight			= new Vector3(Rm_BedCloset_SpawnPos.x + Rm_BedCloset.Width, Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z + Rm_BedCloset.Length);
+		Vector3 Rm_BedCloset_BottomLeft		= new Vector3(Rm_BedCloset_SpawnPos.x,											Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z);
+		Vector3 Rm_BedCloset_BottomRight	= new Vector3(Rm_BedCloset_SpawnPos.x + Rm_BedCloset.Width, Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z);
 
-		Vector3 StoreRoomEntry_TopLeft = new Vector3(StoreRoomEntry_SpawnPos.x, StoreRoomEntry_SpawnPos.y, StoreRoomEntry_SpawnPos.z + StoreRoomEntry.Length);
-		Vector3 StoreRoomEntry_TopRight = new Vector3(StoreRoomEntry_SpawnPos.x + StoreRoomEntry.Width, StoreRoomEntry_SpawnPos.y, StoreRoomEntry_SpawnPos.z + StoreRoomEntry.Length);
-		Vector3 StoreRoomEntry_BottomLeft = new Vector3(StoreRoomEntry_SpawnPos.x, StoreRoomEntry_SpawnPos.y, StoreRoomEntry_SpawnPos.z);
-		Vector3 StoreRoomEntry_BottomRight = new Vector3(StoreRoomEntry_SpawnPos.x + StoreRoomEntry.Width, StoreRoomEntry_SpawnPos.y, StoreRoomEntry_SpawnPos.z);
 
-		//StoreRoom_Vertices()
-		Vector3 StoreRoom_SpawnPos = new Vector3(StoreRoomEntry_BottomLeft.x - StoreRoom.Width, LevelOneHeight, StoreRoomEntry_BottomLeft.z);
+		//Rm_StoreEntry_Vertices()
+		Vector3 Rm_StoreEntry_SpawnPos		= new Vector3(Rm_BedCloset_BottomRight.x - Rm_StoreEntry.Width, LevelOneHeight, Rm_BedCloset_BottomRight.z - Rm_StoreEntry.Length);
 
-		Vector3 StoreRoom_TopLeft = new Vector3(StoreRoom_SpawnPos.x, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z + StoreRoom.Length);
-		Vector3 StoreRoom_TopRight = new Vector3(StoreRoom_SpawnPos.x + StoreRoom.Width, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z + StoreRoom.Length);
-		Vector3 StoreRoom_BottomLeft = new Vector3(StoreRoom_SpawnPos.x, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z);
-		Vector3 StoreRoom_BottomRight = new Vector3(StoreRoom_SpawnPos.x + StoreRoom.Width, StoreRoom_SpawnPos.y, StoreRoom_SpawnPos.z);
+		Vector3 Rm_StoreEntry_TopLeft			= new Vector3(Rm_StoreEntry_SpawnPos.x,												Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z + Rm_StoreEntry.Length);
+		Vector3 Rm_StoreEntry_TopRight		= new Vector3(Rm_StoreEntry_SpawnPos.x + Rm_StoreEntry.Width, Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z + Rm_StoreEntry.Length);
+		Vector3 Rm_StoreEntry_BottomLeft	= new Vector3(Rm_StoreEntry_SpawnPos.x,											  Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z);
+		Vector3 Rm_StoreEntry_BottomRight	= new Vector3(Rm_StoreEntry_SpawnPos.x + Rm_StoreEntry.Width, Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z);
+
+
+		//Rm_Store_Vertices()
+		Vector3 Rm_Store_SpawnPos		 = new Vector3(Rm_StoreEntry_BottomLeft.x - Rm_Store.Width, LevelOneHeight, Rm_StoreEntry_BottomLeft.z);
+
+		Vector3 Rm_Store_TopLeft		 = new Vector3(Rm_Store_SpawnPos.x,									 Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z + Rm_Store.Length);
+		Vector3 Rm_Store_TopRight		 = new Vector3(Rm_Store_SpawnPos.x + Rm_Store.Width, Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z + Rm_Store.Length);
+		Vector3 Rm_Store_BottomLeft	 = new Vector3(Rm_Store_SpawnPos.x,									 Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z);
+		Vector3 Rm_Store_BottomRight = new Vector3(Rm_Store_SpawnPos.x + Rm_Store.Width, Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z);
+
 
 		//DeckCovered_Vertices()
-		Vector3 DeckCovered_SpawnPos = new Vector3(LivingRoom_BottomLeft.x, LevelOneHeight, LivingRoom_BottomLeft.z - DeckCovered.Length);
+		Vector3 Rm_DeckCovered_SpawnPos			= new Vector3(Rm_Living_BottomLeft.x, LevelOneHeight, Rm_Living_BottomLeft.z - Rm_DeckCovered.Length);
 
-		Vector3 DeckCovered_TopLeft				= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
-		Vector3	DeckCovered_TopRight			= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z + DeckCovered.Length);
-		Vector3 DeckCovered_BottomLeft		= new Vector3(DeckCovered_SpawnPos.x,											DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
-		Vector3 DeckCovered_BottomRight		= new Vector3(DeckCovered_SpawnPos.x + DeckCovered.Width, DeckCovered_SpawnPos.y, DeckCovered_SpawnPos.z);
+		Vector3 Rm_DeckCovered_TopLeft			= new Vector3(Rm_DeckCovered_SpawnPos.x,												Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z + Rm_DeckCovered.Length);
+		Vector3	Rm_DeckCovered_TopRight			= new Vector3(Rm_DeckCovered_SpawnPos.x + Rm_DeckCovered.Width, Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z + Rm_DeckCovered.Length);
+		Vector3 Rm_DeckCovered_BottomLeft		= new Vector3(Rm_DeckCovered_SpawnPos.x,												Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z);
+		Vector3 Rm_DeckCovered_BottomRight	= new Vector3(Rm_DeckCovered_SpawnPos.x + Rm_DeckCovered.Width, Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z);
+
 
 		//DeckUncovered_Vertices()
-		Vector3 DeckUncovered_SpawnPos		= new Vector3(DeckCovered_SpawnPos.x, LevelOneHeight, DeckCovered_SpawnPos.z - DeckUncovered.Length);
+		Vector3 Rm_DeckUncovered_SpawnPos		 = new Vector3(Rm_DeckCovered_SpawnPos.x, LevelOneHeight, Rm_DeckCovered_SpawnPos.z - Rm_DeckUncovered.Length);
 
-		Vector3 DeckUncovered_TopLeft			= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
-		Vector3	DeckUncovered_TopRight		= new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z + DeckUncovered.Length);
-		Vector3 DeckUncovered_BottomLeft	= new Vector3(DeckUncovered_SpawnPos.x,												DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
-		Vector3 DeckUncovered_BottomRight = new Vector3(DeckUncovered_SpawnPos.x + DeckUncovered.Width, DeckUncovered_SpawnPos.y, DeckUncovered_SpawnPos.z);
+		Vector3 Rm_DeckUncovered_TopLeft		 = new Vector3(Rm_DeckUncovered_SpawnPos.x,													 Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z + Rm_DeckUncovered.Length);
+		Vector3	Rm_DeckUncovered_TopRight		 = new Vector3(Rm_DeckUncovered_SpawnPos.x + Rm_DeckUncovered.Width, Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z + Rm_DeckUncovered.Length);
+		Vector3 Rm_DeckUncovered_BottomLeft	 = new Vector3(Rm_DeckUncovered_SpawnPos.x,													 Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z);
+		Vector3 Rm_DeckUncovered_BottomRight = new Vector3(Rm_DeckUncovered_SpawnPos.x + Rm_DeckUncovered.Width, Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z);
 		
-		// Loft_Vertices()
-		Vector3 Loft_SpawnPos = new Vector3(DiningRoom_TopLeft.x, LevelTwoHeight, DiningRoom_TopLeft.z - Loft.Length); // Loft is on the second floor, so we add height
 
-		Vector3 Loft_TopLeft = new Vector3(Loft_SpawnPos.x, Loft_SpawnPos.y, Loft_SpawnPos.z + Loft.Length);
-		Vector3 Loft_TopRight = new Vector3(Loft_SpawnPos.x + Loft.Width, Loft_SpawnPos.y, Loft_SpawnPos.z + Loft.Length);
-		Vector3 Loft_BottomLeft = new Vector3(Loft_SpawnPos.x, Loft_SpawnPos.y, Loft_SpawnPos.z);
-		Vector3 Loft_BottomRight = new Vector3(Loft_SpawnPos.x + Loft.Width, Loft_SpawnPos.y, Loft_SpawnPos.z);
+		// Loft_Vertices()
+		Vector3 Rm_Loft_SpawnPos		= new Vector3(Rm_Dining_TopLeft.x, LevelTwoHeight, Rm_Dining_TopLeft.z - Rm_Loft.Length);			// Loft is on the second floor, so we add height
+
+		Vector3 Rm_Loft_TopLeft			= new Vector3(Rm_Loft_SpawnPos.x,									Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z + Rm_Loft.Length);
+		Vector3 Rm_Loft_TopRight		= new Vector3(Rm_Loft_SpawnPos.x + Rm_Loft.Width, Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z + Rm_Loft.Length);
+		Vector3 Rm_Loft_BottomLeft  = new Vector3(Rm_Loft_SpawnPos.x,									Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z);
+		Vector3 Rm_Loft_BottomRight = new Vector3(Rm_Loft_SpawnPos.x + Rm_Loft.Width, Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z);
+
 
 		// UpperBedroomEntry_Vertices()
-		Vector3 UpperBedroomEntry_SpawnPos = new Vector3(Loft_TopRight.x, LevelTwoHeight, Loft_TopRight.z - UpperBedroomEntry.Length);
+		Vector3 Rm_UpperBedEntry_SpawnPos		 = new Vector3(Rm_Loft_TopRight.x, LevelTwoHeight, Rm_Loft_TopRight.z - Rm_UpperBedEntry.Length);
 
-		Vector3 UpperBedroomEntry_TopLeft = new Vector3(UpperBedroomEntry_SpawnPos.x, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z + UpperBedroomEntry.Length);
-		Vector3 UpperBedroomEntry_TopRight = new Vector3(UpperBedroomEntry_SpawnPos.x + UpperBedroomEntry.Width, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z + UpperBedroomEntry.Length);
-		Vector3 UpperBedroomEntry_BottomLeft = new Vector3(UpperBedroomEntry_SpawnPos.x, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z);
-		Vector3 UpperBedroomEntry_BottomRight = new Vector3(UpperBedroomEntry_SpawnPos.x + UpperBedroomEntry.Width, UpperBedroomEntry_SpawnPos.y, UpperBedroomEntry_SpawnPos.z);
+		Vector3 Rm_UpperBedEntry_TopLeft		 = new Vector3(Rm_UpperBedEntry_SpawnPos.x,													 Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z + Rm_UpperBedEntry.Length);
+		Vector3 Rm_UpperBedEntry_TopRight		 = new Vector3(Rm_UpperBedEntry_SpawnPos.x + Rm_UpperBedEntry.Width, Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z + Rm_UpperBedEntry.Length);
+		Vector3 Rm_UpperBedEntry_BottomLeft  = new Vector3(Rm_UpperBedEntry_SpawnPos.x,													 Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z);
+		Vector3 Rm_UpperBedEntry_BottomRight = new Vector3(Rm_UpperBedEntry_SpawnPos.x + Rm_UpperBedEntry.Width, Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z);
+
 
 		// UpperBedroom_Vertices()
-		Vector3 UpperBedroom_SpawnPos = new Vector3(UpperBedroomEntry_BottomLeft.x, LevelTwoHeight, UpperBedroomEntry_BottomLeft.z - UpperBedroom.Length);
+		Vector3 Rm_UpperBed_SpawnPos		= new Vector3(Rm_UpperBedEntry_BottomLeft.x, LevelTwoHeight, Rm_UpperBedEntry_BottomLeft.z - Rm_UpperBed.Length);
 
-		Vector3 UpperBedroom_TopLeft = new Vector3(UpperBedroom_SpawnPos.x, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z + UpperBedroom.Length);
-		Vector3 UpperBedroom_TopRight = new Vector3(UpperBedroom_SpawnPos.x + UpperBedroom.Width, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z + UpperBedroom.Length);
-		Vector3 UpperBedroom_BottomLeft = new Vector3(UpperBedroom_SpawnPos.x, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z);
-		Vector3 UpperBedroom_BottomRight = new Vector3(UpperBedroom_SpawnPos.x + UpperBedroom.Width, UpperBedroom_SpawnPos.y, UpperBedroom_SpawnPos.z);
+		Vector3 Rm_UpperBed_TopLeft			= new Vector3(Rm_UpperBed_SpawnPos.x,											Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z + Rm_UpperBed.Length);
+		Vector3 Rm_UpperBed_TopRight		= new Vector3(Rm_UpperBed_SpawnPos.x + Rm_UpperBed.Width, Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z + Rm_UpperBed.Length);
+		Vector3 Rm_UpperBed_BottomLeft	= new Vector3(Rm_UpperBed_SpawnPos.x,											Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z);
+		Vector3 Rm_UpperBed_BottomRight = new Vector3(Rm_UpperBed_SpawnPos.x + Rm_UpperBed.Width, Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z);
+
 
 		//UpperBedroomCloset_Vertices()
-		Vector3 UpperBedroomCloset_SpawnPos = new Vector3(UpperBedroom_BottomRight.x, LevelTwoHeight, UpperBedroom_BottomRight.z);
+		Vector3 Rm_UpperBedCloset_SpawnPos		= new Vector3(Rm_UpperBed_BottomRight.x, LevelTwoHeight, Rm_UpperBed_BottomRight.z);
 
-		Vector3 UpperBedroomCloset_TopLeft		 = new Vector3(UpperBedroomCloset_SpawnPos.x,														 UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
-		Vector3 UpperBedroomCloset_TopRight		 = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z + UpperBedroomCloset.Length);
-		Vector3 UpperBedroomCloset_BottomLeft	 = new Vector3(UpperBedroomCloset_SpawnPos.x,														 UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
-		Vector3 UpperBedroomCloset_BottomRight = new Vector3(UpperBedroomCloset_SpawnPos.x + UpperBedroomCloset.Width, UpperBedroomCloset_SpawnPos.y, UpperBedroomCloset_SpawnPos.z);
+		Vector3 Rm_UpperBedCloset_TopLeft			= new Vector3(Rm_UpperBedCloset_SpawnPos.x,													 Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z + Rm_UpperBedCloset.Length);
+		Vector3 Rm_UpperBedCloset_TopRight		= new Vector3(Rm_UpperBedCloset_SpawnPos.x + Rm_UpperBedCloset.Width, Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z + Rm_UpperBedCloset.Length);
+		Vector3 Rm_UpperBedCloset_BottomLeft	= new Vector3(Rm_UpperBedCloset_SpawnPos.x,													 Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z);
+		Vector3 Rm_UpperBedCloset_BottomRight	= new Vector3(Rm_UpperBedCloset_SpawnPos.x + Rm_UpperBedCloset.Width, Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z);
 
 
 
-		UpdateSpawnPos("LivingRoom", LivingRoom_SpawnPos);
-		UpdateSpawnPos("DiningRoom", DiningRoom_SpawnPos);
-		UpdateSpawnPos("Bedroom", Bedroom_SpawnPos);
-		UpdateSpawnPos("Hallway", Hallway_SpawnPos);
-		UpdateSpawnPos("Kitchen", Kitchen_SpawnPos);
-		UpdateSpawnPos("Laundry", Laundry_SpawnPos);
-		UpdateSpawnPos("EntryWay", EntryWay_SpawnPos);
-		UpdateSpawnPos("EntryCloset", EntryWayCloset_SpawnPos);
-		UpdateSpawnPos("Bathroom", Bathroom_SpawnPos);
-		UpdateSpawnPos("BedroomCloset", BedroomCloset_SpawnPos);
-		UpdateSpawnPos("StoreroomEntry", StoreRoomEntry_SpawnPos);
-		UpdateSpawnPos("Storeroom", StoreRoom_SpawnPos);
-		UpdateSpawnPos("DeckCovered", DeckCovered_SpawnPos);
-		UpdateSpawnPos("DeckUncovered", DeckUncovered_SpawnPos);
-		UpdateSpawnPos("Loft", Loft_SpawnPos);
-		UpdateSpawnPos("UpperBedroomEntry", UpperBedroomEntry_SpawnPos);
-		UpdateSpawnPos("UpperBedroom", UpperBedroom_SpawnPos);
-		UpdateSpawnPos("UpperBedroomCloset", UpperBedroomCloset_SpawnPos);
+		UpdateSpawnPos("LivingRoom",				 Rm_Living_SpawnPos);
+		UpdateSpawnPos("DiningRoom",				 Rm_Dining_SpawnPos);
+		UpdateSpawnPos("Bedroom",						 Rm_Bed_SpawnPos);
+		UpdateSpawnPos("Hallway",						 Rm_Hallway_SpawnPos);
+		UpdateSpawnPos("Kitchen",						 Rm_Kitchen_SpawnPos);
+		UpdateSpawnPos("Laundry",						 Rm_Laundry_SpawnPos);
+		UpdateSpawnPos("EntryWay",					 Rm_EntryWay_SpawnPos);
+		UpdateSpawnPos("EntryCloset",				 Rm_EntryWayCloset_SpawnPos);
+		UpdateSpawnPos("Bathroom",					 Rm_Bath_SpawnPos);
+		UpdateSpawnPos("BedroomCloset",			 Rm_BedCloset_SpawnPos);
+		UpdateSpawnPos("StoreroomEntry",		 Rm_StoreEntry_SpawnPos);
+		UpdateSpawnPos("Storeroom",					 Rm_Store_SpawnPos);
+		UpdateSpawnPos("DeckCovered",				 Rm_DeckCovered_SpawnPos);
+		UpdateSpawnPos("DeckUncovered",			 Rm_DeckUncovered_SpawnPos);
+		UpdateSpawnPos("Loft",							 Rm_Loft_SpawnPos);
+		UpdateSpawnPos("UpperBedroomEntry",	 Rm_UpperBedEntry_SpawnPos);
+		UpdateSpawnPos("UpperBedroom",			 Rm_UpperBed_SpawnPos);
+		UpdateSpawnPos("UpperBedroomCloset", Rm_UpperBedCloset_SpawnPos);
 
 
 
@@ -297,8 +356,8 @@ public class RoomIndex
 	// Storeroom						— 126" × 200"					= 175.00	//sqft
 	// Kitchen							— 90.5" × 114"				= 71.63		//sqft
 	// Laundry							— 89.5" × 31.25"			= 19.42		//sqft
-	// LivingRoom						— 158.25" × 152"			= 166.96	//sqft
-	// DiningRoom						— 95.25" × 125.75"		= 83.23		//sqft
+	// Rm_Living						— 158.25" × 152"			= 166.96	//sqft
+	// Rm_Dining						— 95.25" × 125.75"		= 83.23		//sqft
 	// Loft									— 137" × 183"					= 174.04	//sqft
 	// SecondBedroom				— 130.5" × 165"				= 149.53	//sqft
 	// SecondBedroomCloset	— 76" × 23.75"				= 12.53		//sqft
@@ -330,7 +389,7 @@ public class RoomIndex
 		public float wall_hallway_west_closetWall = 37.5f;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Living Room Orginal Measurements ----- ----- ----- ----- ----- ----- ----- 
-	public class LivingRoomFullArea_Measurements // Room measured as two rooms. Original one room measurements saved here.
+	public class Rm_LivingFullArea_Measurements // Room measured as two rooms. Original one room measurements saved here.
 	{
 		public float wall_livingroom_north = 253.25f;
 		public float wall_livingroom_north_left_east = 58;
@@ -355,7 +414,7 @@ public class RoomIndex
 
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Living Room ----- ----- ----- ----- ----- ----- ----- 
-	public class LivingRoom_Measurements
+	public class Rm_Living_Measurements
 	{
 		float length = 158.25f;
 		float width = 152;
@@ -371,7 +430,7 @@ public class RoomIndex
 		public float wall_livingRoom_west = 152;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- Dining Room ----- ----- ----- ----- ----- ----- ----- 
-	public class DiningRoom_Measurements
+	public class Rm_Dining_Measurements
 	{
 		float length = 95.25f;
 		float width = 125.75f;
@@ -578,7 +637,7 @@ public class RoomIndex
 
 		}
 
-		// ----- ----- ----- ----- ----- ----- ----- Upper Bedroom ----- ----- ----- ----- ----- ----- ----- 
+		// ----- ----- ----- ----- ----- ----- ----- Upper Rm_Bed ----- ----- ----- ----- ----- ----- ----- 
 		public class UpperBedroom_Measurements
 		{
 			float length = 75.75f;
@@ -595,7 +654,7 @@ public class RoomIndex
 
 			public float wall_west = 165f;
 		}
-		// ----- ----- ----- ----- ----- ----- ----- Upper Bedroom Closet ----- ----- ----- ----- ----- ----- ----- 
+		// ----- ----- ----- ----- ----- ----- ----- Upper Rm_Bed Closet ----- ----- ----- ----- ----- ----- ----- 
 		public class UpperBedroomCloset_Measurements
 		{
 			float length = 76;
