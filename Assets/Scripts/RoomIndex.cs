@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -322,6 +323,30 @@ public class RoomIndex
 		List<Vector3> Rm_UpperBedCloset_Vertices = new List<Vector3>();
 		Rm_UpperBedCloset_Vertices.AddRange(new Vector3[] { Rm_UpperBedCloset_TopLeft, Rm_UpperBedCloset_TopRight, Rm_UpperBedCloset_BottomLeft, Rm_UpperBedCloset_BottomRight });
 
+		// 19 All_Room_Vertices()
+
+		List<List<Vector3>> Rm_All_VerticesList = new List<List<Vector3>>();
+		Rm_All_VerticesList.AddRange(new List<List<Vector3>> { 
+			Rm_Living_Vertices, 
+			Rm_Dining_Vertices, 
+			Rm_Hallway_Vertices, 
+			Rm_Bed_Vertices, 
+			Rm_Kitchen_Vertices, 
+			Rm_Laundry_Vertices, 
+			Rm_EntryWay_Vertices, 
+			Rm_EntryWayCloset_Vertices, 
+			Rm_Bath_Vertices, 
+			Rm_BedCloset_Vertices, 
+			Rm_StoreEntry_Vertices, 
+			Rm_Store_Vertices, 
+			Rm_DeckCovered_Vertices, 
+			Rm_DeckUncovered_Vertices, 
+			Rm_Loft_Vertices, 
+			Rm_UpperBedEntry_Vertices, 
+			Rm_UpperBed_Vertices, 
+			Rm_UpperBedCloset_Vertices 
+		});
+
 
 
 
@@ -347,6 +372,9 @@ public class RoomIndex
 
 
 
+		ConsoleLogVertices(Rm_All_VerticesList);
+
+
 	}
 
 
@@ -355,6 +383,27 @@ public class RoomIndex
 		var section = RoomIndex.FloorSectionList.Find(s => s.Name == name);
 		if (section != null)
 			section.SpawnPos = newPos;
+	}
+
+
+	public void ConsoleLogVertices(List<List<Vector3>> topList)
+	{
+		if(topList == null || topList.Count == 0){ 
+			Console.WriteLine("No vertices to display.");
+			return;
+		}
+		
+		Console.WriteLine($"Room Vertices in {topList}: \n");
+		foreach (List<Vector3> VertList in topList)
+		{
+			Console.WriteLine($"--{VertList} \n");
+			foreach (Vector3 vert in VertList)
+			{
+				Console.WriteLine(
+				$"----{vert} \n" +
+				$"------ {vert.x}, {vert.y}, {vert.z}");
+			}
+		}
 	}
 
 
