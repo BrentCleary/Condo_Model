@@ -80,60 +80,6 @@ public class RoomIndex
 
 
 
-
-
-
-
-	// ----- ----- ----- ----- ----- ----- ----- WallSection Class ----- ----- ----- ----- ----- ----- ----- 
-
-	public enum WL_Direction
-	{
-		NorthSouth = 1,
-		EastWest = 2
-	}
-		
-	public static float WL_Thick = 5; // Wall thickness in inches
-
-	public class WallSection
-	{
-
-		public int		 ID;
-		public string  Name;
-		public int		 Level;
-		public WL_Direction Direction;
-		public Vector3 SpawnPos;
-		public float	 Width;
-		public float	 Length;
-		public bool		 IsActive;
-
-
-
-		// -----  Constructor ----- 
-		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive)
-		{
-			ID = _nextID;
-			_nextID = _nextID + 1;
-
-			Name = name;
-			Level = level;
-			Direction = direction;
-			Width = width;
-			Length = length;
-		}
-	}
-
-
-	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
-
-	WallSection WL_Entryway_EntrywayCloset = new WallSection("EntryClosetEast", 1, WL_Direction.NorthSouth, WL_Thick,    5f, true);
-	WallSection WL_EntryWay_Laundry				 = new WallSection("EntryClosetWest", 1, WL_Direction.NorthSouth, WL_Thick, 39.5f, true);
-
-
-
-
-
-
-
 	public void Start()
 	{
 		Calculate_Vertices();
@@ -144,7 +90,7 @@ public class RoomIndex
 	public void Calculate_Vertices()
 	{
 
-		// Rm_Living_Vertices;
+		// 1 Rm_Living_Vertices;
 		Vector3 Rm_Living_SpawnPos = new Vector3(0, LevelOneHeight, 0); // Starting Reference (Furthest North-West Corner of the House)
 
 		Vector3 Rm_Living_TopLeft     = new Vector3(Rm_Living_SpawnPos.x,										Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z + Rm_Living.Length);
@@ -152,8 +98,12 @@ public class RoomIndex
 		Vector3 Rm_Living_BottomLeft  = new Vector3(Rm_Living_SpawnPos.x,										Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 		Vector3 Rm_Living_BottomRight = new Vector3(Rm_Living_SpawnPos.x + Rm_Living.Width, Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 
+		List<Vector3> Rm_Living_Vertices = new List<Vector3>();
+		Rm_Living_Vertices.AddRange(new Vector3[] { Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight });
 
-		//Rm_Dining_Vertices()
+
+
+		// 2 Rm_Dining_Vertices()
 		Vector3 Rm_Dining_SpawnPos = Rm_Living_TopLeft;
 
 		Vector3 Rm_Dining_TopLeft			= new Vector3(Rm_Dining_SpawnPos.x,										Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z + Rm_Dining.Length);
@@ -161,8 +111,12 @@ public class RoomIndex
 		Vector3 Rm_Dining_BottomLeft	= new Vector3(Rm_Dining_SpawnPos.x,										Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z);
 		Vector3 Rm_Dining_BottomRight	= new Vector3(Rm_Dining_SpawnPos.x + Rm_Dining.Width, Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z);
 
+		List<Vector3> Rm_Dining_Vertices = new List<Vector3>();
+		Rm_Dining_Vertices.AddRange(new Vector3[] { Rm_Dining_TopLeft, Rm_Dining_TopRight, Rm_Dining_BottomLeft, Rm_Dining_BottomRight });
 
-		//Hallway_Vertices()
+
+
+		// 3 Rm_Hallway_Vertices()
 		Vector3 Rm_Hallway_SpawnPos		 = new Vector3(Rm_Living_TopRight.x, LevelOneHeight, Rm_Living_TopRight.z - Rm_Hallway.Length);
 
 		Vector3 Rm_Hallway_TopLeft		 = new Vector3(Rm_Hallway_SpawnPos.x,										 Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z + Rm_Hallway.Length);
@@ -170,17 +124,25 @@ public class RoomIndex
 		Vector3 Rm_Hallway_BottomLeft	 = new Vector3(Rm_Hallway_SpawnPos.x,										 Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z);
 		Vector3 Rm_Hallway_BottomRight = new Vector3(Rm_Hallway_SpawnPos.x + Rm_Hallway.Width, Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z);
 
+		List<Vector3> Rm_Hallway_Vertices = new List<Vector3>();
+		Rm_Hallway_Vertices.AddRange(new Vector3[] { Rm_Hallway_TopLeft, Rm_Hallway_TopRight, Rm_Hallway_BottomLeft, Rm_Hallway_BottomRight });
 
-		//Bedroom_Vertices()
+
+
+		// 4 Rm_Bed_Vertices()
 		Vector3 Rm_Bed_SpawnPos				 = new Vector3(Rm_Living_BottomRight.x, LevelOneHeight, Rm_Living_BottomRight.z - Rm_Hallway.Length);
 
-		Vector3 Rm_Bedroom_TopLeft		 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z + Rm_Bed.Length);
-		Vector3 Rm_Bedroom_TopRight		 = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z + Rm_Bed.Length);
-		Vector3 Rm_Bedroom_BottomLeft	 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
-		Vector3 Rm_Bedroom_BottomRight = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
+		Vector3 Rm_Bed_TopLeft		 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z + Rm_Bed.Length);
+		Vector3 Rm_Bed_TopRight		 = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z + Rm_Bed.Length);
+		Vector3 Rm_Bed_BottomLeft	 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
+		Vector3 Rm_Bed_BottomRight = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
+
+		List<Vector3> Rm_Bed_Vertices = new List<Vector3>();
+		Rm_Bed_Vertices.AddRange(new Vector3[] { Rm_Bed_TopLeft, Rm_Bed_TopRight, Rm_Bed_BottomLeft, Rm_Bed_BottomRight });
 
 
-		//Kitchen_Vertices()
+
+		// 5 Rm_Kitchen_Vertices()
 		Vector3 Rm_Kitchen_SpawnPos		 = new Vector3(Rm_Dining_TopRight.x, LevelOneHeight, Rm_Dining_TopRight.z - Rm_Kitchen.Length);
 
 		Vector3 Rm_Kitchen_TopLeft		 = new Vector3(Rm_Kitchen_SpawnPos.x,										 Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z + Rm_Kitchen.Length);
@@ -188,8 +150,12 @@ public class RoomIndex
 		Vector3 Rm_Kitchen_BottomLeft	 = new Vector3(Rm_Kitchen_SpawnPos.x,										 Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z);
 		Vector3 Rm_Kitchen_BottomRight = new Vector3(Rm_Kitchen_SpawnPos.x + Rm_Kitchen.Width, Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z);
 
+		List<Vector3> Rm_Kitchen_Vertices = new List<Vector3>();
+		Rm_Kitchen_Vertices.AddRange(new Vector3[] { Rm_Kitchen_TopLeft, Rm_Kitchen_TopRight, Rm_Kitchen_BottomLeft, Rm_Kitchen_BottomRight });
 
-		//Laundry_Vertices()
+
+
+		// 6 Rm_Laundry_Vertices()
 		Vector3 Rm_Laundry_SpawnPos		 = new Vector3(Rm_Kitchen_TopRight.x, LevelOneHeight, Rm_Kitchen_TopRight.z - Rm_Laundry.Length);
 
 		Vector3 Rm_Laundry_TopLeft		 = new Vector3(Rm_Laundry_SpawnPos.x,										 Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z + Rm_Laundry.Length);
@@ -197,8 +163,12 @@ public class RoomIndex
 		Vector3 Rm_Laundry_BottomLeft	 = new Vector3(Rm_Laundry_SpawnPos.x,										 Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z);
 		Vector3 Rm_Laundry_BottomRight = new Vector3(Rm_Laundry_SpawnPos.x + Rm_Laundry.Width, Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z);
 
+		List<Vector3> Rm_Laundry_Vertices = new List<Vector3>();
+		Rm_Laundry_Vertices.AddRange(new Vector3[] { Rm_Laundry_TopLeft, Rm_Laundry_TopRight, Rm_Laundry_BottomLeft, Rm_Laundry_BottomRight });
 
-		//EntryWay_Vertices()
+
+
+		// 7 Rm_EntryWay_Vertices()
 		Vector3 Rm_EntryWay_SpawnPos		= new Vector3(Rm_Laundry_BottomRight.x, LevelOneHeight, Rm_Laundry_BottomRight.z);
 
 		Vector3 Rm_EntryWay_TopLeft			= new Vector3(Rm_EntryWay_SpawnPos.x,											Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z + Rm_EntryWay.Length);
@@ -206,8 +176,12 @@ public class RoomIndex
 		Vector3 Rm_EntryWay_BottomLeft	= new Vector3(Rm_EntryWay_SpawnPos.x,											Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z);
 		Vector3 Rm_EntryWay_BottomRight = new Vector3(Rm_EntryWay_SpawnPos.x + Rm_EntryWay.Width, Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z);
 
+		List<Vector3> Rm_EntryWay_Vertices = new List<Vector3>();
+		Rm_EntryWay_Vertices.AddRange(new Vector3[] { Rm_EntryWay_TopLeft, Rm_EntryWay_TopRight, Rm_EntryWay_BottomLeft, Rm_EntryWay_BottomRight });
 
-		//EntryWayCloset_Vertices()Rm_
+
+
+		// 8 Rm_EntryWayCloset_Vertices()
 		Vector3 Rm_EntryWayCloset_SpawnPos		= new Vector3(Rm_EntryWay_TopRight.x, LevelOneHeight, Rm_EntryWay_TopRight.z - Rm_EntryCloset.Length);
 
 		Vector3 Rm_EntryWayCloset_TopLeft			= new Vector3(Rm_EntryWayCloset_SpawnPos.x,												 Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z + Rm_EntryCloset.Length);
@@ -215,8 +189,12 @@ public class RoomIndex
 		Vector3 Rm_EntryWayCloset_BottomLeft	= new Vector3(Rm_EntryWayCloset_SpawnPos.x,												 Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z);
 		Vector3 Rm_EntryWayCloset_BottomRight = new Vector3(Rm_EntryWayCloset_SpawnPos.x + Rm_EntryCloset.Width, Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z);
 
+		List<Vector3> Rm_EntryWayCloset_Vertices = new List<Vector3>();
+		Rm_EntryWayCloset_Vertices.AddRange(new Vector3[] { Rm_EntryWayCloset_TopLeft, Rm_EntryWayCloset_TopRight, Rm_EntryWayCloset_BottomLeft, Rm_EntryWayCloset_BottomRight });
 
-		//Bathroom_Vertices()
+
+
+		// 9 Rm_Bath_Vertices()
 		Vector3 Rm_Bath_SpawnPos		= new Vector3(Rm_Hallway_BottomRight.x - Rm_Bath.Width, LevelOneHeight, Rm_Hallway_BottomRight.z - Rm_Bath.Length);
 
 		Vector3 Rm_Bath_TopLeft			= new Vector3(Rm_Bath_SpawnPos.x,									Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z + Rm_Bath.Length);
@@ -224,8 +202,12 @@ public class RoomIndex
 		Vector3 Rm_Bath_BottomLeft	= new Vector3(Rm_Bath_SpawnPos.x,									Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z);
 		Vector3 Rm_Bath_BottomRight = new Vector3(Rm_Bath_SpawnPos.x + Rm_Bath.Width, Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z);
 
+		List<Vector3> Rm_Bath_Vertices = new List<Vector3>();
+		Rm_Bath_Vertices.AddRange(new Vector3[] { Rm_Bath_TopLeft, Rm_Bath_TopRight, Rm_Bath_BottomLeft, Rm_Bath_BottomRight });
 
-		//Rm_BedCloset_Vertices()
+
+
+		// 10 Rm_BedCloset_Vertices()
 		Vector3 Rm_BedCloset_SpawnPos			= new Vector3(Rm_Bath_BottomRight.x - Rm_BedCloset.Width, LevelOneHeight, Rm_Bath_BottomRight.z - Rm_BedCloset.Length);
 
 		Vector3 Rm_BedCloset_TopLeft			= new Vector3(Rm_BedCloset_SpawnPos.x,											Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z + Rm_BedCloset.Length);
@@ -233,8 +215,12 @@ public class RoomIndex
 		Vector3 Rm_BedCloset_BottomLeft		= new Vector3(Rm_BedCloset_SpawnPos.x,											Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z);
 		Vector3 Rm_BedCloset_BottomRight	= new Vector3(Rm_BedCloset_SpawnPos.x + Rm_BedCloset.Width, Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z);
 
+		List<Vector3> Rm_BedCloset_Vertices = new List<Vector3>();
+		Rm_BedCloset_Vertices.AddRange(new Vector3[] { Rm_BedCloset_TopLeft, Rm_BedCloset_TopRight, Rm_BedCloset_BottomLeft, Rm_BedCloset_BottomRight });
 
-		//Rm_StoreEntry_Vertices()
+
+
+		// 11 Rm_StoreEntry_Vertices()
 		Vector3 Rm_StoreEntry_SpawnPos		= new Vector3(Rm_BedCloset_BottomRight.x - Rm_StoreEntry.Width, LevelOneHeight, Rm_BedCloset_BottomRight.z - Rm_StoreEntry.Length);
 
 		Vector3 Rm_StoreEntry_TopLeft			= new Vector3(Rm_StoreEntry_SpawnPos.x,												Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z + Rm_StoreEntry.Length);
@@ -242,8 +228,12 @@ public class RoomIndex
 		Vector3 Rm_StoreEntry_BottomLeft	= new Vector3(Rm_StoreEntry_SpawnPos.x,											  Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z);
 		Vector3 Rm_StoreEntry_BottomRight	= new Vector3(Rm_StoreEntry_SpawnPos.x + Rm_StoreEntry.Width, Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z);
 
+		List<Vector3> Rm_StoreEntry_Vertices = new List<Vector3>();
+		Rm_StoreEntry_Vertices.AddRange(new Vector3[] { Rm_StoreEntry_TopLeft, Rm_StoreEntry_TopRight, Rm_StoreEntry_BottomLeft, Rm_StoreEntry_BottomRight });
 
-		//Rm_Store_Vertices()
+
+
+		// 12 Rm_Store_Vertices()
 		Vector3 Rm_Store_SpawnPos		 = new Vector3(Rm_StoreEntry_BottomLeft.x - Rm_Store.Width, LevelOneHeight, Rm_StoreEntry_BottomLeft.z);
 
 		Vector3 Rm_Store_TopLeft		 = new Vector3(Rm_Store_SpawnPos.x,									 Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z + Rm_Store.Length);
@@ -251,8 +241,12 @@ public class RoomIndex
 		Vector3 Rm_Store_BottomLeft	 = new Vector3(Rm_Store_SpawnPos.x,									 Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z);
 		Vector3 Rm_Store_BottomRight = new Vector3(Rm_Store_SpawnPos.x + Rm_Store.Width, Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z);
 
+		List<Vector3> Rm_Store_Vertices = new List<Vector3>();
+		Rm_Store_Vertices.AddRange(new Vector3[] { Rm_Store_TopLeft, Rm_Store_TopRight, Rm_Store_BottomLeft, Rm_Store_BottomRight });
 
-		//DeckCovered_Vertices()
+
+
+		// 13 Rm_DeckCovered_Vertices()
 		Vector3 Rm_DeckCovered_SpawnPos			= new Vector3(Rm_Living_BottomLeft.x, LevelOneHeight, Rm_Living_BottomLeft.z - Rm_DeckCovered.Length);
 
 		Vector3 Rm_DeckCovered_TopLeft			= new Vector3(Rm_DeckCovered_SpawnPos.x,												Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z + Rm_DeckCovered.Length);
@@ -260,17 +254,25 @@ public class RoomIndex
 		Vector3 Rm_DeckCovered_BottomLeft		= new Vector3(Rm_DeckCovered_SpawnPos.x,												Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z);
 		Vector3 Rm_DeckCovered_BottomRight	= new Vector3(Rm_DeckCovered_SpawnPos.x + Rm_DeckCovered.Width, Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z);
 
+		List<Vector3> Rm_DeckCovered_Vertices = new List<Vector3>();
+		Rm_DeckCovered_Vertices.AddRange(new Vector3[] { Rm_DeckCovered_TopLeft, Rm_DeckCovered_TopRight, Rm_DeckCovered_BottomLeft, Rm_DeckCovered_BottomRight });
 
-		//DeckUncovered_Vertices()
+
+
+		// 14 Rm_DeckUncovered_Vertices()
 		Vector3 Rm_DeckUncovered_SpawnPos		 = new Vector3(Rm_DeckCovered_SpawnPos.x, LevelOneHeight, Rm_DeckCovered_SpawnPos.z - Rm_DeckUncovered.Length);
 
 		Vector3 Rm_DeckUncovered_TopLeft		 = new Vector3(Rm_DeckUncovered_SpawnPos.x,													 Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z + Rm_DeckUncovered.Length);
 		Vector3	Rm_DeckUncovered_TopRight		 = new Vector3(Rm_DeckUncovered_SpawnPos.x + Rm_DeckUncovered.Width, Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z + Rm_DeckUncovered.Length);
 		Vector3 Rm_DeckUncovered_BottomLeft	 = new Vector3(Rm_DeckUncovered_SpawnPos.x,													 Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z);
 		Vector3 Rm_DeckUncovered_BottomRight = new Vector3(Rm_DeckUncovered_SpawnPos.x + Rm_DeckUncovered.Width, Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z);
-		
 
-		// Loft_Vertices()
+		List<Vector3> Rm_DeckUncovered_Vertices = new List<Vector3>();
+		Rm_DeckUncovered_Vertices.AddRange(new Vector3[] { Rm_DeckUncovered_TopLeft, Rm_DeckUncovered_TopRight, Rm_DeckUncovered_BottomLeft, Rm_DeckUncovered_BottomRight });
+
+
+
+		// 15 Rm_Loft_Vertices()
 		Vector3 Rm_Loft_SpawnPos		= new Vector3(Rm_Dining_TopLeft.x, LevelTwoHeight, Rm_Dining_TopLeft.z - Rm_Loft.Length);			// Loft is on the second floor, so we add height
 
 		Vector3 Rm_Loft_TopLeft			= new Vector3(Rm_Loft_SpawnPos.x,									Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z + Rm_Loft.Length);
@@ -278,8 +280,12 @@ public class RoomIndex
 		Vector3 Rm_Loft_BottomLeft  = new Vector3(Rm_Loft_SpawnPos.x,									Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z);
 		Vector3 Rm_Loft_BottomRight = new Vector3(Rm_Loft_SpawnPos.x + Rm_Loft.Width, Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z);
 
+		List<Vector3> Rm_Loft_Vertices = new List<Vector3>();
+		Rm_Loft_Vertices.AddRange(new Vector3[] { Rm_Loft_TopLeft, Rm_Loft_TopRight, Rm_Loft_BottomLeft, Rm_Loft_BottomRight });
 
-		// UpperBedroomEntry_Vertices()
+
+
+		// 16 Rm_UpperBedEntry_Vertices()
 		Vector3 Rm_UpperBedEntry_SpawnPos		 = new Vector3(Rm_Loft_TopRight.x, LevelTwoHeight, Rm_Loft_TopRight.z - Rm_UpperBedEntry.Length);
 
 		Vector3 Rm_UpperBedEntry_TopLeft		 = new Vector3(Rm_UpperBedEntry_SpawnPos.x,													 Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z + Rm_UpperBedEntry.Length);
@@ -287,8 +293,12 @@ public class RoomIndex
 		Vector3 Rm_UpperBedEntry_BottomLeft  = new Vector3(Rm_UpperBedEntry_SpawnPos.x,													 Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z);
 		Vector3 Rm_UpperBedEntry_BottomRight = new Vector3(Rm_UpperBedEntry_SpawnPos.x + Rm_UpperBedEntry.Width, Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z);
 
+		List<Vector3> Rm_UpperBedEntry_Vertices = new List<Vector3>();
+		Rm_UpperBedEntry_Vertices.AddRange(new Vector3[] { Rm_UpperBedEntry_TopLeft, Rm_UpperBedEntry_TopRight, Rm_UpperBedEntry_BottomLeft, Rm_UpperBedEntry_BottomRight });
 
-		// UpperBedroom_Vertices()
+
+
+		// 17 Rm_UpperBed_Vertices()
 		Vector3 Rm_UpperBed_SpawnPos		= new Vector3(Rm_UpperBedEntry_BottomLeft.x, LevelTwoHeight, Rm_UpperBedEntry_BottomLeft.z - Rm_UpperBed.Length);
 
 		Vector3 Rm_UpperBed_TopLeft			= new Vector3(Rm_UpperBed_SpawnPos.x,											Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z + Rm_UpperBed.Length);
@@ -296,14 +306,22 @@ public class RoomIndex
 		Vector3 Rm_UpperBed_BottomLeft	= new Vector3(Rm_UpperBed_SpawnPos.x,											Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z);
 		Vector3 Rm_UpperBed_BottomRight = new Vector3(Rm_UpperBed_SpawnPos.x + Rm_UpperBed.Width, Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z);
 
+		List<Vector3> Rm_UpperBed_Vertices = new List<Vector3>();
+		Rm_UpperBed_Vertices.AddRange(new Vector3[] { Rm_UpperBed_TopLeft, Rm_UpperBed_TopRight, Rm_UpperBed_BottomLeft, Rm_UpperBed_BottomRight });
 
-		//UpperBedroomCloset_Vertices()
+
+
+		// 18 Rm_UpperBedCloset_Vertices()
 		Vector3 Rm_UpperBedCloset_SpawnPos		= new Vector3(Rm_UpperBed_BottomRight.x, LevelTwoHeight, Rm_UpperBed_BottomRight.z);
 
 		Vector3 Rm_UpperBedCloset_TopLeft			= new Vector3(Rm_UpperBedCloset_SpawnPos.x,													 Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z + Rm_UpperBedCloset.Length);
 		Vector3 Rm_UpperBedCloset_TopRight		= new Vector3(Rm_UpperBedCloset_SpawnPos.x + Rm_UpperBedCloset.Width, Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z + Rm_UpperBedCloset.Length);
 		Vector3 Rm_UpperBedCloset_BottomLeft	= new Vector3(Rm_UpperBedCloset_SpawnPos.x,													 Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z);
 		Vector3 Rm_UpperBedCloset_BottomRight	= new Vector3(Rm_UpperBedCloset_SpawnPos.x + Rm_UpperBedCloset.Width, Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z);
+
+		List<Vector3> Rm_UpperBedCloset_Vertices = new List<Vector3>();
+		Rm_UpperBedCloset_Vertices.AddRange(new Vector3[] { Rm_UpperBedCloset_TopLeft, Rm_UpperBedCloset_TopRight, Rm_UpperBedCloset_BottomLeft, Rm_UpperBedCloset_BottomRight });
+
 
 
 
@@ -341,28 +359,69 @@ public class RoomIndex
 
 
 
+	// ----- ----- ----- ----- ----- ----- ----- WallSection Class ----- ----- ----- ----- ----- ----- ----- 
+
+	public enum WL_Direction
+	{
+		NorthSouth = 1,
+		EastWest = 2
+	}
+
+	public static float WL_Thick = 5; // Wall thickness in inches
+
+	public class WallSection
+	{
+
+		public int ID;
+		public string Name;
+		public int Level;
+		public WL_Direction Direction;
+		public Vector3 SpawnPos;
+		public float Width;
+		public float Length;
+		public bool IsActive;
+
+
+
+		// -----  Constructor ----- 
+		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive)
+		{
+			ID = _nextID;
+			_nextID = _nextID + 1;
+
+			Name = name;
+			Level = level;
+			Direction = direction;
+			Width = width;
+			Length = length;
+		}
+	}
+
+
+	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
+
+	WallSection WL_Entryway_EntrywayCloset = new WallSection("EntryClosetEast", 1,  WL_Direction.NorthSouth, WL_Thick, 5f, true);
+	WallSection WL_EntryWay_Laundry				 = new WallSection("EntryClosetWest", 1, WL_Direction.NorthSouth, WL_Thick, 39.5f, true);
 
 
 
 
-	// NOTES
 
-	// EntryWay							— 40.25" × 43"				= 12.01		//sqft
-	// EntryCloset					— 35" × 57"						= 13.85		//sqft
-	// Hallway							— 36" × 229"					= 57.25		//sqft
-	// Bathroom							— 63.75" × 71.25"			= 31.52		//sqft
-	// Bedroom							— 157" × 148"					= 161.24	//sqft
-	// BedroomCloset				— 78" × 71"					  = 38.42		//sqft
-	// Storeroom						— 126" × 200"					= 175.00	//sqft
-	// Kitchen							— 90.5" × 114"				= 71.63		//sqft
-	// Laundry							— 89.5" × 31.25"			= 19.42		//sqft
-	// Rm_Living						— 158.25" × 152"			= 166.96	//sqft
-	// Rm_Dining						— 95.25" × 125.75"		= 83.23		//sqft
-	// Loft									— 137" × 183"					= 174.04	//sqft
-	// SecondBedroom				— 130.5" × 165"				= 149.53	//sqft
-	// SecondBedroomCloset	— 76" × 23.75"				= 12.53		//sqft
-	// TOTAL = 1,166.63 sq ft
-	// LVP SQFT = 659.06
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	public class Hallway_Measurements
@@ -708,7 +767,24 @@ public class RoomIndex
 
 		}
 
+		// NOTES
 
+		// EntryWay							— 40.25" × 43"				= 12.01		//sqft
+		// EntryCloset					— 35" × 57"						= 13.85		//sqft
+		// Hallway							— 36" × 229"					= 57.25		//sqft
+		// Bathroom							— 63.75" × 71.25"			= 31.52		//sqft
+		// Bedroom							— 157" × 148"					= 161.24	//sqft
+		// BedroomCloset				— 78" × 71"					  = 38.42		//sqft
+		// Storeroom						— 126" × 200"					= 175.00	//sqft
+		// Kitchen							— 90.5" × 114"				= 71.63		//sqft
+		// Laundry							— 89.5" × 31.25"			= 19.42		//sqft
+		// Rm_Living						— 158.25" × 152"			= 166.96	//sqft
+		// Rm_Dining						— 95.25" × 125.75"		= 83.23		//sqft
+		// Loft									— 137" × 183"					= 174.04	//sqft
+		// SecondBedroom				— 130.5" × 165"				= 149.53	//sqft
+		// SecondBedroomCloset	— 76" × 23.75"				= 12.53		//sqft
+		// TOTAL = 1,166.63 sq ft
+		// LVP SQFT = 659.06
 
 }
 
