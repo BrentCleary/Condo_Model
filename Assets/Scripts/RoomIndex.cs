@@ -12,7 +12,11 @@ public class RoomIndex
 
 
 	// Walls - inches
-	private static int _nextID = 1;
+	private static int _floorID  = 1;
+	private static int _wallID   = 1;
+	private static int _vertexID = 1;
+
+
 
 	public List<string> FloorType = new List<string>() { "LVP", "Carpet", "Tile", "Rubber" };
 	public static List<FloorSection> FloorSectionList = new List<FloorSection>();
@@ -40,8 +44,8 @@ public class RoomIndex
 		// -----  Constructor ----- 
 		public FloorSection(string name, int level, Vector3 spawnPos, float width, float length, string floorType, bool isActive = true)
 		{
-			ID        = _nextID;
-			_nextID   = _nextID + 1;
+			ID        = _floorID;
+			_floorID = _floorID + 1;
 
 			Name      = name;
 			Level     = level;
@@ -88,6 +92,32 @@ public class RoomIndex
 
 
 
+	// ----- ----- ----- ----- ----- ----- ----- Rm_Vertex Class ----- ----- ----- ----- ----- ----- ----- 
+	public class Rm_Vertex
+	{
+		private int ID;
+		public string Name;
+		public Vector3 Vertex;
+
+		// -----  Constructor ----- 
+		public Rm_Vertex(string name, Vector3 vertex)
+		{
+			ID = _vertexID;
+			_vertexID = _vertexID + 1;
+			Name = name;
+			Vertex = vertex;
+		}
+	}
+
+	public Rm_Vertex GenerateVertex(string name, Vector3 position)
+	{
+		Rm_Vertex result = new Rm_Vertex(name, position);
+
+		return result;
+	}
+
+
+
 	public void Calculate_Vertices()
 	{
 
@@ -99,8 +129,15 @@ public class RoomIndex
 		Vector3 Rm_Living_BottomLeft  = new Vector3(Rm_Living_SpawnPos.x,										Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 		Vector3 Rm_Living_BottomRight = new Vector3(Rm_Living_SpawnPos.x + Rm_Living.Width, Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 
-		List<Vector3> Rm_Living_Vertices = new List<Vector3>();
-		Rm_Living_Vertices.AddRange(new Vector3[] { Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight });
+		List<Vector3> Rm_Living_Vertices = new List<Vector3> { Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight };
+
+		List<Rm_Vertex> Rm_Living_VertexList = new List<Rm_Vertex> {
+			GenerateVertex(nameof(Rm_Living_TopLeft), Rm_Living_TopLeft),
+			GenerateVertex(nameof(Rm_Living_TopRight), Rm_Living_TopRight),
+			GenerateVertex(nameof(Rm_Living_BottomLeft), Rm_Living_BottomLeft),
+			GenerateVertex(nameof(Rm_Living_BottomRight), Rm_Living_BottomRight) 
+		};
+		List<List<Rm_Vertex>> Rm_All_Vertex_List = new List<List<Rm_Vertex>> { Rm_Living_VertexList };
 
 
 
@@ -372,7 +409,7 @@ public class RoomIndex
 
 
 
-		ConsoleLogVertices(Rm_All_VerticesList);
+		ConsoleLogVertexList(Rm_All_Vertex_List);
 
 
 	}
@@ -386,24 +423,27 @@ public class RoomIndex
 	}
 
 
-	public void ConsoleLogVertices(List<List<Vector3>> topList)
+	public void ConsoleLogVertexList(List<List<Rm_Vertex>> topList)
 	{
-		if(topList == null || topList.Count == 0){ 
-			Console.WriteLine("No vertices to display.");
+		string consoleLog = "Room Vertices: \n";
+
+		if (topList == null || topList.Count == 0){ 
+			Debug.Log("No vertices to display.");
 			return;
 		}
 		
-		Console.WriteLine($"Room Vertices in {topList}: \n");
-		foreach (List<Vector3> VertList in topList)
+		consoleLog += $"Room Vertices in {topList}: \n";
+		foreach (List<Rm_Vertex> VertList in topList)
 		{
-			Console.WriteLine($"--{VertList} \n");
-			foreach (Vector3 vert in VertList)
+			consoleLog += $"--{VertList} \n";
+			foreach (Rm_Vertex vert in VertList)
 			{
-				Console.WriteLine(
-				$"----{vert} \n" +
-				$"------ {vert.x}, {vert.y}, {vert.z}");
+				consoleLog += 
+					$"----{vert.Name} \n" +
+					$"------ {vert.Vertex.x}, {vert.Vertex.y}, {vert.Vertex.z}\n";
 			}
 		}
+		Debug.Log(consoleLog);
 	}
 
 
@@ -435,8 +475,8 @@ public class RoomIndex
 		// -----  Constructor ----- 
 		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive)
 		{
-			ID = _nextID;
-			_nextID = _nextID + 1;
+			ID = _wallID;
+			_wallID = _wallID + 1;
 
 			Name = name;
 			Level = level;
