@@ -6,20 +6,23 @@ using UnityEngine;
 
 public class RoomIndex
 {
-
-	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
-	public float LevelTwoHeight = 1.0f + 10f; // Height of the second floor in Unity units
-
-
 	// Walls - inches
+
+	// Floor Level Y Positions
+	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
+	public float LevelTwoHeight = 1.0f + 120f; // Height of the second floor in Unity units (10' x 12")
+
+	// Class ID Initializers
 	private static int _floorID  = 1;
 	private static int _wallID   = 1;
 	private static int _vertexID = 1;
 
 
 
-	public List<string> FloorType = new List<string>() { "LVP", "Carpet", "Tile", "Rubber" };
-	public static List<FloorSection> FloorSectionList = new List<FloorSection>();
+	public static List<string> FloorType = new List<string>() { "LVP", "Carpet", "Tile", "Rubber" };
+	public static List<FloorSection>		FloorSectionList	 = new List<FloorSection>();
+	public static List<List<Rm_Vertex>> Rm_All_Vertex_List = new List<List<Rm_Vertex>>();
+
 
 	// ----- ----- ----- ----- ----- ----- ----- FloorSection Class ----- ----- ----- ----- ----- ----- ----- 
 
@@ -95,23 +98,27 @@ public class RoomIndex
 	// ----- ----- ----- ----- ----- ----- ----- Rm_Vertex Class ----- ----- ----- ----- ----- ----- ----- 
 	public class Rm_Vertex
 	{
-		private int ID;
-		public string Name;
-		public Vector3 Vertex;
+		private int			ID;
+		public	string	Name;
+		public	int			Level;
+		public	Vector3 Pos;
+		public	bool		IsActive;
 
 		// -----  Constructor ----- 
-		public Rm_Vertex(string name, Vector3 vertex)
+		public Rm_Vertex(string name, int level, Vector3 vertex, bool isActive = true)
 		{
-			ID = _vertexID;
+			ID				= _vertexID;
 			_vertexID = _vertexID + 1;
-			Name = name;
-			Vertex = vertex;
+			Name	= name;
+			Level = level;
+			Pos		= vertex;
 		}
 	}
 
-	public Rm_Vertex GenerateVertex(string name, Vector3 position)
+	public Rm_Vertex GenerateVertex(string name, int level, Vector3 position)
 	{
-		Rm_Vertex result = new Rm_Vertex(name, position);
+
+		Rm_Vertex result = new Rm_Vertex(name, level, position);
 
 		return result;
 	}
@@ -129,16 +136,14 @@ public class RoomIndex
 		Vector3 Rm_Living_BottomLeft  = new Vector3(Rm_Living_SpawnPos.x,										Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 		Vector3 Rm_Living_BottomRight = new Vector3(Rm_Living_SpawnPos.x + Rm_Living.Width, Rm_Living_SpawnPos.y, Rm_Living_SpawnPos.z);
 
-		List<Vector3> Rm_Living_Vertices = new List<Vector3> { Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight };
+		List<Vector3> Rm_CornerList_Living = new List<Vector3> { Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight };
 
-		List<Rm_Vertex> Rm_Living_VertexList = new List<Rm_Vertex> {
-			GenerateVertex(nameof(Rm_Living_TopLeft), Rm_Living_TopLeft),
-			GenerateVertex(nameof(Rm_Living_TopRight), Rm_Living_TopRight),
-			GenerateVertex(nameof(Rm_Living_BottomLeft), Rm_Living_BottomLeft),
-			GenerateVertex(nameof(Rm_Living_BottomRight), Rm_Living_BottomRight) 
+		List<Rm_Vertex> Rm_VertexList_Living = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Living_TopLeft",     1, Rm_Living_TopLeft),
+			GenerateVertex("Vx_Living_TopRight",    1, Rm_Living_TopRight),
+			GenerateVertex("Vx_Living_BottomLeft",  1, Rm_Living_BottomLeft),
+			GenerateVertex("Vx_Living_BottomRight", 1, Rm_Living_BottomRight)
 		};
-		List<List<Rm_Vertex>> Rm_All_Vertex_List = new List<List<Rm_Vertex>> { Rm_Living_VertexList };
-
 
 
 		// 2 Rm_Dining_Vertices()
@@ -149,9 +154,14 @@ public class RoomIndex
 		Vector3 Rm_Dining_BottomLeft	= new Vector3(Rm_Dining_SpawnPos.x,										Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z);
 		Vector3 Rm_Dining_BottomRight	= new Vector3(Rm_Dining_SpawnPos.x + Rm_Dining.Width, Rm_Dining_SpawnPos.y, Rm_Dining_SpawnPos.z);
 
-		List<Vector3> Rm_Dining_Vertices = new List<Vector3>();
-		Rm_Dining_Vertices.AddRange(new Vector3[] { Rm_Dining_TopLeft, Rm_Dining_TopRight, Rm_Dining_BottomLeft, Rm_Dining_BottomRight });
+		List<Vector3> Rm_CornerList_Dining = new List<Vector3> { Rm_Dining_TopLeft, Rm_Dining_TopRight, Rm_Dining_BottomLeft, Rm_Dining_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Dining = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Dining_TopLeft",			1,  Rm_Dining_TopLeft),
+			GenerateVertex("Vx_Dining_TopRight",		1,  Rm_Dining_TopRight),
+			GenerateVertex("Vx_Dining_BottomLeft",	1,  Rm_Dining_BottomLeft),
+			GenerateVertex("Vx_Dining_BottomRight", 1,  Rm_Dining_BottomRight)
+		};
 
 
 		// 3 Rm_Hallway_Vertices()
@@ -162,9 +172,14 @@ public class RoomIndex
 		Vector3 Rm_Hallway_BottomLeft	 = new Vector3(Rm_Hallway_SpawnPos.x,										 Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z);
 		Vector3 Rm_Hallway_BottomRight = new Vector3(Rm_Hallway_SpawnPos.x + Rm_Hallway.Width, Rm_Hallway_SpawnPos.y, Rm_Hallway_SpawnPos.z);
 
-		List<Vector3> Rm_Hallway_Vertices = new List<Vector3>();
-		Rm_Hallway_Vertices.AddRange(new Vector3[] { Rm_Hallway_TopLeft, Rm_Hallway_TopRight, Rm_Hallway_BottomLeft, Rm_Hallway_BottomRight });
+		List<Vector3> Rm_CornerList_Hallway = new List<Vector3> { Rm_Hallway_TopLeft, Rm_Hallway_TopRight, Rm_Hallway_BottomLeft, Rm_Hallway_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Hallway = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Hallway_TopLeft",		 1, Rm_Hallway_TopLeft),
+			GenerateVertex("Vx_Hallway_TopRight",		 1,  Rm_Hallway_TopRight),
+			GenerateVertex("Vx_Hallway_BottomLeft",	 1,  Rm_Hallway_BottomLeft),
+			GenerateVertex("Vx_Hallway_BottomRight", 1,  Rm_Hallway_BottomRight)
+		};
 
 
 		// 4 Rm_Bed_Vertices()
@@ -175,9 +190,14 @@ public class RoomIndex
 		Vector3 Rm_Bed_BottomLeft	 = new Vector3(Rm_Bed_SpawnPos.x,								 Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
 		Vector3 Rm_Bed_BottomRight = new Vector3(Rm_Bed_SpawnPos.x + Rm_Bed.Width, Rm_Bed_SpawnPos.y, Rm_Bed_SpawnPos.z);
 
-		List<Vector3> Rm_Bed_Vertices = new List<Vector3>();
-		Rm_Bed_Vertices.AddRange(new Vector3[] { Rm_Bed_TopLeft, Rm_Bed_TopRight, Rm_Bed_BottomLeft, Rm_Bed_BottomRight });
+		List<Vector3> Rm_CornerList_Bed = new List<Vector3> { Rm_Bed_TopLeft, Rm_Bed_TopRight, Rm_Bed_BottomLeft, Rm_Bed_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Bed = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Bed_TopLeft",		 1, Rm_Bed_TopLeft),
+			GenerateVertex("Vx_Bed_TopRight",		 1,  Rm_Bed_TopRight),
+			GenerateVertex("Vx_Bed_BottomLeft",	 1,  Rm_Bed_BottomLeft),
+			GenerateVertex("Vx_Bed_BottomRight", 1,  Rm_Bed_BottomRight)
+		};
 
 
 		// 5 Rm_Kitchen_Vertices()
@@ -188,9 +208,14 @@ public class RoomIndex
 		Vector3 Rm_Kitchen_BottomLeft	 = new Vector3(Rm_Kitchen_SpawnPos.x,										 Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z);
 		Vector3 Rm_Kitchen_BottomRight = new Vector3(Rm_Kitchen_SpawnPos.x + Rm_Kitchen.Width, Rm_Kitchen_SpawnPos.y, Rm_Kitchen_SpawnPos.z);
 
-		List<Vector3> Rm_Kitchen_Vertices = new List<Vector3>();
-		Rm_Kitchen_Vertices.AddRange(new Vector3[] { Rm_Kitchen_TopLeft, Rm_Kitchen_TopRight, Rm_Kitchen_BottomLeft, Rm_Kitchen_BottomRight });
+		List<Vector3> Rm_CornerList_Kitchen = new List<Vector3> { Rm_Kitchen_TopLeft, Rm_Kitchen_TopRight, Rm_Kitchen_BottomLeft, Rm_Kitchen_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Kitchen = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Kitchen_TopLeft",		 1, Rm_Kitchen_TopLeft),
+			GenerateVertex("Vx_Kitchen_TopRight",		 1, Rm_Kitchen_TopRight),
+			GenerateVertex("Vx_Kitchen_BottomLeft",	 1, Rm_Kitchen_BottomLeft),
+			GenerateVertex("Vx_Kitchen_BottomRight", 1, Rm_Kitchen_BottomRight)
+		};
 
 
 		// 6 Rm_Laundry_Vertices()
@@ -201,9 +226,14 @@ public class RoomIndex
 		Vector3 Rm_Laundry_BottomLeft	 = new Vector3(Rm_Laundry_SpawnPos.x,										 Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z);
 		Vector3 Rm_Laundry_BottomRight = new Vector3(Rm_Laundry_SpawnPos.x + Rm_Laundry.Width, Rm_Laundry_SpawnPos.y, Rm_Laundry_SpawnPos.z);
 
-		List<Vector3> Rm_Laundry_Vertices = new List<Vector3>();
-		Rm_Laundry_Vertices.AddRange(new Vector3[] { Rm_Laundry_TopLeft, Rm_Laundry_TopRight, Rm_Laundry_BottomLeft, Rm_Laundry_BottomRight });
+		List<Vector3> Rm_CornerList_Laundry = new List<Vector3> { Rm_Laundry_TopLeft, Rm_Laundry_TopRight, Rm_Laundry_BottomLeft, Rm_Laundry_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Laundry = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Laundry_TopLeft", 1, Rm_Laundry_TopLeft),
+			GenerateVertex("Vx_Laundry_TopRight", 1,  Rm_Laundry_TopRight),
+			GenerateVertex("Vx_Laundry_BottomLeft", 1,  Rm_Laundry_BottomLeft),
+			GenerateVertex("Vx_Laundry_BottomRight", 1,  Rm_Laundry_BottomRight)
+		};
 
 
 		// 7 Rm_EntryWay_Vertices()
@@ -214,9 +244,14 @@ public class RoomIndex
 		Vector3 Rm_EntryWay_BottomLeft	= new Vector3(Rm_EntryWay_SpawnPos.x,											Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z);
 		Vector3 Rm_EntryWay_BottomRight = new Vector3(Rm_EntryWay_SpawnPos.x + Rm_EntryWay.Width, Rm_EntryWay_SpawnPos.y, Rm_EntryWay_SpawnPos.z);
 
-		List<Vector3> Rm_EntryWay_Vertices = new List<Vector3>();
-		Rm_EntryWay_Vertices.AddRange(new Vector3[] { Rm_EntryWay_TopLeft, Rm_EntryWay_TopRight, Rm_EntryWay_BottomLeft, Rm_EntryWay_BottomRight });
+		List<Vector3> Rm_CornerList_EntryWay = new List<Vector3> { Rm_EntryWay_TopLeft, Rm_EntryWay_TopRight, Rm_EntryWay_BottomLeft, Rm_EntryWay_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_EntryWay = new List<Rm_Vertex> {
+			GenerateVertex("Vx_EntryWay_TopLeft", 1, Rm_EntryWay_TopLeft),
+			GenerateVertex("Vx_EntryWay_TopRight", 1,  Rm_EntryWay_TopRight),
+			GenerateVertex("Vx_EntryWay_BottomLeft", 1,  Rm_EntryWay_BottomLeft),
+			GenerateVertex("Vx_EntryWay_BottomRight", 1,  Rm_EntryWay_BottomRight)
+		};
 
 
 		// 8 Rm_EntryWayCloset_Vertices()
@@ -227,9 +262,14 @@ public class RoomIndex
 		Vector3 Rm_EntryWayCloset_BottomLeft	= new Vector3(Rm_EntryWayCloset_SpawnPos.x,												 Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z);
 		Vector3 Rm_EntryWayCloset_BottomRight = new Vector3(Rm_EntryWayCloset_SpawnPos.x + Rm_EntryCloset.Width, Rm_EntryWayCloset_SpawnPos.y, Rm_EntryWayCloset_SpawnPos.z);
 
-		List<Vector3> Rm_EntryWayCloset_Vertices = new List<Vector3>();
-		Rm_EntryWayCloset_Vertices.AddRange(new Vector3[] { Rm_EntryWayCloset_TopLeft, Rm_EntryWayCloset_TopRight, Rm_EntryWayCloset_BottomLeft, Rm_EntryWayCloset_BottomRight });
+		List<Vector3> Rm_CornerList_EntryWayCloset = new List<Vector3> { Rm_EntryWayCloset_TopLeft, Rm_EntryWayCloset_TopRight, Rm_EntryWayCloset_BottomLeft, Rm_EntryWayCloset_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_EntryWayCloset = new List<Rm_Vertex> {
+			GenerateVertex("Vx_EntryWayCloset_TopLeft", 1, Rm_EntryWayCloset_TopLeft),
+			GenerateVertex("Vx_EntryWayCloset_TopRight", 1,  Rm_EntryWayCloset_TopRight),
+			GenerateVertex("Vx_EntryWayCloset_BottomLeft", 1,  Rm_EntryWayCloset_BottomLeft),
+			GenerateVertex("Vx_EntryWayCloset_BottomRight", 1,  Rm_EntryWayCloset_BottomRight)
+		};
 
 
 		// 9 Rm_Bath_Vertices()
@@ -240,9 +280,14 @@ public class RoomIndex
 		Vector3 Rm_Bath_BottomLeft	= new Vector3(Rm_Bath_SpawnPos.x,									Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z);
 		Vector3 Rm_Bath_BottomRight = new Vector3(Rm_Bath_SpawnPos.x + Rm_Bath.Width, Rm_Bath_SpawnPos.y, Rm_Bath_SpawnPos.z);
 
-		List<Vector3> Rm_Bath_Vertices = new List<Vector3>();
-		Rm_Bath_Vertices.AddRange(new Vector3[] { Rm_Bath_TopLeft, Rm_Bath_TopRight, Rm_Bath_BottomLeft, Rm_Bath_BottomRight });
+		List<Vector3> Rm_CornerList_Bath = new List<Vector3> { Rm_Bath_TopLeft, Rm_Bath_TopRight, Rm_Bath_BottomLeft, Rm_Bath_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Bath = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Bath_TopLeft", 1, Rm_Bath_TopLeft),
+			GenerateVertex("Vx_Bath_TopRight", 1,  Rm_Bath_TopRight),
+			GenerateVertex("Vx_Bath_BottomLeft", 1,  Rm_Bath_BottomLeft),
+			GenerateVertex("Vx_Bath_BottomRight", 1,  Rm_Bath_BottomRight)
+		};
 
 
 		// 10 Rm_BedCloset_Vertices()
@@ -253,9 +298,14 @@ public class RoomIndex
 		Vector3 Rm_BedCloset_BottomLeft		= new Vector3(Rm_BedCloset_SpawnPos.x,											Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z);
 		Vector3 Rm_BedCloset_BottomRight	= new Vector3(Rm_BedCloset_SpawnPos.x + Rm_BedCloset.Width, Rm_BedCloset_SpawnPos.y, Rm_BedCloset_SpawnPos.z);
 
-		List<Vector3> Rm_BedCloset_Vertices = new List<Vector3>();
-		Rm_BedCloset_Vertices.AddRange(new Vector3[] { Rm_BedCloset_TopLeft, Rm_BedCloset_TopRight, Rm_BedCloset_BottomLeft, Rm_BedCloset_BottomRight });
+		List<Vector3> Rm_CornerList_BedCloset = new List<Vector3> { Rm_BedCloset_TopLeft, Rm_BedCloset_TopRight, Rm_BedCloset_BottomLeft, Rm_BedCloset_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_BedCloset = new List<Rm_Vertex> {
+			GenerateVertex("Vx_BedCloset_TopLeft", 1, Rm_BedCloset_TopLeft),
+			GenerateVertex("Vx_BedCloset_TopRight", 1,  Rm_BedCloset_TopRight),
+			GenerateVertex("Vx_BedCloset_BottomLeft", 1,  Rm_BedCloset_BottomLeft),
+			GenerateVertex("Vx_BedCloset_BottomRight", 1,  Rm_BedCloset_BottomRight)
+		};
 
 
 		// 11 Rm_StoreEntry_Vertices()
@@ -266,9 +316,14 @@ public class RoomIndex
 		Vector3 Rm_StoreEntry_BottomLeft	= new Vector3(Rm_StoreEntry_SpawnPos.x,											  Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z);
 		Vector3 Rm_StoreEntry_BottomRight	= new Vector3(Rm_StoreEntry_SpawnPos.x + Rm_StoreEntry.Width, Rm_StoreEntry_SpawnPos.y, Rm_StoreEntry_SpawnPos.z);
 
-		List<Vector3> Rm_StoreEntry_Vertices = new List<Vector3>();
-		Rm_StoreEntry_Vertices.AddRange(new Vector3[] { Rm_StoreEntry_TopLeft, Rm_StoreEntry_TopRight, Rm_StoreEntry_BottomLeft, Rm_StoreEntry_BottomRight });
+		List<Vector3> Rm_CornerList_StoreEntry = new List<Vector3> { Rm_StoreEntry_TopLeft, Rm_StoreEntry_TopRight, Rm_StoreEntry_BottomLeft, Rm_StoreEntry_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_StoreEntry = new List<Rm_Vertex> {
+			GenerateVertex("Vx_StoreEntry_TopLeft", 1, Rm_StoreEntry_TopLeft),
+			GenerateVertex("Vx_StoreEntry_TopRight", 1,  Rm_StoreEntry_TopRight),
+			GenerateVertex("Vx_StoreEntry_BottomLeft", 1,  Rm_StoreEntry_BottomLeft),
+			GenerateVertex("Vx_StoreEntry_BottomRight", 1,  Rm_StoreEntry_BottomRight)
+		};
 
 
 		// 12 Rm_Store_Vertices()
@@ -279,8 +334,14 @@ public class RoomIndex
 		Vector3 Rm_Store_BottomLeft	 = new Vector3(Rm_Store_SpawnPos.x,									 Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z);
 		Vector3 Rm_Store_BottomRight = new Vector3(Rm_Store_SpawnPos.x + Rm_Store.Width, Rm_Store_SpawnPos.y, Rm_Store_SpawnPos.z);
 
-		List<Vector3> Rm_Store_Vertices = new List<Vector3>();
-		Rm_Store_Vertices.AddRange(new Vector3[] { Rm_Store_TopLeft, Rm_Store_TopRight, Rm_Store_BottomLeft, Rm_Store_BottomRight });
+		List<Vector3> Rm_CornerList_Store = new List<Vector3> { Rm_Store_TopLeft, Rm_Store_TopRight, Rm_Store_BottomLeft, Rm_Store_BottomRight };
+
+		List<Rm_Vertex> Rm_VertexList_Store = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Store_TopLeft", 1, Rm_Store_TopLeft),
+			GenerateVertex("Vx_Store_TopRight", 1,  Rm_Store_TopRight),
+			GenerateVertex("Vx_Store_BottomLeft", 1,  Rm_Store_BottomLeft),
+			GenerateVertex("Vx_Store_BottomRight", 1,  Rm_Store_BottomRight)
+		};
 
 
 
@@ -292,8 +353,14 @@ public class RoomIndex
 		Vector3 Rm_DeckCovered_BottomLeft		= new Vector3(Rm_DeckCovered_SpawnPos.x,												Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z);
 		Vector3 Rm_DeckCovered_BottomRight	= new Vector3(Rm_DeckCovered_SpawnPos.x + Rm_DeckCovered.Width, Rm_DeckCovered_SpawnPos.y, Rm_DeckCovered_SpawnPos.z);
 
-		List<Vector3> Rm_DeckCovered_Vertices = new List<Vector3>();
-		Rm_DeckCovered_Vertices.AddRange(new Vector3[] { Rm_DeckCovered_TopLeft, Rm_DeckCovered_TopRight, Rm_DeckCovered_BottomLeft, Rm_DeckCovered_BottomRight });
+		List<Vector3> Rm_CornerList_DeckCovered = new List<Vector3> { Rm_DeckCovered_TopLeft, Rm_DeckCovered_TopRight, Rm_DeckCovered_BottomLeft, Rm_DeckCovered_BottomRight };
+
+		List<Rm_Vertex> Rm_VertexList_DeckCovered = new List<Rm_Vertex> {
+			GenerateVertex("Vx_DeckCovered_TopLeft", 1, Rm_DeckCovered_TopLeft),
+			GenerateVertex("Vx_DeckCovered_TopRight", 1,  Rm_DeckCovered_TopRight),
+			GenerateVertex("Vx_DeckCovered_BottomLeft", 1,  Rm_DeckCovered_BottomLeft),
+			GenerateVertex("Vx_DeckCovered_BottomRight", 1,  Rm_DeckCovered_BottomRight)
+		};
 
 
 
@@ -305,8 +372,14 @@ public class RoomIndex
 		Vector3 Rm_DeckUncovered_BottomLeft	 = new Vector3(Rm_DeckUncovered_SpawnPos.x,													 Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z);
 		Vector3 Rm_DeckUncovered_BottomRight = new Vector3(Rm_DeckUncovered_SpawnPos.x + Rm_DeckUncovered.Width, Rm_DeckUncovered_SpawnPos.y, Rm_DeckUncovered_SpawnPos.z);
 
-		List<Vector3> Rm_DeckUncovered_Vertices = new List<Vector3>();
-		Rm_DeckUncovered_Vertices.AddRange(new Vector3[] { Rm_DeckUncovered_TopLeft, Rm_DeckUncovered_TopRight, Rm_DeckUncovered_BottomLeft, Rm_DeckUncovered_BottomRight });
+		List<Vector3> Rm_CornerList_DeckUncovered = new List<Vector3> { Rm_DeckUncovered_TopLeft, Rm_DeckUncovered_TopRight, Rm_DeckUncovered_BottomLeft, Rm_DeckUncovered_BottomRight };
+
+		List<Rm_Vertex> Rm_VertexList_DeckUncovered = new List<Rm_Vertex> {
+			GenerateVertex("Vx_DeckUncovered_TopLeft", 1, Rm_DeckUncovered_TopLeft),
+			GenerateVertex("Vx_DeckUncovered_TopRight", 1,  Rm_DeckUncovered_TopRight),
+			GenerateVertex("Vx_DeckUncovered_BottomLeft", 1,  Rm_DeckUncovered_BottomLeft),
+			GenerateVertex("Vx_DeckUncovered_BottomRight", 1,  Rm_DeckUncovered_BottomRight)
+		};
 
 
 
@@ -318,9 +391,14 @@ public class RoomIndex
 		Vector3 Rm_Loft_BottomLeft  = new Vector3(Rm_Loft_SpawnPos.x,									Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z);
 		Vector3 Rm_Loft_BottomRight = new Vector3(Rm_Loft_SpawnPos.x + Rm_Loft.Width, Rm_Loft_SpawnPos.y, Rm_Loft_SpawnPos.z);
 
-		List<Vector3> Rm_Loft_Vertices = new List<Vector3>();
-		Rm_Loft_Vertices.AddRange(new Vector3[] { Rm_Loft_TopLeft, Rm_Loft_TopRight, Rm_Loft_BottomLeft, Rm_Loft_BottomRight });
+		List<Vector3> Rm_CornerList_Loft = new List<Vector3> { Rm_Loft_TopLeft, Rm_Loft_TopRight, Rm_Loft_BottomLeft, Rm_Loft_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_Loft = new List<Rm_Vertex> {
+			GenerateVertex("Vx_Loft_TopLeft", 2, Rm_Loft_TopLeft),
+			GenerateVertex("Vx_Loft_TopRight", 2,  Rm_Loft_TopRight),
+			GenerateVertex("Vx_Loft_BottomLeft", 2,  Rm_Loft_BottomLeft),
+			GenerateVertex("Vx_Loft_BottomRight", 2,  Rm_Loft_BottomRight)
+		};
 
 
 		// 16 Rm_UpperBedEntry_Vertices()
@@ -331,9 +409,14 @@ public class RoomIndex
 		Vector3 Rm_UpperBedEntry_BottomLeft  = new Vector3(Rm_UpperBedEntry_SpawnPos.x,													 Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z);
 		Vector3 Rm_UpperBedEntry_BottomRight = new Vector3(Rm_UpperBedEntry_SpawnPos.x + Rm_UpperBedEntry.Width, Rm_UpperBedEntry_SpawnPos.y, Rm_UpperBedEntry_SpawnPos.z);
 
-		List<Vector3> Rm_UpperBedEntry_Vertices = new List<Vector3>();
-		Rm_UpperBedEntry_Vertices.AddRange(new Vector3[] { Rm_UpperBedEntry_TopLeft, Rm_UpperBedEntry_TopRight, Rm_UpperBedEntry_BottomLeft, Rm_UpperBedEntry_BottomRight });
+		List<Vector3> Rm_CornerList_UpperBedEntry = new List<Vector3> { Rm_UpperBedEntry_TopLeft, Rm_UpperBedEntry_TopRight, Rm_UpperBedEntry_BottomLeft, Rm_UpperBedEntry_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_UpperBedEntry = new List<Rm_Vertex> {
+			GenerateVertex("Vx_UpperBedEntry_TopLeft", 2, Rm_UpperBedEntry_TopLeft),
+			GenerateVertex("Vx_UpperBedEntry_TopRight", 2,  Rm_UpperBedEntry_TopRight),
+			GenerateVertex("Vx_UpperBedEntry_BottomLeft", 2,  Rm_UpperBedEntry_BottomLeft),
+			GenerateVertex("Vx_UpperBedEntry_BottomRight", 2,  Rm_UpperBedEntry_BottomRight)
+		};
 
 
 		// 17 Rm_UpperBed_Vertices()
@@ -344,9 +427,14 @@ public class RoomIndex
 		Vector3 Rm_UpperBed_BottomLeft	= new Vector3(Rm_UpperBed_SpawnPos.x,											Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z);
 		Vector3 Rm_UpperBed_BottomRight = new Vector3(Rm_UpperBed_SpawnPos.x + Rm_UpperBed.Width, Rm_UpperBed_SpawnPos.y, Rm_UpperBed_SpawnPos.z);
 
-		List<Vector3> Rm_UpperBed_Vertices = new List<Vector3>();
-		Rm_UpperBed_Vertices.AddRange(new Vector3[] { Rm_UpperBed_TopLeft, Rm_UpperBed_TopRight, Rm_UpperBed_BottomLeft, Rm_UpperBed_BottomRight });
+		List<Vector3> Rm_CornerList_UpperBed = new List<Vector3> { Rm_UpperBed_TopLeft, Rm_UpperBed_TopRight, Rm_UpperBed_BottomLeft, Rm_UpperBed_BottomRight };
 
+		List<Rm_Vertex> Rm_VertexList_UpperBed = new List<Rm_Vertex> {
+			GenerateVertex("Vx_UpperBed_TopLeft", 2, Rm_UpperBed_TopLeft),
+			GenerateVertex("Vx_UpperBed_TopRight", 2,  Rm_UpperBed_TopRight),
+			GenerateVertex("Vx_UpperBed_BottomLeft", 2,  Rm_UpperBed_BottomLeft),
+			GenerateVertex("Vx_UpperBed_BottomRight", 2,  Rm_UpperBed_BottomRight)
+		};
 
 
 		// 18 Rm_UpperBedCloset_Vertices()
@@ -357,31 +445,39 @@ public class RoomIndex
 		Vector3 Rm_UpperBedCloset_BottomLeft	= new Vector3(Rm_UpperBedCloset_SpawnPos.x,													 Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z);
 		Vector3 Rm_UpperBedCloset_BottomRight	= new Vector3(Rm_UpperBedCloset_SpawnPos.x + Rm_UpperBedCloset.Width, Rm_UpperBedCloset_SpawnPos.y, Rm_UpperBedCloset_SpawnPos.z);
 
-		List<Vector3> Rm_UpperBedCloset_Vertices = new List<Vector3>();
-		Rm_UpperBedCloset_Vertices.AddRange(new Vector3[] { Rm_UpperBedCloset_TopLeft, Rm_UpperBedCloset_TopRight, Rm_UpperBedCloset_BottomLeft, Rm_UpperBedCloset_BottomRight });
+		List<Vector3> Rm_CornerList_UpperBedCloset = new List<Vector3> { Rm_UpperBedCloset_TopLeft, Rm_UpperBedCloset_TopRight, Rm_UpperBedCloset_BottomLeft, Rm_UpperBedCloset_BottomRight };
+
+		List<Rm_Vertex> Rm_VertexList_UpperBedCloset = new List<Rm_Vertex> {
+			GenerateVertex("Vx_UpperBedCloset_TopLeft",  2,  Rm_UpperBedCloset_TopLeft),
+			GenerateVertex("Vx_UpperBedCloset_TopRight", 2,  Rm_UpperBedCloset_TopRight),
+			GenerateVertex("Vx_UpperBedCloset_BtmLeft",  2,  Rm_UpperBedCloset_BottomLeft),
+			GenerateVertex("Vx_UpperBedCloset_BtmRight", 2,  Rm_UpperBedCloset_BottomRight)
+		};
+
+
 
 		// 19 All_Room_Vertices()
 
-		List<List<Vector3>> Rm_All_VerticesList = new List<List<Vector3>>();
-		Rm_All_VerticesList.AddRange(new List<List<Vector3>> { 
-			Rm_Living_Vertices, 
-			Rm_Dining_Vertices, 
-			Rm_Hallway_Vertices, 
-			Rm_Bed_Vertices, 
-			Rm_Kitchen_Vertices, 
-			Rm_Laundry_Vertices, 
-			Rm_EntryWay_Vertices, 
-			Rm_EntryWayCloset_Vertices, 
-			Rm_Bath_Vertices, 
-			Rm_BedCloset_Vertices, 
-			Rm_StoreEntry_Vertices, 
-			Rm_Store_Vertices, 
-			Rm_DeckCovered_Vertices, 
-			Rm_DeckUncovered_Vertices, 
-			Rm_Loft_Vertices, 
-			Rm_UpperBedEntry_Vertices, 
-			Rm_UpperBed_Vertices, 
-			Rm_UpperBedCloset_Vertices 
+		List<List<Vector3>> Rm_All_CornerList = new List<List<Vector3>>();
+		Rm_All_CornerList.AddRange(new List<List<Vector3>> { 
+			Rm_CornerList_Living, 
+			Rm_CornerList_Dining, 
+			Rm_CornerList_Hallway, 
+			Rm_CornerList_Bed, 
+			Rm_CornerList_Kitchen, 
+			Rm_CornerList_Laundry, 
+			Rm_CornerList_EntryWay, 
+			Rm_CornerList_EntryWayCloset, 
+			Rm_CornerList_Bath, 
+			Rm_CornerList_BedCloset, 
+			Rm_CornerList_StoreEntry, 
+			Rm_CornerList_Store, 
+			Rm_CornerList_DeckCovered, 
+			Rm_CornerList_DeckUncovered, 
+			Rm_CornerList_Loft, 
+			Rm_CornerList_UpperBedEntry, 
+			Rm_CornerList_UpperBed, 
+			Rm_CornerList_UpperBedCloset 
 		});
 
 
@@ -407,6 +503,29 @@ public class RoomIndex
 		UpdateSpawnPos("UpperBedroomCloset", Rm_UpperBedCloset_SpawnPos);
 
 
+
+
+		Rm_All_Vertex_List.AddRange(new List<List<Rm_Vertex>> {
+			Rm_VertexList_Living, 
+			Rm_VertexList_Dining, 
+			Rm_VertexList_Hallway, 
+			Rm_VertexList_Bed, 
+			Rm_VertexList_Kitchen, 
+			Rm_VertexList_Laundry, 
+			Rm_VertexList_EntryWay, 
+			Rm_VertexList_EntryWayCloset, 
+			Rm_VertexList_Bath, 
+			Rm_VertexList_BedCloset, 
+			Rm_VertexList_StoreEntry, 
+			Rm_VertexList_Store, 
+			Rm_VertexList_DeckCovered, 
+			Rm_VertexList_DeckUncovered, 
+			Rm_VertexList_Loft, 
+			Rm_VertexList_UpperBedEntry, 
+			Rm_VertexList_UpperBed, 
+			Rm_VertexList_UpperBedCloset 
+		});
+	
 
 
 		ConsoleLogVertexList(Rm_All_Vertex_List);
@@ -440,7 +559,7 @@ public class RoomIndex
 			{
 				consoleLog += 
 					$"----{vert.Name} \n" +
-					$"------ {vert.Vertex.x}, {vert.Vertex.y}, {vert.Vertex.z}\n";
+					$"------ {vert.Pos.x}, {vert.Pos.y}, {vert.Pos.z}\n";
 			}
 		}
 		Debug.Log(consoleLog);

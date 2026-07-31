@@ -5,6 +5,10 @@ using UnityEngine;
 public class FloorGenerator : MonoBehaviour
 {
 
+	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
+	public float LevelTwoHeight = 1.0f + 10f; // Height of the second floor in Unity units
+
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 
 	void Start()
@@ -18,6 +22,8 @@ public class FloorGenerator : MonoBehaviour
 				GenerateFloor(floor);
 			}
 		}
+
+		GenerateVertexCube(RoomIndex.Rm_All_Vertex_List);
 
 	}
 
@@ -55,6 +61,35 @@ public class FloorGenerator : MonoBehaviour
 		}
 
 	}
+
+
+	public void GenerateVertexCube(List<List<RoomIndex.Rm_Vertex>> topList){
+		foreach (var vertexList in topList)
+		{
+			foreach (var vertex in vertexList)
+			{
+				GameObject vertexCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				vertexCube.name = vertex.Name;
+
+
+				
+				vertexCube.transform.localPosition = new Vector3(vertex.Pos.x, vertex.Pos.y + 1, vertex.Pos.z);
+
+				// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
+				if (vertex.Level == 2) { 
+					vertexCube.transform.localPosition = new Vector3(vertex.Pos.x, vertex.Pos.y + 11, vertex.Pos.z);
+					vertexCube.SetActive(false); 
+					vertex.IsActive = false;
+				}
+
+
+				vertexCube.transform.localScale = new Vector3(2f, 2f, 2f);
+				vertexCube.GetComponent<Renderer>().material.color = Color.red;
+			}
+		}
+	}
+
+
 
 
 	public static readonly Color32[] FloorSectionColors = new Color32[]
