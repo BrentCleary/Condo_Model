@@ -24,6 +24,7 @@ public class RoomIndex : MonoBehaviour
 	private static int _wallID   = 1;
 
 	public static List<FloorSection> All_FloorSectionList = new List<FloorSection>();
+	public static List<WallSection>  All_WallSectionList	= new List<WallSection>();
 
 
 	// ----- ----- ----- ----- ----- ----- ----- FloorSection Class ----- ----- ----- ----- ----- ----- ----- 
@@ -35,12 +36,13 @@ public class RoomIndex : MonoBehaviour
 		public  string  Name;
 		public	string  Rm_Name;
 		public  int     Level;
-		public  Vector3 SpawnPos;
 		public  float   Width;  // North - South 
 		public  float   Length; // East - West
 		public  float   Sqft;
 		public  string  FloorType;
 		public  bool	  IsActive;
+		public  Vector3 SpawnPos;
+		
 		public  List<Rm_Vertex> VxList;
 
 		// Always returns the real runtime class name (e.g. "Rm_Bath")
@@ -73,20 +75,20 @@ public class RoomIndex : MonoBehaviour
 
 	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
 
-	public static FloorSection Rm_EntryWay			 = new FloorSection("EntryWay",						"Rm_EntryWay",			 1,     43f, 40.25f, "LVP");
-	public static FloorSection Rm_EntryCloset		 = new FloorSection("EntryCloset",				"Rm_EntryCloset",		 1,     57f,    35f, "LVP");
-	public static FloorSection Rm_Hallway				 = new FloorSection("Hallway",						"Rm_Hallway",				 1,    229f,    36f, "LVP");
-	public static FloorSection Rm_Bath					 = new FloorSection("Bathroom",						"Rm_Bath",					 1,  71.25f,    87f, "LVP");
-	public static FloorSection Rm_Bed						 = new FloorSection("Bedroom",						"Rm_Bed",						 1,    157f,   148f, "LVP");
-	
-	public static FloorSection Rm_BedCloset			 = new FloorSection("BedroomCloset",			"Rm_BedCloset",			 1,     71f,    78f, "LVP");
-	public static FloorSection Rm_StoreEntry		 = new FloorSection("StoreroomEntry",			"Rm_StoreEntry",		 1,   65.5f,   103f, "Carpet");
-	public static FloorSection Rm_Store					 = new FloorSection("Storeroom",					"Rm_Store",					 1,    120f, 127.5f, "Carpet");
-	public static FloorSection Rm_Kitchen				 = new FloorSection("Kitchen",						"Rm_Kitchen",				 1,    114f,  90.5f, "LVP");
-	public static FloorSection Rm_Laundry				 = new FloorSection("Laundry",					  "Rm_Laundry",				 1,  31.25f,  89.5f, "LVP");
-	
 	public static FloorSection Rm_Living				 = new FloorSection("LivingRoom",					"Rm_Living",				 1, 151.75f,   152f, "LVP");
 	public static FloorSection Rm_Dining				 = new FloorSection("DiningRoom",					"Rm_Dining",				 1, 125.75f, 95.25f, "LVP");
+	public static FloorSection Rm_Hallway				 = new FloorSection("Hallway",						"Rm_Hallway",				 1,    229f,    36f, "LVP");
+	public static FloorSection Rm_Bed						 = new FloorSection("Bedroom",						"Rm_Bed",						 1,    157f,   148f, "LVP");
+	public static FloorSection Rm_Kitchen				 = new FloorSection("Kitchen",						"Rm_Kitchen",				 1,    114f,  90.5f, "LVP");
+	
+	public static FloorSection Rm_Laundry				 = new FloorSection("Laundry",					  "Rm_Laundry",				 1,  31.25f,  89.5f, "LVP");
+	public static FloorSection Rm_EntryWay			 = new FloorSection("EntryWay",						"Rm_EntryWay",			 1,     43f, 40.25f, "LVP");
+	public static FloorSection Rm_EntryCloset		 = new FloorSection("EntryCloset",				"Rm_EntryCloset",		 1,     57f,    35f, "LVP");
+	public static FloorSection Rm_Bath					 = new FloorSection("Bathroom",						"Rm_Bath",					 1,  71.25f,    87f, "LVP");
+	public static FloorSection Rm_BedCloset			 = new FloorSection("BedroomCloset",			"Rm_BedCloset",			 1,     71f,    78f, "LVP");
+	
+	public static FloorSection Rm_StoreEntry		 = new FloorSection("StoreroomEntry",			"Rm_StoreEntry",		 1,   65.5f,   103f, "Carpet");
+	public static FloorSection Rm_Store					 = new FloorSection("Storeroom",					"Rm_Store",					 1,    120f, 127.5f, "Carpet");
 	public static FloorSection Rm_DeckCovered		 = new FloorSection("DeckCovered",				"Rm_DeckCovered",		 1,    158f,    40f, "Rubber");
 	public static FloorSection Rm_DeckUncovered	 = new FloorSection("DeckUncovered",			"Rm_DeckUncovered",  1,    185f,    28f, "Rubber");
 	
@@ -101,6 +103,9 @@ public class RoomIndex : MonoBehaviour
 	public void Start()
 	{
 		AssignVertexLists();
+
+		Assign_Wall_SpawnPositions();
+
 		ConsoleLogVertexList(All_FloorSectionList);
 	}
 
@@ -159,64 +164,82 @@ public class RoomIndex : MonoBehaviour
 
 
 
+		// Helper to safely get a vertex by Order
+	Rm_Vertex GetVertex(FloorSection room, int order)
+	{
+		if (room == null || room.VxList == null)
+		{
+			Debug.LogError($"Room or VxList is null when looking for Order {order}");
+			return null;
+		}
+
+		Rm_Vertex vertex = room.VxList.Find(v => v.Order == order);
+
+		if (vertex == null)
+		{
+			Debug.LogError($"Could not find vertex with Order {order} on room '{room.Name}'");
+		}
+
+		return vertex;
+	}
+
+
+
+
 	public void AssignVertexLists()
 	{
 		foreach (FloorSection floor in All_FloorSectionList)		{
 			Generate_VertexList(floor);
 		}
 		
-		Assign_SpawnPositions();
-
-		foreach(FloorSection floor in All_FloorSectionList){
-			Generate_VertexList(floor);
-		}
+		Assign_Floor_SpawnPositions();
 
 	}
 
 	// Assign Spawn Positions for each room based on the vertex positions
-	public void Assign_SpawnPositions()
+	public void Assign_Floor_SpawnPositions()
 	{
-		// Helper to safely get a vertex by Order
-		Rm_Vertex GetVertex(FloorSection room, int order)
-		{
-			if (room == null || room.VxList == null)
-			{
-				Debug.LogError($"Room or VxList is null when looking for Order {order}");
-				return null;
-			}
-
-			Rm_Vertex vertex = room.VxList.Find(v => v.Order == order);
-
-			if (vertex == null)
-			{
-				Debug.LogError($"Could not find vertex with Order {order} on room '{room.Name}'");
-			}
-
-			return vertex;
-		}
 
 		// ----- Origin -----
 		Rm_Living.SpawnPos = Rm_SpawnPos_Origin;
+		Generate_VertexList(Rm_Living);
 
 		// ----- First floor chain -----
 		var livingTopLeft = GetVertex(Rm_Living, 3);
 		if (livingTopLeft != null)
 			Rm_Dining.SpawnPos = livingTopLeft.Position;
+				Generate_VertexList(Rm_Dining);
+
 
 		var livingTopRight = GetVertex(Rm_Living, 2);
 		if (livingTopRight != null)
-			Rm_Hallway.SpawnPos = livingTopRight.Position;
+		{
+			Rm_Hallway.SpawnPos = new Vector3(livingTopRight.Position.x, livingTopRight.Position.y, livingTopRight.Position.z - Rm_Hallway.Length);
+			Generate_VertexList(Rm_Hallway);
+		}
 
-		var livingBottomRight = GetVertex(Rm_Living, 1);
+		// Bed (offset on bZ)
+		var livingBottomRight = GetVertex(Rm_Hallway, 0);
 		if (livingBottomRight != null)
-			Rm_Bed.SpawnPos = livingBottomRight.Position;
+		{
+			Vector3 org = livingBottomRight.Position;
+			Rm_Bed.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_Bed.Length);
+		}
+		Generate_VertexList(Rm_Bed);
 
 		// Kitchen (offset on Z)
 		var diningTopRight = GetVertex(Rm_Dining, 2);
 		if (diningTopRight != null)
 		{
 			Vector3 org = diningTopRight.Position;
-			Rm_Kitchen.SpawnPos = new Vector3(org.x, org.y, org.z);
+			Rm_Kitchen.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_Kitchen.Length);
+			Generate_VertexList(Rm_Kitchen);
 		}
 
 		// Laundry (offset on Z)
@@ -224,47 +247,71 @@ public class RoomIndex : MonoBehaviour
 		if (kitchenTopRight != null)
 		{
 			Vector3 org = kitchenTopRight.Position;
-			Rm_Laundry.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_Laundry.Length);
+			Rm_Laundry.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_Laundry.Length);
 		}
+		Generate_VertexList(Rm_Laundry);
 
 		// EntryWay (offset on Z)
 		var laundryBottomRight = GetVertex(Rm_Laundry, 1);
 		if (laundryBottomRight != null)
 		{
 			Vector3 org = laundryBottomRight.Position;
-			Rm_EntryWay.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_EntryWay.Length);
+			Rm_EntryWay.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z);
 		}
+		Generate_VertexList(Rm_EntryWay);
 
 		// EntryCloset (offset on Z)
 		var entryWayTopRight = GetVertex(Rm_EntryWay, 2);
 		if (entryWayTopRight != null)
 		{
 			Vector3 org = entryWayTopRight.Position;
-			Rm_EntryCloset.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_EntryCloset.Length);
+			Rm_EntryCloset.SpawnPos = new Vector3(
+			org.x, 
+			org.y, 
+			org.z - Rm_EntryCloset.Length);
 		}
+		Generate_VertexList(Rm_EntryCloset);
 
 		// Bath (offset on Z)
-		var hallwayBottomRight = GetVertex(Rm_Hallway, 1);
-		if (hallwayBottomRight != null)
-		{
+		var hallwayBottomRight = GetVertex(Rm_Bed, 2);
+		if (hallwayBottomRight != null)		{
 			Vector3 org = hallwayBottomRight.Position;
-			Rm_Bath.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_Bath.Length);
+			Rm_Bath.SpawnPos = 
+			new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_Bath.Length);
 		}
+		Generate_VertexList(Rm_Bath);
 
 		// BedCloset (offset on Z)
-		var bathBottomRight = GetVertex(Rm_Bath, 1);
+		var bathBottomRight = GetVertex(Rm_Bath, 0);
 		if (bathBottomRight != null)
 		{
 			Vector3 org = bathBottomRight.Position;
-			Rm_BedCloset.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_BedCloset.Length);
+			Rm_BedCloset.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_BedCloset.Length);
+			Generate_VertexList(Rm_BedCloset);
 		}
 
 		// StoreEntry (offset on Z)
-		var bedClosetBottomRight = GetVertex(Rm_BedCloset, 1);
+		var bedClosetBottomRight = GetVertex(Rm_BedCloset, 0);
 		if (bedClosetBottomRight != null)
 		{
 			Vector3 org = bedClosetBottomRight.Position;
-			Rm_StoreEntry.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_StoreEntry.Length);
+			Rm_StoreEntry.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_StoreEntry.Length);
+			Generate_VertexList(Rm_StoreEntry);
 		}
 
 		// Store (offset on Z)
@@ -272,7 +319,11 @@ public class RoomIndex : MonoBehaviour
 		if (storeEntryBottomLeft != null)
 		{
 			Vector3 org = storeEntryBottomLeft.Position;
-			Rm_Store.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_Store.Length);
+			Rm_Store.SpawnPos = new Vector3(
+				org.x - Rm_Store.Width, 
+				org.y, 
+				org.z);
+			Generate_VertexList(Rm_Store);
 		}
 
 		// DeckCovered (offset on Z)
@@ -280,7 +331,11 @@ public class RoomIndex : MonoBehaviour
 		if (livingBottomLeft != null)
 		{
 			Vector3 org = livingBottomLeft.Position;
-			Rm_DeckCovered.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_DeckCovered.Length);
+			Rm_DeckCovered.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_DeckCovered.Length);
+			Generate_VertexList(Rm_DeckCovered);
 		}
 
 		// DeckUncovered (offset on Z)
@@ -288,7 +343,11 @@ public class RoomIndex : MonoBehaviour
 		if (deckCoveredBottomLeft != null)
 		{
 			Vector3 org = deckCoveredBottomLeft.Position;
-			Rm_DeckUncovered.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_DeckUncovered.Length);
+			Rm_DeckUncovered.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_DeckUncovered.Length);
+			Generate_VertexList(Rm_DeckUncovered);
 		}
 
 		// ----- Second floor -----
@@ -296,30 +355,48 @@ public class RoomIndex : MonoBehaviour
 		if (diningTopLeft != null)
 		{
 			Vector3 org = diningTopLeft.Position;
-			Rm_Loft.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_Loft.Length);
+			Rm_Loft.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_Loft.Length);
+			Generate_VertexList(Rm_Loft);
 		}
 
 		var loftTopRight = GetVertex(Rm_Loft, 2);
-		if (loftTopRight != null)
-		{
+		if (loftTopRight != null)		{
 			Vector3 org = loftTopRight.Position;
-			Rm_UpperBedEntry.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_UpperBedEntry.Length);
+			Rm_UpperBedEntry.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_UpperBedEntry.Length);
 		}
+		Generate_VertexList(Rm_UpperBedEntry);
 
 		var upperBedEntryBottomLeft = GetVertex(Rm_UpperBedEntry, 0);
 		if (upperBedEntryBottomLeft != null)
 		{
 			Vector3 org = upperBedEntryBottomLeft.Position;
-			Rm_UpperBed.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_UpperBed.Length);
+			Rm_UpperBed.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z - Rm_UpperBed.Length);
 		}
+		Generate_VertexList(Rm_UpperBed);
 
 		var upperBedBottomRight = GetVertex(Rm_UpperBed, 1);
 		if (upperBedBottomRight != null)
 		{
 			Vector3 org = upperBedBottomRight.Position;
-			Rm_UpperBedCloset.SpawnPos = new Vector3(org.x, org.y, org.z - Rm_UpperBedCloset.Length);
+			Rm_UpperBedCloset.SpawnPos = new Vector3(
+				org.x, 
+				org.y, 
+				org.z);
 		}
+		Generate_VertexList(Rm_UpperBedCloset);
+
 	}
+
+	#region OriginalSpawnPositionScript
 
 
 	//public void Assign_SpawnPositions(){ 
@@ -374,30 +451,29 @@ public class RoomIndex : MonoBehaviour
 	//	Rm_UpperBedCloset.SpawnPos = new Vector3(org_UpperBedCloset.x, org_UpperBedCloset.y, org_UpperBedCloset.z - Rm_UpperBedCloset.Length);
 	//}
 
+	#endregion
+
+	//Spawn Order
+	//  Rm_Living
+	//  Rm_Dining
+	//  Rm_Hallway
+	//  Rm_Bed
+	//  Rm_Kitchen
+	//  Rm_Laundry
+	//  Rm_EntryWay
+	//  Rm_EntryCloset
+	//  Rm_Bath
+	//  Rm_BedCloset
+	//  Rm_StoreEntry
+	//  Rm_Store
+	//  Rm_DeckCovered
+	//  Rm_DeckUncovered
+	//  Rm_Loft
+	//  Rm_UpperBedEntry
+	//  Rm_UpperBed
+	//  Rm_UpperBedCloset
 
 
-		//Spawn Order
-		//  Rm_Living
-		//  Rm_Dining
-		//  Rm_Hallway
-		//  Rm_Bed
-		//  Rm_Kitchen
-		//  Rm_Laundry
-		//  Rm_EntryWay
-		//  Rm_EntryCloset
-		//  Rm_Bath
-		//  Rm_BedCloset
-		//  Rm_StoreEntry
-		//  Rm_Store
-		//  Rm_DeckCovered
-		//  Rm_DeckUncovered
-		//  Rm_Loft
-		//  Rm_UpperBedEntry
-		//  Rm_UpperBed
-		//  Rm_UpperBedCloset
-
-
-		
 
 
 
@@ -412,10 +488,10 @@ public class RoomIndex : MonoBehaviour
 		}
 		
 		consoleLog += $"Room Vertices in {topList}: \n";
-		foreach (FloorSection floor in topList)
+		foreach (FloorSection floor in topList) 
 		{
 			consoleLog += $"--{floor.Name} \n";
-			foreach (Rm_Vertex vx in floor.VxList)
+			foreach (Rm_Vertex vx in floor.VxList) 
 			{
 				consoleLog +=
 					$"----{vx.Name} \n" +
@@ -431,8 +507,8 @@ public class RoomIndex : MonoBehaviour
 
 	public enum WL_Direction
 	{
-		NorthSouth = 1,
-		EastWest = 2
+		NS = 1, // North-South direction (X-axis)
+		EW = 2  // East-West direction	 (Z-axis)
 	}
 
 	public static float WL_Thick = 5; // Wall thickness in inches
@@ -440,36 +516,54 @@ public class RoomIndex : MonoBehaviour
 	public class WallSection
 	{
 
-		public int ID;
-		public string Name;
-		public int Level;
+		public int					ID;
+		public string				Name;
+		public int					Level;
 		public WL_Direction Direction;
-		public Vector3 SpawnPos;
-		public float Width;
-		public float Length;
-		public bool IsActive;
+		public float				Width;
+		public float				Length;
+		public bool					IsActive;
+		public Vector3			SpawnPos;
 
 
 
 		// -----  Constructor ----- 
-		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive)
+		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
 		{
 			ID = _wallID;
 			_wallID = _wallID + 1;
 
-			Name = name;
-			Level = level;
+			Name			= name;
+			Level			= level;
 			Direction = direction;
-			Width = width;
-			Length = length;
+			Width			= width;
+			Length		= length;
 		}
 	}
 
 
-	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
+	public void Assign_Wall_SpawnPositions()
+	{
+		// Example: Assigning spawn positions for wall sections based on room vertices
+		// This is a placeholder; actual logic will depend on the specific layout and requirements
 
-	WallSection WL_Entryway_EntrywayCloset = new WallSection("EntryClosetEast", 1,  WL_Direction.NorthSouth, WL_Thick, 5f, true);
-	WallSection WL_EntryWay_Laundry				 = new WallSection("EntryClosetWest", 1, WL_Direction.NorthSouth, WL_Thick, 39.5f, true);
+		// Kitchen Wall
+		Vector3 KitchenWallSpawnPos = (Rm_Dining.VxList.Find(v => v.Order == 1).Position + new Vector3(-14, 0, 0));
+		WallSection WL_Kitchen_HallWay = new WallSection("KitchenWest", 1, WL_Direction.NS, 98, WL_Thick);
+		WL_Kitchen_HallWay.SpawnPos = KitchenWallSpawnPos;
+		
+
+		Vector3 LaundryWallSpawnPos = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -5));
+		WallSection WL_Laundry_HallWay = new WallSection("LaundryWest", 1, WL_Direction.NS, 40.75f, WL_Thick);
+		WL_Laundry_HallWay.SpawnPos = LaundryWallSpawnPos;
+
+		All_WallSectionList.Add(WL_Kitchen_HallWay);
+		All_WallSectionList.Add(WL_Laundry_HallWay);
+	}
+
+
+	//WallSection WL_Entryway_EntrywayCloset = new WallSection("EntryClosetEast", 1, WL_Direction.EW, WL_Thick, 5f, true);
+	//WallSection WL_EntryWay_Laundry				 = new WallSection("EntryClosetWest", 1, WL_Direction.EW, WL_Thick, 39.5f, true);
 
 
 

@@ -25,6 +25,14 @@ public class FloorGenerator : MonoBehaviour
 
 		GenerateVertexCube(RoomIndex.All_FloorSectionList);
 
+		foreach(RoomIndex.WallSection wall in RoomIndex.All_WallSectionList)
+		{
+			if (wall != null)
+			{
+				GenerateWall(wall);
+			}
+		}
+
 	}
 
 
@@ -78,11 +86,42 @@ public class FloorGenerator : MonoBehaviour
 					vertex.IsActive = false;
 				}
 
-				vertexCube.transform.localScale = new Vector3(2f, 2f, 2f);
+				vertexCube.transform.localScale = new Vector3(3f, 3f, 3f);
 				vertexCube.GetComponent<Renderer>().material.color = Color.red;
 			}
 		}
 	}
+
+
+	public void GenerateWall(RoomIndex.WallSection wall){
+		
+		float width  = wall.Width;
+		float length = wall.Length;
+
+		GameObject wallTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		wallTile.name = wall.Name;
+
+
+		// Move the center so the lowest-left corner lands on SpawnPos
+		// (X = width, Z = length, Y = thickness)
+		wallTile.transform.localPosition = wall.SpawnPos
+																			+ new Vector3(width * 0.5f, LevelOneHeight, length * 0.5f);
+		wallTile.transform.localScale = new Vector3(width, 120f, length);
+
+		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
+		if (wall.Level == 2) { wallTile.SetActive(false); }
+
+		wallTile.GetComponent<Renderer>().material.color = Color.whiteSmoke;
+
+
+	}
+
+
+
+
+
+
+
 
 
 

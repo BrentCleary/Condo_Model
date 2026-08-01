@@ -148,6 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5db231c5824ba043a9c2e4b064e4f62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloorGenerator
+  LevelOneHeight: 1
+  LevelTwoHeight: 11
 --- !u!4 &118118583
 Transform:
   m_ObjectHideFlags: 0
@@ -489,8 +491,8 @@ Transform:
   m_GameObject: {fileID: 1151293103}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -250, y: 0, z: -250}
+  m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1253525796}
