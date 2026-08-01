@@ -15,7 +15,7 @@ public class FloorGenerator : MonoBehaviour
 	{
 		new RoomIndex().Start();          // ← actually populate the list
 	
-		foreach(RoomIndex.FloorSection floor in RoomIndex.FloorSectionList)
+		foreach(RoomIndex.FloorSection floor in RoomIndex.All_FloorSectionList)
 		{
 			if (floor != null)
 			{
@@ -23,7 +23,7 @@ public class FloorGenerator : MonoBehaviour
 			}
 		}
 
-		GenerateVertexCube(RoomIndex.Rm_All_Vertex_List);
+		GenerateVertexCube(RoomIndex.All_FloorSectionList);
 
 	}
 
@@ -42,15 +42,13 @@ public class FloorGenerator : MonoBehaviour
 		// Move the center so the lowest-left corner lands on SpawnPos
 		// (X = width, Z = length, Y = thickness)
 		floorTile.transform.localPosition = floor.SpawnPos
-																			+ new Vector3(width * 0.5f, 1f, length * 0.5f);
+																			+ new Vector3(width * 0.5f, LevelOneHeight, length * 0.5f);
 		floorTile.transform.localScale = new Vector3(width, 0.1f, length);
-
-		floorTile.GetComponent<Renderer>().material.color = Color.blueViolet;
 
 		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
 		if(floor.Level == 2) {floorTile.SetActive(false);	}
 	
-		foreach (var section in RoomIndex.FloorSectionList)
+		foreach (var section in RoomIndex.All_FloorSectionList)
 		{
 			if (section != null && section.ID == floor.ID)
 			{
@@ -63,25 +61,22 @@ public class FloorGenerator : MonoBehaviour
 	}
 
 
-	public void GenerateVertexCube(List<List<RoomIndex.Rm_Vertex>> topList){
-		foreach (var vertexList in topList)
+	public void GenerateVertexCube(List<RoomIndex.FloorSection> topList){
+		foreach (RoomIndex.FloorSection floor in topList)
 		{
-			foreach (var vertex in vertexList)
+			foreach (var vertex in floor.VxList)
 			{
 				GameObject vertexCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				vertexCube.name = vertex.Name;
 
-
-				
-				vertexCube.transform.localPosition = new Vector3(vertex.Pos.x, vertex.Pos.y + 1, vertex.Pos.z);
+				vertexCube.transform.localPosition = new Vector3(vertex.Position.x, vertex.Position.y, vertex.Position.z);
 
 				// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
 				if (vertex.Level == 2) { 
-					vertexCube.transform.localPosition = new Vector3(vertex.Pos.x, vertex.Pos.y + 11, vertex.Pos.z);
+					vertexCube.transform.localPosition = new Vector3(vertex.Position.x, vertex.Position.y + LevelTwoHeight, vertex.Position.z);
 					vertexCube.SetActive(false); 
 					vertex.IsActive = false;
 				}
-
 
 				vertexCube.transform.localScale = new Vector3(2f, 2f, 2f);
 				vertexCube.GetComponent<Renderer>().material.color = Color.red;
