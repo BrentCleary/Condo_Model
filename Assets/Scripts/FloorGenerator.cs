@@ -8,7 +8,7 @@ public class FloorGenerator : MonoBehaviour
 	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
 	public float LevelTwoHeight = 1.0f + 10f; // Height of the second floor in Unity units
 
-	public float LevelOneWallHeight = 10.0f; // Height of the first floor walls in Unity units
+	private float LevelOneWallHeight = 10f; // Height of the first floor walls in Unity units (93.5)
 
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -113,7 +113,25 @@ public class FloorGenerator : MonoBehaviour
 		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
 		if (wall.Level == 2) { wallTile.SetActive(false); }
 
-		wallTile.GetComponent<Renderer>().material.color = Color.whiteSmoke;
+		Material wallMat = wallTile.GetComponent<Renderer>().material;
+
+		// --- Force Transparent mode (Built-in Render Pipeline) ---
+		wallMat.SetFloat("_Mode", 3); // 3 = Transparent
+		wallMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+		wallMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+		wallMat.SetInt("_ZWrite", 0);
+		wallMat.DisableKeyword("_ALPHATEST_ON");
+		wallMat.EnableKeyword("_ALPHABLEND_ON");
+		wallMat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+		wallMat.renderQueue = 3000;
+
+
+		Color currentColor = Color.whiteSmoke; // Default color
+		currentColor.a = 0.5f; // Set alpha to 0.5 for transparency
+		wallMat.color = currentColor;
+
+		wallTile.GetComponent<Renderer>().material = wallMat;
+
 
 
 	}
