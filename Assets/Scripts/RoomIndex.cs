@@ -560,6 +560,8 @@ public class RoomIndex : MonoBehaviour
 		// [WL]_[FloorSectionSpawnReference]_[OppositeFloorSection]
 
 
+
+
 		// Kitchen Wall (North-South) wall - 98 Length
 		Vector3 WL_SpawnPos_Kitchen_Hallway = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
 		WallSection WL_Kitchen_HallWay = new WallSection(nameof(WL_Kitchen_HallWay), 1, WL_Direction.NS, 98, WL_Thick);
@@ -569,6 +571,8 @@ public class RoomIndex : MonoBehaviour
 		Vector3 WL_SpawnPos_Kitchen_Exterior_East = (Rm_Kitchen.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
 		WallSection WL_Kitchen_Exterior_East = new WallSection(nameof(WL_Kitchen_Exterior_East), 1, WL_Direction.NS, 114, WL_Thick);
 		WL_Kitchen_Exterior_East.SpawnPos = WL_SpawnPos_Kitchen_Exterior_East;
+
+
 
 
 
@@ -591,12 +595,26 @@ public class RoomIndex : MonoBehaviour
 
 
 
-		// Entryway Closet (East-West) wall - 5 Length
-		Vector3 WL_SpawnPos_EntryCloset_Entryway = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(WL_Thick, 0, -WL_Thick));
+		// EntryCloset (East-West) wall - 5 Length
+		Vector3 WL_SpawnPos_EntryCloset_Entryway = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, -WL_Thick));
 		WallSection WL_EntryCloset_Entry = new WallSection(nameof(WL_EntryCloset_Entry), 1, WL_Direction.EW, WL_Thick, 5.0f, true);
 		WL_EntryCloset_Entry.SpawnPos = WL_SpawnPos_EntryCloset_Entryway;
 
-		// Entryway (North-South) wall - 40.25 Length
+		// EntryCloset Exterior South (East-West) wall - 40.25 Length
+		Vector3 WL_SpawnPos_EntryCloset_Exterior_South = (Rm_EntryCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, 0));
+		WallSection WL_EntryCloset_Exterior_South = new WallSection(nameof(WL_EntryCloset_Exterior_South), 1, WL_Direction.EW, WL_Thick, 35f);
+		WL_EntryCloset_Exterior_South.SpawnPos = WL_SpawnPos_EntryCloset_Exterior_South;
+
+		// EntryCloset Exterior East (North-South) wall - 56.75 Length
+		Vector3 WL_SpawnPos_EntryCloset_Exterior_East = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
+		WallSection WL_EntryCloset_Exterior_East = new WallSection(nameof(WL_EntryCloset_Exterior_East), 1, WL_Direction.NS, 56.75f, WL_Thick);
+		WL_EntryCloset_Exterior_East.SpawnPos = WL_SpawnPos_EntryCloset_Exterior_East;
+
+		// EntryCloset (North-South) wall - 56.75 Length
+		Vector3 WL_SpawnPos_EntryCloset_Hallway = (Rm_EntryCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		WallSection WL_EntryCloset_Hallway = new WallSection(nameof(WL_EntryCloset_Hallway), 1, WL_Direction.NS, 56.75f, WL_Thick);
+		WL_EntryCloset_Hallway.SpawnPos = WL_SpawnPos_EntryCloset_Hallway;
+
 
 
 
@@ -609,6 +627,8 @@ public class RoomIndex : MonoBehaviour
 		Vector3 WL_SpawnPos_Living_DeckCovered = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		WallSection WL_Living_DeckCovered = new WallSection(nameof(WL_Living_DeckCovered), 1, WL_Direction.NS, 152.0f, WL_Thick);
 		WL_Living_DeckCovered.SpawnPos = WL_SpawnPos_Living_DeckCovered;
+
+
 
 
 
@@ -635,6 +655,11 @@ public class RoomIndex : MonoBehaviour
 		WallSection WL_Bed_HallWay = new WallSection(nameof(WL_Bed_HallWay), 1, WL_Direction.NS, 157f, WL_Thick);
 		WL_Bed_HallWay.SpawnPos = WL_SpawnPos_Bed_HallWay;
 
+		// Bedroom (North-South) wall - 157 Length
+		Vector3 WL_SpawnPos_Bed_Store = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		WallSection WL_Bed_Store = new WallSection(nameof(WL_Bed_Store), 1, WL_Direction.NS, 157f, WL_Thick);
+		WL_Bed_Store.SpawnPos = WL_SpawnPos_Bed_Store;
+
 
 
 
@@ -648,12 +673,37 @@ public class RoomIndex : MonoBehaviour
 		WallSection WL_Bath_Hallways = new WallSection(nameof(WL_Bath_Hallways), 1, WL_Direction.NS, 71.25f, WL_Thick);
 		WL_Bath_Hallways.SpawnPos = WL_SpawnPos_Bath_Hallways;
 
+		// Bathroom (East - West) wall - 87 Length
+		Vector3 WL_SpawnPos_Bath_Bed = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, 0));
+		WallSection WL_Bath_Bed = new WallSection(nameof(WL_Bath_Bed), 1, WL_Direction.EW, WL_Thick, 87);
+		WL_Bath_Bed.SpawnPos = WL_SpawnPos_Bath_Bed;
+
+		// Bathroom (North-South) wall - 71.25 Length
+		Vector3 WL_SpawnPos_Bath_BedCloset = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		WallSection WL_Bath_BedCloset = new WallSection(nameof(WL_Bath_BedCloset), 1, WL_Direction.NS, 71.25f, WL_Thick);
+		WL_Bath_BedCloset.SpawnPos = WL_SpawnPos_Bath_BedCloset;
+
+
 
 
 		// Hallway (East-West) wall - 36 Length
-		Vector3 WL_SpawnPos_Hallway_Exterior_South = (Rm_Hallway.VxList.Find(v => v.Order == 10).Position + new Vector3(0, 0, 0));
+		Vector3 WL_SpawnPos_Hallway_Exterior_South = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, 0));
 		WallSection WL_Hallway_Exterior_South = new WallSection(nameof(WL_Hallway_Exterior_South), 1, WL_Direction.EW, WL_Thick, 36f);
 		WL_Hallway_Exterior_South.SpawnPos = WL_SpawnPos_Hallway_Exterior_South;
+
+
+
+
+		// BedCloset (East-West) wall - 78 Length
+		Vector3 WL_SpawnPos_BedCloset_Exterior_South = (Rm_BedCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, 0));
+		WallSection WL_BedCloset_Exterior_South = new WallSection(nameof(WL_BedCloset_Exterior_South), 1, WL_Direction.EW, WL_Thick, 78f);
+		WL_BedCloset_Exterior_South.SpawnPos = WL_SpawnPos_BedCloset_Exterior_South;
+
+		// BedCloset (North-South) wall - 71.25 Length
+		Vector3 WL_SpawnPos_BedCloset_StoreEntry = (Rm_BedCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		WallSection WL_BedCloset_StoreEntry = new WallSection(nameof(WL_BedCloset_StoreEntry), 1, WL_Direction.NS, 71.25f, WL_Thick);
+		WL_BedCloset_StoreEntry.SpawnPos = WL_SpawnPos_BedCloset_StoreEntry;
+
 
 
 
@@ -668,7 +718,10 @@ public class RoomIndex : MonoBehaviour
 		All_WallSectionList.Add(WL_Laundry_EntryWay);
 		All_WallSectionList.Add(WL_Laundry_Exterior_East);
 
-		All_WallSectionList.Add(WL_Entryway_EntryCloset);
+		All_WallSectionList.Add(WL_EntryCloset_Entry);
+		All_WallSectionList.Add(WL_EntryCloset_Exterior_South);
+		All_WallSectionList.Add(WL_EntryCloset_Exterior_East);
+		All_WallSectionList.Add(WL_EntryCloset_Hallway);
 
 		All_WallSectionList.Add(WL_Living_Exterior);
 		All_WallSectionList.Add(WL_Living_DeckCovered);
@@ -676,14 +729,18 @@ public class RoomIndex : MonoBehaviour
 		All_WallSectionList.Add(WL_Dining_Exterior_North);
 		All_WallSectionList.Add(WL_Dining_Exterior_East);
 
-
-		All_WallSectionList.Add(WL_Bed_Living);
 		All_WallSectionList.Add(WL_Bed_HallWay);
+		All_WallSectionList.Add(WL_Bed_Living);
+		All_WallSectionList.Add(WL_Bed_Store);
 
 		All_WallSectionList.Add(WL_Bath_Exterior_South);
 		All_WallSectionList.Add(WL_Bath_Hallways);
+		All_WallSectionList.Add(WL_Bath_Bed);
+		All_WallSectionList.Add(WL_Bath_BedCloset);
 
-		All_WallSectionList.Add(WL_Hallway_Exterior_South);
+
+		All_WallSectionList.Add(WL_BedCloset_Exterior_South);
+		All_WallSectionList.Add(WL_BedCloset_StoreEntry);
 
 
 
