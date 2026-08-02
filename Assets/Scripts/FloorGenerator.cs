@@ -8,6 +8,8 @@ public class FloorGenerator : MonoBehaviour
 	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
 	public float LevelTwoHeight = 1.0f + 10f; // Height of the second floor in Unity units
 
+	public float LevelOneWallHeight = 10.0f; // Height of the first floor walls in Unity units
+
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -105,8 +107,8 @@ public class FloorGenerator : MonoBehaviour
 		// Move the center so the lowest-left corner lands on SpawnPos
 		// (X = width, Z = length, Y = thickness)
 		wallTile.transform.localPosition = wall.SpawnPos
-																			+ new Vector3(width * 0.5f, LevelOneHeight, length * 0.5f);
-		wallTile.transform.localScale = new Vector3(width, 120f, length);
+																			+ new Vector3(width * 0.5f, LevelOneWallHeight * 0.5f, length * 0.5f);
+		wallTile.transform.localScale = new Vector3(width, LevelOneWallHeight, length);
 
 		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
 		if (wall.Level == 2) { wallTile.SetActive(false); }
