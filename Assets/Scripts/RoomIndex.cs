@@ -560,20 +560,22 @@ public class RoomIndex : MonoBehaviour
 		// [WL]_[FloorSectionSpawnReference]_[OppositeFloorSection]
 
 
-		// Kitchen Wall
+		// Kitchen Wall (North-South) wall - 98 Length
 		Vector3 WL_SpawnPos_Kitchen_Hallway = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
 		WallSection WL_Kitchen_HallWay = new WallSection("KitchenWest", 1, WL_Direction.NS, 98, WL_Thick);
 		WL_Kitchen_HallWay.SpawnPos = WL_SpawnPos_Kitchen_Hallway;
-		
 
+		// Laundry Room (North-South) wall - 40.75 Length
 		Vector3 WL_SpawnPos_Laundry_Hallway = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -5));
 		WallSection WL_Laundry_HallWay = new WallSection("LaundryWest", 1, WL_Direction.NS, 40.75f, WL_Thick);
 		WL_Laundry_HallWay.SpawnPos = WL_SpawnPos_Laundry_Hallway;
 
+		// Laundry Room (East-West) wall - 90.5 Length
 		Vector3 WL_SpawnPos_Laundry_EntryWay = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, 0));
-		WallSection WL_Laundry_EntryWay = new WallSection("EntryClosetWest", 1, WL_Direction.EW, WL_Thick, 90f, true);
+		WallSection WL_Laundry_EntryWay = new WallSection("EntryClosetWest", 1, WL_Direction.EW, WL_Thick, 90.5f, true);
 		WL_Laundry_EntryWay.SpawnPos = WL_SpawnPos_Laundry_EntryWay;
 
+		// Entryway (East-West) wall - 5 Length
 		Vector3 WL_SpawnPos_Entryway_EntryCloset = (Rm_EntryWay.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, -5));
 		WallSection WL_Entryway_EntryCloset = new WallSection("EntryClosetEast", 1, WL_Direction.EW, WL_Thick, 5f, true);
 		WL_Entryway_EntryCloset.SpawnPos = WL_SpawnPos_Entryway_EntryCloset;
