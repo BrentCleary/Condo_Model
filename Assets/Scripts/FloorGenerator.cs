@@ -7,7 +7,7 @@ public class FloorGenerator : MonoBehaviour
 	public float LevelOneHeight = 1.0f; // Height of the first floor in Unity units
 	public float LevelTwoHeight = 1.0f + 10f; // Height of the second floor in Unity units
 
-	private float LevelOneWallHeight = 93.5f; // Height of the first floor walls in Unity units (93.5)
+	private float LevelOneWallHeight = 10f; // Height of the first floor walls in Unity units (93.5)
 
 	// NEW: Organizational parents – created once in Start()
 	private GameObject floorSectionContainer;
