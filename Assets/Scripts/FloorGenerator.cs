@@ -13,7 +13,7 @@ public class FloorGenerator : MonoBehaviour
 	private GameObject floorSectionContainer;
 	private GameObject vertexCubeContainer;
 	private GameObject wallSectionContainer;
-
+	 
 
 	void Start()
 	{
