@@ -830,21 +830,38 @@ public class RoomIndex : MonoBehaviour
 
 	public void Assign_Post_SpawnPositions()
 	{
-
+		// Living Room NW
 		Vector3 PT_SpawnPos_Living_NW = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
 		PostSection PT_Living_NW = new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
 		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
 
+		// Living Room SE
 		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		PostSection PT_Hallway_NW = new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
 		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
 
+		// Dining Room NE
+		Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
+		PostSection PT_Dining_NE = new PostSection(nameof(PT_Dining_NE), 1, WL_Thick, WL_Thick);
+		PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
 
+		// Laundry Room SE
+		Vector3 PT_SpawnPos_Laundry_SE = (Rm_Laundry.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		PostSection PT_Laundry_SE = new PostSection(nameof(PT_Laundry_SE), 1, WL_Thick, WL_Thick);
+		PT_Laundry_SE.SpawnPos = PT_SpawnPos_Laundry_SE;
+
+		// Laundry Room SW
+		Vector3 PT_SpawnPos_Laundry_SW = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Laundry_SW = new PostSection(nameof(PT_Laundry_SW), 1, WL_Thick, WL_Thick);
+		PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
 
 
 
 		All_PostSectionList.Add(PT_Living_NW);
 		All_PostSectionList.Add(PT_Hallway_NW);
+		All_PostSectionList.Add(PT_Dining_NE);
+		All_PostSectionList.Add(PT_Laundry_SE);
+		All_PostSectionList.Add(PT_Laundry_SW);
 
 	}
 
