@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,42 +25,55 @@ public class RoomIndex : MonoBehaviour
 	private static int _floorID  = 1;
 	private static int _vertexID = 1;
 	private static int _wallID   = 1;
+	private static int _postID	 = 1;
+
 
 	public static List<FloorSection> All_FloorSectionList = new List<FloorSection>();
 	public static List<WallSection>  All_WallSectionList	= new List<WallSection>();
+	public static List<PostSection>  All_PostSectionList  = new List<PostSection>();
+
+
+	// ----- ----- ----- ----- ----- ----- ----- Base Class Structure : Interface ----- ----- ----- ----- ----- ----- ----- 
+
+	public class Structure
+	{
+		public int		 ID;
+		public string  Name;
+		public int		 Level;
+		public float	 Width;   // North - South
+		public float	 Length;  // East - West
+		public float	 Sqft;
+		public bool		 IsActive;
+		
+		public Vector3 SpawnPos;
+		
+		public List<Vertex> VxList;
+
+		public string ClassRef => GetType().Name;
+
+		protected const float SqftConversion = 144f; // 12x12 inches
+	}
+
+
 
 
 	// ----- ----- ----- ----- ----- ----- ----- FloorSection Class ----- ----- ----- ----- ----- ----- ----- 
 
-	public class FloorSection
+	public class FloorSection : Structure
 	{
 
-		public  int     ID;
-		public  string  Name;
-		public	string  Rm_Name;
-		public  int     Level;
-		public  float   Width;  // North - South 
-		public  float   Length; // East - West
-		public  float   Sqft;
+		public	string  Room_Name;
 		public  string  FloorType;
-		public  bool	  IsActive;
-		public  Vector3 SpawnPos;
-		
-		public  List<Rm_Vertex> VxList;
 
-		// Always returns the real runtime class name (e.g. "Rm_Bath")
-		public string ClassRef => GetType().Name;
-
-		private const float SqftConversion = 144f; // 12x12 inches
 
 		// -----  Constructor ----- 
-		public FloorSection(string name, string rm_Name, int level, float width, float length, string floorType, bool isActive = true, Vector3 spawnPos = default(Vector3))
+		public FloorSection(string name, string room_Name, int level, float width, float length, string floorType, bool isActive = true, Vector3 spawnPos = default(Vector3))
 		{
 			ID				= _floorID;
 			_floorID	= _floorID + 1;
 
 			Name      = name;
-			Rm_Name   = rm_Name;
+			Room_Name = room_Name;
 			Level     = level;
 			SpawnPos  = spawnPos;
 			Width     = width;
@@ -69,7 +83,7 @@ public class RoomIndex : MonoBehaviour
 			IsActive  = isActive;
 
 			All_FloorSectionList.Add(this);
-			VxList = new List<Rm_Vertex>();
+			VxList = new List<Vertex>();
 		}
 	}
 	
@@ -77,28 +91,28 @@ public class RoomIndex : MonoBehaviour
 
 	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
 
-	public static FloorSection Rm_Living				 = new FloorSection("LivingRoom",					"Rm_Living",				 1, 151.75f,   152f, "LVP");
-	public static FloorSection Rm_Dining				 = new FloorSection("DiningRoom",					"Rm_Dining",				 1, 125.75f, 95.25f, "LVP");
-	public static FloorSection Rm_Hallway				 = new FloorSection("Hallway",						"Rm_Hallway",				 1,    229f,    36f, "LVP");
-	public static FloorSection Rm_Bed						 = new FloorSection("Bedroom",						"Rm_Bed",						 1,    157f,   148f, "LVP");
-	public static FloorSection Rm_Kitchen				 = new FloorSection("Kitchen",						"Rm_Kitchen",				 1,    114f,  90.5f, "LVP");
-	
-	public static FloorSection Rm_Laundry				 = new FloorSection("Laundry",					  "Rm_Laundry",				 1,  35.75f,  90.5f, "LVP");
-	public static FloorSection Rm_EntryWay			 = new FloorSection("EntryWay",						"Rm_EntryWay",			 1,  43.25f,    40f, "LVP");
-	public static FloorSection Rm_EntryCloset		 = new FloorSection("EntryCloset",				"Rm_EntryCloset",		 1,  56.75f,    35f, "LVP");
-	public static FloorSection Rm_Bath					 = new FloorSection("Bathroom",						"Rm_Bath",					 1,  71.25f,    87f, "LVP");
-	public static FloorSection Rm_BedCloset			 = new FloorSection("BedroomCloset",			"Rm_BedCloset",			 1,     71f,    78f, "LVP");
-	
-	public static FloorSection Rm_StoreEntry		 = new FloorSection("StoreroomEntry",			"Rm_StoreEntry",		 1,   76.5f,   103f, "Carpet");
-	public static FloorSection Rm_Store					 = new FloorSection("Storeroom",					"Rm_Store",					 1,    120f, 127.5f, "Carpet");
-	public static FloorSection Rm_DeckCovered		 = new FloorSection("DeckCovered",				"Rm_DeckCovered",		 1,    158f,    40f, "Rubber");
-	public static FloorSection Rm_DeckUncovered	 = new FloorSection("DeckUncovered",			"Rm_DeckUncovered",  1,    185f,    28f, "Rubber");
-	
-	// 2nd Floor
-	public static FloorSection Rm_Loft					 = new FloorSection("Loft",								"Rm_Loft",					 2,    183f,   137f, "Carpet");
-	public static FloorSection Rm_UpperBed			 = new FloorSection("UpperBedroom",				"Rm_UpperBed",			 2,    165f,    76f, "Carpet");
-	public static FloorSection Rm_UpperBedEntry	 = new FloorSection("UpperBedroomEntry",	"Rm_UpperBedEntry",	 2,     87f, 54.75f, "Carpet");
-	public static FloorSection Rm_UpperBedCloset = new FloorSection("UpperBedroomCloset", "Rm_UpperBedCloset", 2,  23.75f,    76f, "Carpet");
+	public static FloorSection Rm_Living				 = new FloorSection("Rm_Living",				 "LivingRoom",				 1, 151.75f,   152f, "LVP");
+	public static FloorSection Rm_Dining				 = new FloorSection("Rm_Dining",				 "DiningRoom",				 1, 125.75f, 95.25f, "LVP");
+	public static FloorSection Rm_Hallway				 = new FloorSection("Rm_Hallway",				 "Hallway",					   1,    229f,    36f, "LVP");
+	public static FloorSection Rm_Bed						 = new FloorSection("Rm_Bed",						 "Bedroom",					   1,    157f,   148f, "LVP");
+	public static FloorSection Rm_Kitchen				 = new FloorSection("Rm_Kitchen",				 "Kitchen",					   1,    114f,  90.5f, "LVP");
+																																											 											 
+	public static FloorSection Rm_Laundry				 = new FloorSection("Rm_Laundry",				 "Laundry",					   1,  35.75f,  90.5f, "LVP");
+	public static FloorSection Rm_EntryWay			 = new FloorSection("Rm_EntryWay",			 "EntryWay",					 1,  43.25f,    40f, "LVP");
+	public static FloorSection Rm_EntryCloset		 = new FloorSection("Rm_EntryCloset",		 "EntryCloset",			   1,  56.75f,    35f, "LVP");
+	public static FloorSection Rm_Bath					 = new FloorSection("Rm_Bath",					 "Bathroom",					 1,  71.25f,    87f, "LVP");
+	public static FloorSection Rm_BedCloset			 = new FloorSection("Rm_BedCloset",			 "BedroomCloset",		   1,     71f,    78f, "LVP");
+																																											 											 
+	public static FloorSection Rm_StoreEntry		 = new FloorSection("Rm_StoreEntry",		 "StoreroomEntry",		 1,   76.5f,   103f, "Carpet");
+	public static FloorSection Rm_Store					 = new FloorSection("Rm_Store",					 "Storeroom",				   1,    120f, 127.5f, "Carpet");
+	public static FloorSection Rm_DeckCovered		 = new FloorSection("Rm_DeckCovered",		 "DeckCovered",			   1,    158f,    40f, "Rubber");
+	public static FloorSection Rm_DeckUncovered	 = new FloorSection("Rm_DeckUncovered",	 "DeckUncovered",		   1,    185f,    28f, "Rubber");
+																																											 
+	// 2nd Floor																																				 
+	public static FloorSection Rm_Loft					 = new FloorSection("Rm_Loft",					 "Loft",							 2,    183f,   137f, "Carpet");
+	public static FloorSection Rm_UpperBed			 = new FloorSection("Rm_UpperBed",			 "UpperBedroom",			 2,    165f,    76f, "Carpet");
+	public static FloorSection Rm_UpperBedEntry	 = new FloorSection("Rm_UpperBedEntry",	 "UpperBedroomEntry",  2,     87f, 54.75f, "Carpet");
+	public static FloorSection Rm_UpperBedCloset = new FloorSection("Rm_UpperBedCloset", "UpperBedroomCloset", 2,  23.75f,    76f, "Carpet");
 
 
 
@@ -108,13 +122,15 @@ public class RoomIndex : MonoBehaviour
 
 		Assign_Wall_SpawnPositions();
 
+		Assign_Post_SpawnPositions();
+
 		ConsoleLogVertexList(All_FloorSectionList);
 	}
 
 
 
-	// ----- ----- ----- ----- ----- ----- ----- Rm_Vertex Class ----- ----- ----- ----- ----- ----- ----- 
-	public class Rm_Vertex
+	// ----- ----- ----- ----- ----- ----- ----- Vertex Class ----- ----- ----- ----- ----- ----- ----- 
+	public class Vertex
 	{
 		private int			ID;
 		public	string	Name;
@@ -124,7 +140,7 @@ public class RoomIndex : MonoBehaviour
 		public	bool		IsActive;
 
 		// -----  Constructor ----- 
-		public Rm_Vertex(string name, int level, Vector3 position, int order = 0, bool isActive = true)
+		public Vertex(string name, int level, Vector3 position, int order = 0, bool isActive = true)
 		{
 			ID				 = _vertexID;
 			_vertexID  = _vertexID + 1;
@@ -137,49 +153,49 @@ public class RoomIndex : MonoBehaviour
 		}
 	}
 
-	public void Generate_VertexList(FloorSection floor)
+	public void Generate_Structure_VertexList(Structure structure)
 	{
-		Vector3 BottomLeft	= new Vector3(floor.SpawnPos.x,										 floor.SpawnPos.y,	floor.SpawnPos.z);
-		Vector3 BottomRight = new Vector3(floor.SpawnPos.x + floor.Width,			 floor.SpawnPos.y,	floor.SpawnPos.z);
-		Vector3 TopRight		= new Vector3(floor.SpawnPos.x + floor.Width,			 floor.SpawnPos.y,  floor.SpawnPos.z + floor.Length);
-		Vector3 TopLeft			= new Vector3(floor.SpawnPos.x,										 floor.SpawnPos.y,	floor.SpawnPos.z + floor.Length);
+		Vector3 BottomLeft	= new Vector3(structure.SpawnPos.x,										 structure.SpawnPos.y,	structure.SpawnPos.z);
+		Vector3 BottomRight = new Vector3(structure.SpawnPos.x + structure.Width,	 structure.SpawnPos.y,	structure.SpawnPos.z);
+		Vector3 TopRight		= new Vector3(structure.SpawnPos.x + structure.Width,	 structure.SpawnPos.y,  structure.SpawnPos.z + structure.Length);
+		Vector3 TopLeft			= new Vector3(structure.SpawnPos.x,										 structure.SpawnPos.y,	structure.SpawnPos.z + structure.Length);
 
-		string Vx_Name = "Vx_" + floor.Rm_Name.Substring(3);
+		string Vx_Name = "Vx_" + structure.Name.Substring(3);
 
-		// Ex: Rm_Vertex Vx_TopLeft = new Rm_Vertex("Vx_Living_TopLeft", 1, Rm_Living_TopLeft);
-		Rm_Vertex Vx_BottomLeft			= new Rm_Vertex(Vx_Name + "_" + nameof(BottomLeft),	 floor.Level, BottomLeft,	 0);
-		Rm_Vertex Vx_BottomRight		= new Rm_Vertex(Vx_Name + "_" + nameof(BottomRight), floor.Level, BottomRight, 1);
-		Rm_Vertex Vx_TopRight				= new Rm_Vertex(Vx_Name + "_" + nameof(TopRight),		 floor.Level, TopRight,		 2);
-		Rm_Vertex Vx_TopLeft				= new Rm_Vertex(Vx_Name + "_" + nameof(TopLeft),		 floor.Level, TopLeft,		 3);
+		// Ex: Vertex Vx_TopLeft = new Vertex("Vx_Living_TopLeft", 1, Rm_Living_TopLeft);
+		Vertex Vx_BottomLeft		= new Vertex(Vx_Name + "_" + nameof(BottomLeft),	 structure.Level, BottomLeft,	 0);
+		Vertex Vx_BottomRight		= new Vertex(Vx_Name + "_" + nameof(BottomRight),  structure.Level, BottomRight, 1);
+		Vertex Vx_TopRight			= new Vertex(Vx_Name + "_" + nameof(TopRight),		 structure.Level, TopRight,		 2);
+		Vertex Vx_TopLeft				= new Vertex(Vx_Name + "_" + nameof(TopLeft),			 structure.Level, TopLeft,		 3);
 
-		List<Rm_Vertex> VertexList = new List<Rm_Vertex> {
+		List<Vertex> VertexList = new List<Vertex> {
 			Vx_BottomLeft,
 			Vx_BottomRight,
 			Vx_TopRight,
 			Vx_TopLeft
 		};
 
-		// Update FloorSection floor
-		floor.VxList = VertexList;
+		// Update Structure VxList
+		structure.VxList = VertexList;
 
 	}
 
 
 
 		// Helper to safely get a vertex by Order
-	Rm_Vertex GetVertex(FloorSection room, int order)
+	Vertex GetVertex(Structure structure, int order)
 	{
-		if (room == null || room.VxList == null)
+		if (structure == null || structure.VxList == null)
 		{
-			Debug.LogError($"Room or VxList is null when looking for Order {order}");
+			Debug.LogError($"Structure or VxList is null when looking for Order {order}");
 			return null;
 		}
 
-		Rm_Vertex vertex = room.VxList.Find(v => v.Order == order);
+		Vertex vertex = structure.VxList.Find(v => v.Order == order);
 
 		if (vertex == null)
 		{
-			Debug.LogError($"Could not find vertex with Order {order} on room '{room.Name}'");
+			Debug.LogError($"Could not find vertex with Order {order} on structure '{structure.Name}'");
 		}
 
 		return vertex;
@@ -190,8 +206,8 @@ public class RoomIndex : MonoBehaviour
 
 	public void AssignVertexLists()
 	{
-		foreach (FloorSection floor in All_FloorSectionList)		{
-			Generate_VertexList(floor);
+		foreach (FloorSection floor in All_FloorSectionList) {
+			Generate_Structure_VertexList(floor);
 		}
 		
 		Assign_Floor_SpawnPositions();
@@ -204,7 +220,7 @@ public class RoomIndex : MonoBehaviour
 
 		// ----- Origin -----
 		Rm_Living.SpawnPos = Rm_SpawnPos_Origin;
-		Generate_VertexList(Rm_Living);
+		Generate_Structure_VertexList(Rm_Living);
 
 		// ----- First floor chain
 		var livingTopLeft = GetVertex(Rm_Living, 3);
@@ -212,7 +228,7 @@ public class RoomIndex : MonoBehaviour
 		{
 			Rm_Dining.SpawnPos = livingTopLeft.Position;
 		}
-		Generate_VertexList(Rm_Dining);
+		Generate_Structure_VertexList(Rm_Dining);
 
 		//----- Hallway (offset on Z)
 		var livingTopRight = GetVertex(Rm_Living, 2);
@@ -220,7 +236,7 @@ public class RoomIndex : MonoBehaviour
 		{
 			Rm_Hallway.SpawnPos = new Vector3(livingTopRight.Position.x, livingTopRight.Position.y, livingTopRight.Position.z - Rm_Hallway.Length);
 		}
-		Generate_VertexList(Rm_Hallway);
+		Generate_Structure_VertexList(Rm_Hallway);
 
 		//----- Bed (offset on Z)	
 		var livingBottomRight = GetVertex(Rm_Hallway, 0);
@@ -232,7 +248,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_Bed.Length);
 		}
-		Generate_VertexList(Rm_Bed);
+		Generate_Structure_VertexList(Rm_Bed);
 
 		//----- Kitchen (offset on Z)
 		var diningTopRight = GetVertex(Rm_Dining, 2);
@@ -244,7 +260,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_Kitchen.Length);
 		}
-		Generate_VertexList(Rm_Kitchen);
+		Generate_Structure_VertexList(Rm_Kitchen);
 
 		//----- Laundry (offset on Z)
 		var kitchenTopRight = GetVertex(Rm_Kitchen, 2);
@@ -256,7 +272,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_Laundry.Length);
 		}
-		Generate_VertexList(Rm_Laundry);
+		Generate_Structure_VertexList(Rm_Laundry);
 
 		//----- EntryWay (offset on Z)
 		var hallwayTopRight = GetVertex(Rm_Hallway, 2);
@@ -268,7 +284,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z);
 		}
-		Generate_VertexList(Rm_EntryWay);
+		Generate_Structure_VertexList(Rm_EntryWay);
 
 		//----- EntryCloset (offset on Z)
 		var entryWayTopRight = GetVertex(Rm_EntryWay, 2);
@@ -280,7 +296,7 @@ public class RoomIndex : MonoBehaviour
 			org.y, 
 			org.z - Rm_EntryCloset.Length);
 		}
-		Generate_VertexList(Rm_EntryCloset);
+		Generate_Structure_VertexList(Rm_EntryCloset);
 
 		//----- Bath (offset on Z)
 		var hallwayBottomRight = GetVertex(Rm_Bed, 2);
@@ -292,7 +308,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_Bath.Length);
 		}
-		Generate_VertexList(Rm_Bath);
+		Generate_Structure_VertexList(Rm_Bath);
 
 		//----- BedCloset (offset on Z)
 		var bathBottomRight = GetVertex(Rm_Bath, 0);
@@ -304,7 +320,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_BedCloset.Length);
 		}
-		Generate_VertexList(Rm_BedCloset);
+		Generate_Structure_VertexList(Rm_BedCloset);
 
 		//----- StoreEntry (offset on Z)
 		var bedClosetBottomRight = GetVertex(Rm_BedCloset, 1);
@@ -316,7 +332,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_StoreEntry.Length);
 		}
-		Generate_VertexList(Rm_StoreEntry);
+		Generate_Structure_VertexList(Rm_StoreEntry);
 
 		//----- Store (offset on Z)
 		var storeEntryBottomLeft = GetVertex(Rm_StoreEntry, 0);
@@ -328,7 +344,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z);
 		}
-		Generate_VertexList(Rm_Store);
+		Generate_Structure_VertexList(Rm_Store);
 
 		//----- DeckCovered (offset on Z)
 		var livingBottomLeft = GetVertex(Rm_Living, 0);
@@ -340,7 +356,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_DeckCovered.Length);
 		}
-		Generate_VertexList(Rm_DeckCovered);
+		Generate_Structure_VertexList(Rm_DeckCovered);
 
 		//----- DeckUncovered (offset on Z)
 		var deckCoveredBottomLeft = GetVertex(Rm_DeckCovered, 0);
@@ -352,7 +368,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_DeckUncovered.Length);
 		}
-		Generate_VertexList(Rm_DeckUncovered);
+		Generate_Structure_VertexList(Rm_DeckUncovered);
 
 		// ----- Second floor -----
 
@@ -366,7 +382,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_Loft.Length);
 		}
-		Generate_VertexList(Rm_Loft);
+		Generate_Structure_VertexList(Rm_Loft);
 
 		//----- UpperBedEntry (offset on Z)
 		var loftTopRight = GetVertex(Rm_Loft, 2);
@@ -377,7 +393,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_UpperBedEntry.Length);
 		}
-		Generate_VertexList(Rm_UpperBedEntry);
+		Generate_Structure_VertexList(Rm_UpperBedEntry);
 
 		//----- UpperBed (offset on Z)
 		var upperBedEntryBottomLeft = GetVertex(Rm_UpperBedEntry, 0);
@@ -389,7 +405,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z - Rm_UpperBed.Length);
 		}
-		Generate_VertexList(Rm_UpperBed);
+		Generate_Structure_VertexList(Rm_UpperBed);
 
 		//----- UpperBedCloset (offset on Z)
 		var upperBedBottomRight = GetVertex(Rm_UpperBed, 1);
@@ -401,7 +417,7 @@ public class RoomIndex : MonoBehaviour
 				org.y, 
 				org.z);
 		}
-		Generate_VertexList(Rm_UpperBedCloset);
+		Generate_Structure_VertexList(Rm_UpperBedCloset);
 
 	}
 
@@ -500,7 +516,7 @@ public class RoomIndex : MonoBehaviour
 		foreach (FloorSection floor in topList) 
 		{
 			consoleLog += $"--{floor.Name} \n";
-			foreach (Rm_Vertex vx in floor.VxList) 
+			foreach (Vertex vx in floor.VxList) 
 			{
 				consoleLog +=
 					$"----{vx.Name} \n" +
@@ -510,7 +526,7 @@ public class RoomIndex : MonoBehaviour
 		Debug.Log(consoleLog);
 	}
 
-	
+
 
 	// ----- ----- ----- ----- ----- ----- ----- WallSection Class ----- ----- ----- ----- ----- ----- ----- 
 
@@ -534,7 +550,7 @@ public class RoomIndex : MonoBehaviour
 		public bool					IsActive;
 		public Vector3			SpawnPos;
 
-
+		public List<Vertex> VxList;
 
 		// -----  Constructor ----- 
 		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
@@ -547,6 +563,9 @@ public class RoomIndex : MonoBehaviour
 			Direction = direction;
 			Width			= width;
 			Length		= length;
+
+			All_WallSectionList.Add(this);
+			VxList = new List<Vertex>();
 		}
 	}
 
@@ -776,6 +795,63 @@ public class RoomIndex : MonoBehaviour
 
 
 
+	// ----- ----- ----- ----- ----- ----- ----- PostSection Class ----- ----- ----- ----- ----- ----- ----- 
+
+	public class PostSection
+	{
+
+		public int ID;
+		public string Name;
+		public int Level;
+		public float Width;
+		public float Length;
+		public bool IsActive;
+		public Vector3 SpawnPos;
+
+		public List<Vertex> VxList;
+
+
+		// -----  Constructor ----- 
+		public PostSection(string name, int level, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
+		{
+			ID = _postID;
+			_postID = _postID + 1;
+
+			Name = name;
+			Level = level;
+			Width = width;
+			Length = length;
+
+			All_PostSectionList.Add(this);
+			VxList = new List<Vertex>();
+		}
+	}
+
+
+	public void Assign_Post_SpawnPositions()
+	{
+
+		Vector3 PT_SpawnPos_Living_NW = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		PostSection PT_Living_NW = new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
+		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
+
+		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Hallway_NW = new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
+		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
+
+
+
+
+
+		All_PostSectionList.Add(PT_Living_NW);
+		All_PostSectionList.Add(PT_Hallway_NW);
+
+	}
+
+
+
+
+
 
 
 
@@ -795,7 +871,7 @@ public class RoomIndex : MonoBehaviour
 	//	//List< (string name, Vector3 Pos)> Rm_CornerList_Living = new List<(string name, Vector3 Pos)> { (Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight };
 	//	List<Vector3> Rm_CornerList_Living = new List<Vector3> { Rm_Living_TopLeft, Rm_Living_TopRight, Rm_Living_BottomLeft, Rm_Living_BottomRight};
 
-	//	List<Rm_Vertex> Rm_VertexList_Living = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Living = new List<Vertex> {
 	//		GenerateVertex("Vx_Living_TopLeft",     1, Rm_Living_TopLeft),
 	//		GenerateVertex("Vx_Living_TopRight",    1, Rm_Living_TopRight),
 	//		GenerateVertex("Vx_Living_BottomLeft",  1, Rm_Living_BottomLeft),
@@ -813,7 +889,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Dining = new List<Vector3> { Rm_Dining_TopLeft, Rm_Dining_TopRight, Rm_Dining_BottomLeft, Rm_Dining_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Dining = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Dining = new List<Vertex> {
 	//		GenerateVertex("Vx_Dining_TopLeft",			1, Rm_Dining_TopLeft),
 	//		GenerateVertex("Vx_Dining_TopRight",		1, Rm_Dining_TopRight),
 	//		GenerateVertex("Vx_Dining_BottomLeft",	1, Rm_Dining_BottomLeft),
@@ -831,7 +907,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Hallway = new List<Vector3> { Rm_Hallway_TopLeft, Rm_Hallway_TopRight, Rm_Hallway_BottomLeft, Rm_Hallway_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Hallway = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Hallway = new List<Vertex> {
 	//		GenerateVertex("Vx_Hallway_TopLeft",		 1, Rm_Hallway_TopLeft),
 	//		GenerateVertex("Vx_Hallway_TopRight",		 1, Rm_Hallway_TopRight),
 	//		GenerateVertex("Vx_Hallway_BottomLeft",	 1, Rm_Hallway_BottomLeft),
@@ -849,7 +925,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Bed = new List<Vector3> { Rm_Bed_TopLeft, Rm_Bed_TopRight, Rm_Bed_BottomLeft, Rm_Bed_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Bed = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Bed = new List<Vertex> {
 	//		GenerateVertex("Vx_Bed_TopLeft",		 1, Rm_Bed_TopLeft),
 	//		GenerateVertex("Vx_Bed_TopRight",		 1, Rm_Bed_TopRight),
 	//		GenerateVertex("Vx_Bed_BottomLeft",	 1, Rm_Bed_BottomLeft),
@@ -867,7 +943,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Kitchen = new List<Vector3> { Rm_Kitchen_TopLeft, Rm_Kitchen_TopRight, Rm_Kitchen_BottomLeft, Rm_Kitchen_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Kitchen = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Kitchen = new List<Vertex> {
 	//		GenerateVertex("Vx_Kitchen_TopLeft",		 1, Rm_Kitchen_TopLeft),
 	//		GenerateVertex("Vx_Kitchen_TopRight",		 1, Rm_Kitchen_TopRight),
 	//		GenerateVertex("Vx_Kitchen_BottomLeft",	 1, Rm_Kitchen_BottomLeft),
@@ -885,7 +961,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Laundry = new List<Vector3> { Rm_Laundry_TopLeft, Rm_Laundry_TopRight, Rm_Laundry_BottomLeft, Rm_Laundry_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Laundry = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Laundry = new List<Vertex> {
 	//		GenerateVertex("Vx_Laundry_TopLeft",		 1, Rm_Laundry_TopLeft),
 	//		GenerateVertex("Vx_Laundry_TopRight",		 1, Rm_Laundry_TopRight),
 	//		GenerateVertex("Vx_Laundry_BottomLeft",	 1, Rm_Laundry_BottomLeft),
@@ -903,7 +979,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_EntryWay = new List<Vector3> { Rm_EntryWay_TopLeft, Rm_EntryWay_TopRight, Rm_EntryWay_BottomLeft, Rm_EntryWay_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_EntryWay = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_EntryWay = new List<Vertex> {
 	//		GenerateVertex("Vx_EntryWay_TopLeft",			1, Rm_EntryWay_TopLeft),
 	//		GenerateVertex("Vx_EntryWay_TopRight",		1, Rm_EntryWay_TopRight),
 	//		GenerateVertex("Vx_EntryWay_BottomLeft",	1, Rm_EntryWay_BottomLeft),
@@ -921,7 +997,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_EntryWayCloset = new List<Vector3> { Rm_EntryWayCloset_TopLeft, Rm_EntryWayCloset_TopRight, Rm_EntryWayCloset_BottomLeft, Rm_EntryWayCloset_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_EntryWayCloset = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_EntryWayCloset = new List<Vertex> {
 	//		GenerateVertex("Vx_EntryWayCloset_TopLeft",			1, Rm_EntryWayCloset_TopLeft),
 	//		GenerateVertex("Vx_EntryWayCloset_TopRight",		1, Rm_EntryWayCloset_TopRight),
 	//		GenerateVertex("Vx_EntryWayCloset_BottomLeft",	1, Rm_EntryWayCloset_BottomLeft),
@@ -939,7 +1015,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Bath = new List<Vector3> { Rm_Bath_TopLeft, Rm_Bath_TopRight, Rm_Bath_BottomLeft, Rm_Bath_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Bath = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Bath = new List<Vertex> {
 	//		GenerateVertex("Vx_Bath_TopLeft",			1, Rm_Bath_TopLeft),
 	//		GenerateVertex("Vx_Bath_TopRight",		1, Rm_Bath_TopRight),
 	//		GenerateVertex("Vx_Bath_BottomLeft",	1, Rm_Bath_BottomLeft),
@@ -957,7 +1033,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_BedCloset = new List<Vector3> { Rm_BedCloset_TopLeft, Rm_BedCloset_TopRight, Rm_BedCloset_BottomLeft, Rm_BedCloset_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_BedCloset = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_BedCloset = new List<Vertex> {
 	//		GenerateVertex("Vx_BedCloset_TopLeft",		 1, Rm_BedCloset_TopLeft),
 	//		GenerateVertex("Vx_BedCloset_TopRight",		 1, Rm_BedCloset_TopRight),
 	//		GenerateVertex("Vx_BedCloset_BottomLeft",	 1, Rm_BedCloset_BottomLeft),
@@ -975,7 +1051,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_StoreEntry = new List<Vector3> { Rm_StoreEntry_TopLeft, Rm_StoreEntry_TopRight, Rm_StoreEntry_BottomLeft, Rm_StoreEntry_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_StoreEntry = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_StoreEntry = new List<Vertex> {
 	//		GenerateVertex("Vx_StoreEntry_TopLeft",		  1, Rm_StoreEntry_TopLeft),
 	//		GenerateVertex("Vx_StoreEntry_TopRight",		1, Rm_StoreEntry_TopRight),
 	//		GenerateVertex("Vx_StoreEntry_BottomLeft",	1, Rm_StoreEntry_BottomLeft),
@@ -993,7 +1069,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Store = new List<Vector3> { Rm_Store_TopLeft, Rm_Store_TopRight, Rm_Store_BottomLeft, Rm_Store_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Store = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Store = new List<Vertex> {
 	//		GenerateVertex("Vx_Store_TopLeft",		 1, Rm_Store_TopLeft),
 	//		GenerateVertex("Vx_Store_TopRight",		 1, Rm_Store_TopRight),
 	//		GenerateVertex("Vx_Store_BottomLeft",  1, Rm_Store_BottomLeft),
@@ -1012,7 +1088,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_DeckCovered = new List<Vector3> { Rm_DeckCovered_TopLeft, Rm_DeckCovered_TopRight, Rm_DeckCovered_BottomLeft, Rm_DeckCovered_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_DeckCovered = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_DeckCovered = new List<Vertex> {
 	//		GenerateVertex("Vx_DeckCovered_TopLeft",		 1, Rm_DeckCovered_TopLeft),
 	//		GenerateVertex("Vx_DeckCovered_TopRight",		 1, Rm_DeckCovered_TopRight),
 	//		GenerateVertex("Vx_DeckCovered_BottomLeft",  1, Rm_DeckCovered_BottomLeft),
@@ -1031,7 +1107,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_DeckUncovered = new List<Vector3> { Rm_DeckUncovered_TopLeft, Rm_DeckUncovered_TopRight, Rm_DeckUncovered_BottomLeft, Rm_DeckUncovered_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_DeckUncovered = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_DeckUncovered = new List<Vertex> {
 	//		GenerateVertex("Vx_DeckUncovered_TopLeft",		 1, Rm_DeckUncovered_TopLeft),
 	//		GenerateVertex("Vx_DeckUncovered_TopRight",		 1, Rm_DeckUncovered_TopRight),
 	//		GenerateVertex("Vx_DeckUncovered_BottomLeft",  1, Rm_DeckUncovered_BottomLeft),
@@ -1050,7 +1126,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_Loft = new List<Vector3> { Rm_Loft_TopLeft, Rm_Loft_TopRight, Rm_Loft_BottomLeft, Rm_Loft_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_Loft = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_Loft = new List<Vertex> {
 	//		GenerateVertex("Vx_Loft_TopLeft",			2, Rm_Loft_TopLeft),
 	//		GenerateVertex("Vx_Loft_TopRight",		2, Rm_Loft_TopRight),
 	//		GenerateVertex("Vx_Loft_BottomLeft",  2, Rm_Loft_BottomLeft),
@@ -1068,7 +1144,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_UpperBedEntry = new List<Vector3> { Rm_UpperBedEntry_TopLeft, Rm_UpperBedEntry_TopRight, Rm_UpperBedEntry_BottomLeft, Rm_UpperBedEntry_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_UpperBedEntry = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_UpperBedEntry = new List<Vertex> {
 	//		GenerateVertex("Vx_UpperBedEntry_TopLeft",		 2, Rm_UpperBedEntry_TopLeft),
 	//		GenerateVertex("Vx_UpperBedEntry_TopRight",		 2, Rm_UpperBedEntry_TopRight),
 	//		GenerateVertex("Vx_UpperBedEntry_BottomLeft",  2, Rm_UpperBedEntry_BottomLeft),
@@ -1086,7 +1162,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_UpperBed = new List<Vector3> { Rm_UpperBed_TopLeft, Rm_UpperBed_TopRight, Rm_UpperBed_BottomLeft, Rm_UpperBed_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_UpperBed = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_UpperBed = new List<Vertex> {
 	//		GenerateVertex("Vx_UpperBed_TopLeft",		  2, Rm_UpperBed_TopLeft),
 	//		GenerateVertex("Vx_UpperBed_TopRight",		2, Rm_UpperBed_TopRight),
 	//		GenerateVertex("Vx_UpperBed_BottomLeft",  2, Rm_UpperBed_BottomLeft),
@@ -1104,7 +1180,7 @@ public class RoomIndex : MonoBehaviour
 
 	//	List<Vector3> Rm_CornerList_UpperBedCloset = new List<Vector3> { Rm_UpperBedCloset_TopLeft, Rm_UpperBedCloset_TopRight, Rm_UpperBedCloset_BottomLeft, Rm_UpperBedCloset_BottomRight };
 
-	//	List<Rm_Vertex> Rm_VertexList_UpperBedCloset = new List<Rm_Vertex> {
+	//	List<Vertex> Rm_VertexList_UpperBedCloset = new List<Vertex> {
 	//		GenerateVertex("Vx_UpperBedCloset_TopLeft",			2, Rm_UpperBedCloset_TopLeft),
 	//		GenerateVertex("Vx_UpperBedCloset_TopRight",		2, Rm_UpperBedCloset_TopRight),
 	//		GenerateVertex("Vx_UpperBedCloset_BottomLeft",	2, Rm_UpperBedCloset_BottomLeft),

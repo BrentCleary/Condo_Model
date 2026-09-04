@@ -9,11 +9,14 @@ public class FloorGenerator : MonoBehaviour
 
 	private float LevelOneWallHeight = 10f; // Height of the first floor walls in Unity units (93.5)
 
+	private float LevelOnePostHeight = 10f; // Height of the first floor posts in Unity units (93.5)
+	private float LevelTwoPostHeight = 10f; // Height of the second floor posts in Unity units (93.5 + 10)
+
 	// NEW: Organizational parents – created once in Start()
 	private GameObject floorSectionContainer;
 	private GameObject vertexCubeContainer;
 	private GameObject wallSectionContainer;
-	 
+	private GameObject postSectionContainer;
 
 	void Start()
 	{
@@ -23,6 +26,7 @@ public class FloorGenerator : MonoBehaviour
 		floorSectionContainer = CreateContainer("obj_FloorSectionContainer");
 		vertexCubeContainer		= CreateContainer("obj_VertexCubeContainer");
 		wallSectionContainer  = CreateContainer("obj_WallSectionContainer");
+		postSectionContainer  = CreateContainer("obj_PostSectionContainer");
 
 		foreach (RoomIndex.FloorSection floor in RoomIndex.All_FloorSectionList)
 		{
@@ -39,6 +43,14 @@ public class FloorGenerator : MonoBehaviour
 			if (wall != null)
 			{
 				GenerateWall(wall);
+			}
+		}
+
+		foreach (RoomIndex.PostSection post in RoomIndex.All_PostSectionList)
+		{
+			if (post != null)
+			{
+				GeneratePost(post);
 			}
 		}
 	}
@@ -148,6 +160,37 @@ public class FloorGenerator : MonoBehaviour
 		wallTile.GetComponent<Renderer>().material = wallMat;
 	}
 
+
+	public void GeneratePost(RoomIndex.PostSection post)
+	{
+		float width  = post.Width;
+		float length = post.Length;
+
+		GameObject postTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		postTile.name = post.Name;
+
+		// CHANGED: Parent under the pre-created container
+		postTile.transform.SetParent(postSectionContainer.transform, worldPositionStays: false);
+		
+		// Move the center so the lowest-left corner lands on SpawnPos
+		postTile.transform.localPosition = post.SpawnPos
+											+ new Vector3(width * 0.5f, LevelOnePostHeight * 0.5f, length * 0.5f);
+
+		// Set the scale of the post
+		postTile.transform.localScale = new Vector3(width, LevelOnePostHeight, length);
+
+		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
+		if (post.Level == 2) { postTile.SetActive(false); }
+
+		Material postMat = postTile.GetComponent<Renderer>().material;
+		
+		SetMaterialTransparency(postMat, 0.5f); // Set alpha to 0.5 for transparency
+		
+		Color currentColor = Color.blue; // Default color for posts
+		currentColor.a = 1f; // Set alpha to 1 for full opacity
+		postMat.color = currentColor;
+		postTile.GetComponent<Renderer>().material = postMat;
+	}
 
 
 
