@@ -15,6 +15,9 @@ public class RoomIndex : MonoBehaviour
 
 	public float LevelOneWallHeight = 93.5f; // Height of the first floor walls in Unity units
 
+	public static float WL_Thick = 5; // Wall thickness in inches
+
+
 	// Floor Types
 	public static List<string> FloorType = new List<string>() { "LVP", "Carpet", "Tile", "Rubber" };
 	
@@ -536,21 +539,11 @@ public class RoomIndex : MonoBehaviour
 		EW = 2  // East-West direction	 (Z-axis)
 	}
 
-	public static float WL_Thick = 5; // Wall thickness in inches
-
-	public class WallSection
+	public class WallSection : Structure
 	{
 
-		public int					ID;
-		public string				Name;
-		public int					Level;
 		public WL_Direction Direction;
-		public float				Width;
-		public float				Length;
-		public bool					IsActive;
-		public Vector3			SpawnPos;
 
-		public List<Vertex> VxList;
 
 		// -----  Constructor ----- 
 		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
@@ -564,7 +557,6 @@ public class RoomIndex : MonoBehaviour
 			Width			= width;
 			Length		= length;
 
-			All_WallSectionList.Add(this);
 			VxList = new List<Vertex>();
 		}
 	}
@@ -797,19 +789,8 @@ public class RoomIndex : MonoBehaviour
 
 	// ----- ----- ----- ----- ----- ----- ----- PostSection Class ----- ----- ----- ----- ----- ----- ----- 
 
-	public class PostSection
+	public class PostSection : Structure
 	{
-
-		public int ID;
-		public string Name;
-		public int Level;
-		public float Width;
-		public float Length;
-		public bool IsActive;
-		public Vector3 SpawnPos;
-
-		public List<Vertex> VxList;
-
 
 		// -----  Constructor ----- 
 		public PostSection(string name, int level, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
@@ -822,7 +803,6 @@ public class RoomIndex : MonoBehaviour
 			Width = width;
 			Length = length;
 
-			All_PostSectionList.Add(this);
 			VxList = new List<Vertex>();
 		}
 	}
@@ -835,15 +815,17 @@ public class RoomIndex : MonoBehaviour
 		PostSection PT_Living_NW = new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
 		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
 
-		// Living Room SE
+		// Hallway NW
 		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		PostSection PT_Hallway_NW = new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
 		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
+
 
 		// Dining Room NE
 		Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
 		PostSection PT_Dining_NE = new PostSection(nameof(PT_Dining_NE), 1, WL_Thick, WL_Thick);
 		PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
+
 
 		// Laundry Room SE
 		Vector3 PT_SpawnPos_Laundry_SE = (Rm_Laundry.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
@@ -856,12 +838,25 @@ public class RoomIndex : MonoBehaviour
 		PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
 
 
+		// Kitchen Wall NW - 98 Length
+		Vector3 PT_SpawnPos_Kitchen_NW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
+		PostSection PT_Kitchen_NW = new PostSection(nameof(PT_Kitchen_NW), 1, WL_Thick, WL_Thick);
+		PT_Kitchen_NW.SpawnPos = PT_SpawnPos_Kitchen_NW;
+
+		// Kitchen Wall NW - 98 Length
+		Vector3 PT_SpawnPos_Kitchen_SW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3((98 - 14 - WL_Thick), 0, -WL_Thick));
+		PostSection PT_Kitchen_SW = new PostSection(nameof(PT_Kitchen_SW), 1, WL_Thick, WL_Thick);
+		PT_Kitchen_SW.SpawnPos = PT_SpawnPos_Kitchen_SW;
+
+
 
 		All_PostSectionList.Add(PT_Living_NW);
 		All_PostSectionList.Add(PT_Hallway_NW);
 		All_PostSectionList.Add(PT_Dining_NE);
 		All_PostSectionList.Add(PT_Laundry_SE);
 		All_PostSectionList.Add(PT_Laundry_SW);
+		All_PostSectionList.Add(PT_Kitchen_NW);
+		All_PostSectionList.Add(PT_Kitchen_SW);
 
 	}
 
