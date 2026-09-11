@@ -124,6 +124,12 @@ public class FloorGenerator : MonoBehaviour
 
 				vertexCube.transform.localScale = new Vector3(3f, 3f, 3f);
 				vertexCube.GetComponent<Renderer>().material.color = Color.red;
+
+				// Set Vertex Cube color to Green if isSpawnPos is true for visibility
+				if(vertex.IsSpawnPos)
+				{
+					vertexCube.GetComponent<Renderer>().material.color = Color.green;
+				}
 			}
 		}
 	}

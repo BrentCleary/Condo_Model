@@ -91,9 +91,10 @@ public class RoomIndex : MonoBehaviour
 		public Vector3 Position;
 		public int Order;  // Order of the vertex in the room (0 = BottomLeft, 1 = BottomRight, 2 = TopRight, 3 = TopLeft)
 		public bool IsActive;
+		public bool IsSpawnPos;
 
 		// -----  Constructor ----- 
-		public Vertex(string name, int level, Vector3 position, int order = 0, bool isActive = true)
+		public Vertex(string name, int level, Vector3 position, int order = 0, bool isActive = true, bool isSpawnPos = false)
 		{
 			ID = _vertexID;
 			_vertexID = _vertexID + 1;
@@ -103,8 +104,10 @@ public class RoomIndex : MonoBehaviour
 			Position = position;
 			Order = order;
 			IsActive = isActive;
+			IsSpawnPos = isSpawnPos;
 		}
 	}
+
 
 	public void Generate_Structure_VertexList(Structure structure)
 	{
@@ -166,6 +169,31 @@ public class RoomIndex : MonoBehaviour
 	}
 
 
+	public void ConsoleLogVertexList(List<Structure> topList)
+	{
+		if (topList == null || topList.Count == 0)
+		{
+			Debug.Log("No objects in List.");
+			return;
+		}
+
+		string consoleLog = $"{topList[0].ClassRef} Vertices: \n";
+
+		consoleLog += $"{topList[0].ClassRef} Vertices in {topList}: \n";
+		foreach (Structure obj in topList)
+		{
+			consoleLog += $"--{obj.Name} \n";
+			foreach (Vertex vx in obj.VxList)
+			{
+				consoleLog +=
+					$"----{vx.Name} \n" +
+					$"------ {vx.Position.x}, {vx.Position.y}, {vx.Position.z}\n";
+			}
+		}
+		Debug.Log(consoleLog);
+	}
+
+
 
 
 
@@ -189,8 +217,8 @@ public class RoomIndex : MonoBehaviour
 			Room_Name = room_Name;
 			Level     = level;
 			SpawnPos  = spawnPos;
-			Width     = width;
-			Length    = length;
+			Width     = width;	// North-South
+			Length    = length; // East-West
 			Sqft      = length * width / SqftConversion;
 			FloorType = floorType;
 			IsActive  = isActive;
@@ -204,10 +232,10 @@ public class RoomIndex : MonoBehaviour
 
 	// ----- ----- ----- ----- ----- ----- ----- Floor Initializer ----- ----- ----- ----- ----- ----- -----
 
-	public static FloorSection Rm_Living				 = new FloorSection("Rm_Living",				 "LivingRoom",				 1, 151.75f,   152f, "LVP");
+	public static FloorSection Rm_Living				 = new FloorSection("Rm_Living",				 "LivingRoom",				 1, 158.25f,   152f, "LVP");
 	public static FloorSection Rm_Dining				 = new FloorSection("Rm_Dining",				 "DiningRoom",				 1, 125.75f, 95.25f, "LVP");
 	public static FloorSection Rm_Hallway				 = new FloorSection("Rm_Hallway",				 "Hallway",					   1,    229f,    36f, "LVP");
-	public static FloorSection Rm_Bed						 = new FloorSection("Rm_Bed",						 "Bedroom",					   1,    157f,   148f, "LVP");
+	public static FloorSection Rm_Bed						 = new FloorSection("Rm_Bed",						 "Bedroom",					   1,    148f,   157f, "LVP");
 	public static FloorSection Rm_Kitchen				 = new FloorSection("Rm_Kitchen",				 "Kitchen",					   1,    114f,  90.5f, "LVP");
 																																											 											 
 	public static FloorSection Rm_Laundry				 = new FloorSection("Rm_Laundry",				 "Laundry",					   1,  35.75f,  90.5f, "LVP");
@@ -233,6 +261,8 @@ public class RoomIndex : MonoBehaviour
 	public void Assign_Floor_SpawnPositions()
 	{
 
+		List<Vertex> vxSpawnPos = new List<Vertex>();
+
 		// ----- Origin -----
 		Rm_Living.SpawnPos = Rm_SpawnPos_Origin;
 		Generate_Structure_VertexList(Rm_Living);
@@ -242,6 +272,7 @@ public class RoomIndex : MonoBehaviour
 		if (livingTopLeft != null)
 		{
 			Rm_Dining.SpawnPos = livingTopLeft.Position;
+			vxSpawnPos.Add(livingTopLeft);
 		}
 		Generate_Structure_VertexList(Rm_Dining);
 
@@ -249,7 +280,11 @@ public class RoomIndex : MonoBehaviour
 		var livingTopRight = GetVertex(Rm_Living, 2);
 		if (livingTopRight != null)
 		{
-			Rm_Hallway.SpawnPos = new Vector3(livingTopRight.Position.x, livingTopRight.Position.y, livingTopRight.Position.z - Rm_Hallway.Length);
+			Rm_Hallway.SpawnPos = new Vector3(
+				livingTopRight.Position.x, 
+				livingTopRight.Position.y, 
+				livingTopRight.Position.z - Rm_Hallway.Length);
+			vxSpawnPos.Add(livingTopRight);
 		}
 		Generate_Structure_VertexList(Rm_Hallway);
 
@@ -259,9 +294,10 @@ public class RoomIndex : MonoBehaviour
 		{
 			Vector3 org = livingBottomRight.Position;
 			Rm_Bed.SpawnPos = new Vector3(
-				org.x, 
+				org.x + WL_Thick, 
 				org.y, 
-				org.z - Rm_Bed.Length);
+				org.z - Rm_Bed.Length - WL_Thick);
+			vxSpawnPos.Add(livingBottomRight);
 		}
 		Generate_Structure_VertexList(Rm_Bed);
 
@@ -274,6 +310,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_Kitchen.Length);
+			 vxSpawnPos.Add(diningTopRight);
 		}
 		Generate_Structure_VertexList(Rm_Kitchen);
 
@@ -286,6 +323,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_Laundry.Length);
+			vxSpawnPos.Add(kitchenTopRight);
 		}
 		Generate_Structure_VertexList(Rm_Laundry);
 
@@ -298,6 +336,7 @@ public class RoomIndex : MonoBehaviour
 				org.x - (Rm_EntryWay.Width + Rm_EntryCloset.Width), 
 				org.y, 
 				org.z);
+			vxSpawnPos.Add(hallwayTopRight);
 		}
 		Generate_Structure_VertexList(Rm_EntryWay);
 
@@ -310,6 +349,7 @@ public class RoomIndex : MonoBehaviour
 			org.x, 
 			org.y, 
 			org.z - Rm_EntryCloset.Length);
+			vxSpawnPos.Add(entryWayTopRight);
 		}
 		Generate_Structure_VertexList(Rm_EntryCloset);
 
@@ -319,9 +359,10 @@ public class RoomIndex : MonoBehaviour
 			Vector3 org = hallwayBottomRight.Position;
 			Rm_Bath.SpawnPos = 
 			new Vector3(
-				org.x, 
+				org.x + WL_Thick, 
 				org.y, 
 				org.z - Rm_Bath.Length);
+			vxSpawnPos.Add(hallwayBottomRight);
 		}
 		Generate_Structure_VertexList(Rm_Bath);
 
@@ -334,6 +375,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_BedCloset.Length);
+			vxSpawnPos.Add(bathBottomRight);
 		}
 		Generate_Structure_VertexList(Rm_BedCloset);
 
@@ -346,6 +388,7 @@ public class RoomIndex : MonoBehaviour
 				org.x - Rm_StoreEntry.Width, 
 				org.y, 
 				org.z - Rm_StoreEntry.Length);
+			vxSpawnPos.Add(bedClosetBottomRight);
 		}
 		Generate_Structure_VertexList(Rm_StoreEntry);
 
@@ -358,6 +401,7 @@ public class RoomIndex : MonoBehaviour
 				org.x - Rm_Store.Width, 
 				org.y, 
 				org.z);
+			vxSpawnPos.Add(storeEntryBottomLeft);
 		}
 		Generate_Structure_VertexList(Rm_Store);
 
@@ -370,6 +414,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_DeckCovered.Length);
+			vxSpawnPos.Add(livingBottomLeft);
 		}
 		Generate_Structure_VertexList(Rm_DeckCovered);
 
@@ -382,6 +427,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_DeckUncovered.Length);
+			vxSpawnPos.Add(deckCoveredBottomLeft);
 		}
 		Generate_Structure_VertexList(Rm_DeckUncovered);
 
@@ -396,6 +442,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_Loft.Length);
+			vxSpawnPos.Add(diningTopLeft);
 		}
 		Generate_Structure_VertexList(Rm_Loft);
 
@@ -407,6 +454,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_UpperBedEntry.Length);
+			vxSpawnPos.Add(loftTopRight);
 		}
 		Generate_Structure_VertexList(Rm_UpperBedEntry);
 
@@ -419,6 +467,7 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z - Rm_UpperBed.Length);
+			vxSpawnPos.Add(upperBedEntryBottomLeft);
 		}
 		Generate_Structure_VertexList(Rm_UpperBed);
 
@@ -431,8 +480,14 @@ public class RoomIndex : MonoBehaviour
 				org.x, 
 				org.y, 
 				org.z);
+			vxSpawnPos.Add(upperBedBottomRight);
 		}
 		Generate_Structure_VertexList(Rm_UpperBedCloset);
+
+		foreach(Vertex vx in vxSpawnPos)
+		{
+			vx.IsSpawnPos = true;
+		}
 
 	}
 
@@ -518,28 +573,7 @@ public class RoomIndex : MonoBehaviour
 
 
 
-	public void ConsoleLogVertexList(List<Structure> topList)
-	{
-		if (topList == null || topList.Count == 0){ 
-			Debug.Log("No objects in List.");
-			return;
-		}
 
-		string consoleLog = $"{topList[0].ClassRef} Vertices: \n";
-		
-		consoleLog += $"{topList[0].ClassRef} Vertices in {topList}: \n";
-		foreach (Structure obj in topList) 
-		{
-			consoleLog += $"--{obj.Name} \n";
-			foreach (Vertex vx in obj.VxList) 
-			{
-				consoleLog +=
-					$"----{vx.Name} \n" +
-					$"------ {vx.Position.x}, {vx.Position.y}, {vx.Position.z}\n";
-			}
-		}
-		Debug.Log(consoleLog);
-	}
 
 
 
@@ -641,6 +675,7 @@ public class RoomIndex : MonoBehaviour
 
 
 
+
 		// Living Room (East-West) wall - 151.75 Length
 		Vector3 WL_SpawnPos_Living_Exterior = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, 0));
 		WallSection WL_Living_Exterior = new WallSection(nameof(WL_Living_Exterior), 1, WL_Direction.EW, WL_Thick, 151.75f);
@@ -648,7 +683,7 @@ public class RoomIndex : MonoBehaviour
 
 		// Living Room (North-South) wall - 152 Length
 		Vector3 WL_SpawnPos_Living_DeckCovered = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		WallSection WL_Living_DeckCovered = new WallSection(nameof(WL_Living_DeckCovered), 1, WL_Direction.NS, 152.0f, WL_Thick);
+		WallSection WL_Living_DeckCovered = new WallSection(nameof(WL_Living_DeckCovered), 1, WL_Direction.NS, Rm_Living.Width, WL_Thick);
 		WL_Living_DeckCovered.SpawnPos = WL_SpawnPos_Living_DeckCovered;
 
 
@@ -668,20 +703,22 @@ public class RoomIndex : MonoBehaviour
 
 
 
+
 		// Bedroom (East-West) wall - 148 Length
 		Vector3 WL_SpawnPos_Bed_Living = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, 0));
-		WallSection WL_Bed_Living = new WallSection(nameof(WL_Bed_Living), 1, WL_Direction.EW, WL_Thick, 148f);
+		WallSection WL_Bed_Living = new WallSection(nameof(WL_Bed_Living), 1, WL_Direction.EW, WL_Thick, Rm_Bed.Length);
 		WL_Bed_Living.SpawnPos = WL_SpawnPos_Bed_Living;
 
 		// Bedroom (North-South) wall - 157 Length
 		Vector3 WL_SpawnPos_Bed_HallWay = (Rm_Bed.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
-		WallSection WL_Bed_HallWay = new WallSection(nameof(WL_Bed_HallWay), 1, WL_Direction.NS, 157f, WL_Thick);
+		WallSection WL_Bed_HallWay = new WallSection(nameof(WL_Bed_HallWay), 1, WL_Direction.NS, Rm_Bed.Width, WL_Thick);
 		WL_Bed_HallWay.SpawnPos = WL_SpawnPos_Bed_HallWay;
 
 		// Bedroom (North-South) wall - 157 Length
 		Vector3 WL_SpawnPos_Bed_Store = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		WallSection WL_Bed_Store = new WallSection(nameof(WL_Bed_Store), 1, WL_Direction.NS, 157f, WL_Thick);
+		WallSection WL_Bed_Store = new WallSection(nameof(WL_Bed_Store), 1, WL_Direction.NS, Rm_Bed.Width, WL_Thick);
 		WL_Bed_Store.SpawnPos = WL_SpawnPos_Bed_Store;
+
 
 
 
@@ -709,10 +746,12 @@ public class RoomIndex : MonoBehaviour
 
 
 
+
 		// Hallway (East-West) wall - 36 Length
 		Vector3 WL_SpawnPos_Hallway_Exterior_South = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, 0));
 		WallSection WL_Hallway_Exterior_South = new WallSection(nameof(WL_Hallway_Exterior_South), 1, WL_Direction.EW, WL_Thick, 36f);
 		WL_Hallway_Exterior_South.SpawnPos = WL_SpawnPos_Hallway_Exterior_South;
+
 
 
 
@@ -728,9 +767,10 @@ public class RoomIndex : MonoBehaviour
 		WL_BedCloset_StoreEntry.SpawnPos = WL_SpawnPos_BedCloset_StoreEntry;
 
 		// BedCloset (East-West) wall - 21.75
-		Vector3 WL_SpawnPos_BedCloset_Store = (Rm_BedCloset.VxList.Find(v => v.Order== 0).Position + new Vector3 (-WL_Thick, 0, 0));
-		WallSection WL_BedCloset_Store = new WallSection(nameof(WL_BedCloset_Store), 1, WL_Direction.EW, WL_Thick, 21.75f);
+		Vector3 WL_SpawnPos_BedCloset_Store = (Rm_Bed.VxList.Find(v => v.Order== 1).Position + new Vector3 (0, 0, 0));
+		WallSection WL_BedCloset_Store = new WallSection(nameof(WL_BedCloset_Store), 1, WL_Direction.EW, WL_Thick, -21.75f + WL_Thick);
 		WL_BedCloset_Store.SpawnPos = WL_SpawnPos_BedCloset_Store;
+
 
 
 
@@ -747,10 +787,12 @@ public class RoomIndex : MonoBehaviour
 
 
 
+
 		// Store (North-South) wall - 120 Length
 		Vector3 WL_SpawnPos_Store_Exterior_West = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		WallSection WL_Store_Exterior_West = new WallSection(nameof(WL_Store_Exterior_West), 1, WL_Direction.NS, 120f, WL_Thick);
 		WL_Store_Exterior_West.SpawnPos = WL_SpawnPos_Store_Exterior_West; 
+
 
 
 
@@ -827,16 +869,24 @@ public class RoomIndex : MonoBehaviour
 		PostSection PT_Living_NW = new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
 		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
 
+		// Living Room SW
+		Vector3 PT_SpawnPos_Living_SW = (Rm_Living.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Living_SW = new PostSection(nameof(PT_Living_SW), 1, WL_Thick, WL_Thick);
+		PT_Living_SW.SpawnPos = PT_SpawnPos_Living_SW;
+
+
 		// Hallway NW
 		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		PostSection PT_Hallway_NW = new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
 		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
 
 
+
 		// Dining Room NE
 		Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
 		PostSection PT_Dining_NE = new PostSection(nameof(PT_Dining_NE), 1, WL_Thick, WL_Thick);
 		PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
+
 
 
 		// Laundry Room SE
@@ -848,6 +898,12 @@ public class RoomIndex : MonoBehaviour
 		Vector3 PT_SpawnPos_Laundry_SW = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PostSection PT_Laundry_SW = new PostSection(nameof(PT_Laundry_SW), 1, WL_Thick, WL_Thick);
 		PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
+
+		// Laundry Room NW
+		Vector3 PT_SpawnPos_Laundry_NW = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Laundry_NW = new PostSection(nameof(PT_Laundry_NW), 1, WL_Thick, WL_Thick);
+		PT_Laundry_NW.SpawnPos = PT_SpawnPos_Laundry_NW;
+
 
 
 		// Kitchen Wall NW - 98 Length
@@ -862,13 +918,126 @@ public class RoomIndex : MonoBehaviour
 
 
 
+		// Entryway Closet Wall NE
+		Vector3 PT_SpawnPos_EntryCloset_NE = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
+		PostSection PT_EntryCloset_NE = new PostSection(nameof(PT_EntryCloset_NE), 1, WL_Thick, WL_Thick);
+		PT_EntryCloset_NE.SpawnPos = PT_SpawnPos_EntryCloset_NE;
+
+		// Entryway Closet Wall SE
+		Vector3 PT_SpawnPos_EntryCloset_SE = (Rm_EntryCloset.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		PostSection PT_EntryCloset_SE = new PostSection(nameof(PT_EntryCloset_SE), 1, WL_Thick, WL_Thick);
+		PT_EntryCloset_SE.SpawnPos = PT_SpawnPos_EntryCloset_SE;
+
+		// EntryWay Closet Wall NW
+		Vector3 PT_SpawnPos_EntryCloset_NW = (Rm_EntryCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_EntryCloset_NW = new PostSection(nameof(PT_EntryCloset_NW), 1, WL_Thick, WL_Thick);
+		PT_EntryCloset_NW.SpawnPos = PT_SpawnPos_EntryCloset_NW;
+
+
+
+		// Hallway Wall SE
+		Vector3 PT_SpawnPos_Hallway_SE = (Rm_Hallway.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		PostSection PT_Hallway_SE = new PostSection(nameof(PT_Hallway_SE), 1, WL_Thick, WL_Thick);
+		PT_Hallway_SE.SpawnPos = PT_SpawnPos_Hallway_SE;
+
+		// Hallway Wall SW
+		Vector3 PT_SpawnPos_Hallway_SW = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Hallway_SW = new PostSection(nameof(PT_Hallway_SW), 1, WL_Thick, WL_Thick);
+		PT_Hallway_SW.SpawnPos = PT_SpawnPos_Hallway_SW;
+
+
+
+		// Bathroom Wall NW
+		Vector3 PT_SpawnPos_Bathroom_NW = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		PostSection PT_Bathroom_NW = new PostSection(nameof(PT_Bathroom_NW), 1, WL_Thick, WL_Thick);
+		PT_Bathroom_NW.SpawnPos = PT_SpawnPos_Bathroom_NW;
+
+		// Bathroom Wall SW
+		Vector3 PT_SpawnPos_Bathroom_SW = (Rm_Bath.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Bathroom_SW = new PostSection(nameof(PT_Bathroom_SW), 1, WL_Thick, WL_Thick);
+		PT_Bathroom_SW.SpawnPos = PT_SpawnPos_Bathroom_SW;
+
+
+		// Bedroom Wall NW
+		Vector3 PT_SpawnPos_Bedroom_NW = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		PostSection PT_Bedroom_NW = new PostSection(nameof(PT_Bedroom_NW), 1, WL_Thick, WL_Thick);
+		PT_Bedroom_NW.SpawnPos = PT_SpawnPos_Bedroom_NW;
+		
+		// Bedroom Wall SW
+		Vector3 PT_SpawnPos_Bedroom_SW = (Rm_Bed.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_Bedroom_SW = new PostSection(nameof(PT_Bedroom_SW), 1, WL_Thick, WL_Thick);
+		PT_Bedroom_SW.SpawnPos = PT_SpawnPos_Bedroom_SW;
+
+		// Bedroom Wall SE
+		Vector3 PT_SpawnPos_Bedroom_SE = (Rm_Bed.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		PostSection PT_Bedroom_SE = new PostSection(nameof(PT_Bedroom_SE), 1, WL_Thick, WL_Thick);
+		PT_Bedroom_SE.SpawnPos = PT_SpawnPos_Bedroom_SE;
+
+
+		// BedCloset Wall NW
+		Vector3 PT_SpawnPos_BedCloset_NW = (Rm_BedCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		PostSection PT_BedCloset_NW = new PostSection(nameof(PT_BedCloset_NW), 1, WL_Thick, WL_Thick);
+		PT_BedCloset_NW.SpawnPos = PT_SpawnPos_BedCloset_NW;
+
+		// BedCloset Wall SW
+		Vector3 PT_SpawnPos_BedCloset_SW = (Rm_BedCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_BedCloset_SW = new PostSection(nameof(PT_BedCloset_SW), 1, WL_Thick, WL_Thick);
+		PT_BedCloset_SW.SpawnPos = PT_SpawnPos_BedCloset_SW;
+
+
+		// StoreEntry Wall SW
+		Vector3 PT_SpawnPos_StoreEntry_SW = (Rm_StoreEntry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		PostSection PT_StoreEntry_SW = new PostSection(nameof(PT_StoreEntry_SW), 1, WL_Thick, WL_Thick);
+		PT_StoreEntry_SW.SpawnPos = PT_SpawnPos_StoreEntry_SW;
+
+		
+		// Storeroom Wall NW
+		Vector3 PT_SpawnPos_Store_NW = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		PostSection PT_Store_NW = new PostSection(nameof(PT_Store_NW), 1, WL_Thick, WL_Thick);
+		PT_Store_NW.SpawnPos = PT_SpawnPos_Store_NW;
+
+		// Storeroom Wall NE
+		Vector3 PT_SpawnPos_Store_NE = (Rm_Store.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
+		PostSection PT_Store_NE = new PostSection(nameof(PT_Store_NE), 1, WL_Thick, WL_Thick);
+		PT_Store_NE.SpawnPos = PT_SpawnPos_Store_NE;
+
+
+
 		All_PostSectionList.Add(PT_Living_NW);
+		All_PostSectionList.Add(PT_Living_SW);
+
 		All_PostSectionList.Add(PT_Hallway_NW);
+		
 		All_PostSectionList.Add(PT_Dining_NE);
+
 		All_PostSectionList.Add(PT_Laundry_SE);
 		All_PostSectionList.Add(PT_Laundry_SW);
+		All_PostSectionList.Add(PT_Laundry_NW);
+
 		All_PostSectionList.Add(PT_Kitchen_NW);
 		All_PostSectionList.Add(PT_Kitchen_SW);
+
+		All_PostSectionList.Add(PT_EntryCloset_NE);
+		All_PostSectionList.Add(PT_EntryCloset_SE);
+		All_PostSectionList.Add(PT_EntryCloset_NW);
+
+		All_PostSectionList.Add(PT_Hallway_SE);
+		All_PostSectionList.Add(PT_Hallway_SW);
+
+		All_PostSectionList.Add(PT_Bathroom_NW);
+		All_PostSectionList.Add(PT_Bathroom_SW);
+
+		All_PostSectionList.Add(PT_Bedroom_NW);
+		All_PostSectionList.Add(PT_Bedroom_SW);
+		All_PostSectionList.Add(PT_Bedroom_SE);
+	
+		All_PostSectionList.Add(PT_BedCloset_NW);
+		All_PostSectionList.Add(PT_BedCloset_SW);
+
+		All_PostSectionList.Add(PT_StoreEntry_SW);
+
+		All_PostSectionList.Add(PT_Store_NW);
+		All_PostSectionList.Add(PT_Store_NE);
 
 	}
 
@@ -1247,8 +1416,8 @@ public class RoomIndex : MonoBehaviour
 
 	public class Hallway_Measurements
 	{
+		float width  = 229;
 		float length = 36;
-		float width = 229;
 
 		public float wall_hallway_south = 36;
 
@@ -1296,8 +1465,8 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- Living Room ----- ----- ----- ----- ----- ----- ----- 
 	public class Rm_Living_Measurements
 	{
+		float width  = 152;
 		float length = 158.25f;
-		float width = 152;
 
 		public float wall_livingRoom_north = 158.25f;
 
@@ -1312,8 +1481,8 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- Dining Room ----- ----- ----- ----- ----- ----- ----- 
 	public class Rm_Dining_Measurements
 	{
+		float width  = 125.75f;
 		float length = 95.25f;
-		float width = 125.75f;
 
 		public float wall_diningRoom_north = 95.25f;
 
@@ -1329,8 +1498,8 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- Entry Way ----- ----- ----- ----- ----- ----- ----- 
 	public class EntryWay_Measurements
 	{
+		float width  = 43;
 		float length = 40.25f;
-		float width = 43;
 
 		public float wall_entryway_north = 40.25f;
 
@@ -1349,8 +1518,8 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- Entry Way Closet ----- ----- ----- ----- ----- ----- ----- 
 	public class EntryCloset_Measurements
 	{
+		float width  = 57;
 		float length = 35;
-		float width = 57;
 
 		public float wall_entrywayCloset_south = 35;
 
@@ -1367,8 +1536,8 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- Bathroom ----- ----- ----- ----- ----- ----- ----- 
 	public class Bathroom_Measurements
 	{
+		float width  = 71.25f;
 		float length = 63.75f;
-		float width = 71.25f;
 
 		public float wall_bathroom_north = 63.75f;
 		public float wall_bathroom_north_right = 31.25f;
@@ -1392,29 +1561,29 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- Bedroom ----- ----- ----- ----- ----- ----- ----- 
 	public class Bedroom_Measurements
 	{
+		float width  = 148;
 		float length = 157;
-		float width = 148;
 
 		public float wall_bedroom_north = 157;
 
 		public float wall_bedroom_south = 157;
-		public float wall_bedroom_south_left = 31.5f;
-		public float wall_bedroom_south_bathDoor = 28.25f;
-		public float wall_bedroom_south_right = 62f;
-		public float wall_bedroom_south_gap = 35.25f;
+			public float wall_bedroom_south_left = 31.5f;
+			public float wall_bedroom_south_bathDoor = 28.25f;
+			public float wall_bedroom_south_right = 62f;
+			public float wall_bedroom_south_gap = 35.25f;
 
 		public float wall_bedroom_east = 148;
-		public float wall_bedroom_east_short = 3;
-		public float wall_bedroom_east_doorFrame = 30;
-		public float wall_bedroom_east_long = 125;
+			public float wall_bedroom_east_short = 3;
+			public float wall_bedroom_east_doorFrame = 30;
+			public float wall_bedroom_east_long = 125;
 
 		public float wall_bedroom_west = 148;
 	}
 	// ----- ----- ----- ----- ----- ----- ----- BedroomCloset ----- ----- ----- ----- ----- ----- ----- 
 	public class BedroomCloset_Measurements
 	{
+		float width  = 71;
 		float length = 78;
-		float width = 71;
 
 		public float wall_closet_north = 78;
 		public float wall_closet_north_right = 21;
@@ -1433,8 +1602,8 @@ public class RoomIndex : MonoBehaviour
 	// ----- ----- ----- ----- ----- ----- ----- StoreroomEntry ----- ----- ----- ----- ----- ----- ----- 
 	public class StoreroomEntry_Measurements
 	{
+		float width  = 65.5f;
 		float length = 103f;
-		float width = 65.5f;
 
 		public float wall_storeroom_south = 103f;
 
@@ -1444,8 +1613,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Storeroom ----- ----- ----- ----- ----- ----- ----- 
 		public class Storeroom_Measurements
 		{
+			float width  = 120f;
 			float length = 127.5f;
-			float width = 120f;
 
 			public float wall_storeroom_north = 127.5f;
 
@@ -1456,8 +1625,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Kitchen ----- ----- ----- ----- ----- ----- ----- 
 		public class Kitchen_Measurements
 		{
-			float length = 90.5f;
 			float width = 114f;
+			float length = 90.5f;
 
 			public float wall_kitchen_north_kitchenShelf = 90.5f; // where living room wall meets kitchen wall
 
@@ -1470,8 +1639,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Laundry Space ----- ----- ----- ----- ----- ----- ----- 
 		public class Laundry_Measurements
 		{
-			float length = 89.5f;
 			float width = 31.25f;
+			float length = 89.5f;
 
 			public float wall_laundry_north = 89.5f;
 
@@ -1486,8 +1655,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Loft ----- ----- ----- ----- ----- ----- ----- 
 		public class Loft_Measurements
 		{
-			float length = 137;
 			float width = 183;
+			float length = 137;
 
 			public float wall_loft_north = 137;
 
@@ -1508,8 +1677,8 @@ public class RoomIndex : MonoBehaviour
 		}
 		public class UpperBedroomEntry_Measurements
 		{
-			float length = 54.75f;
 			float width = 87f;
+			float length = 54.75f;
 
 			public float wall_south_doorWall = 54.75f;
 
@@ -1520,8 +1689,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Upper Rm_Bed ----- ----- ----- ----- ----- ----- ----- 
 		public class UpperBedroom_Measurements
 		{
-			float length = 75.75f;
 			float width = 165f;
+			float length = 75.75f;
 
 			public float wall_north = 130.5f - 54.75f;
 
@@ -1537,8 +1706,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Upper Rm_Bed Closet ----- ----- ----- ----- ----- ----- ----- 
 		public class UpperBedroomCloset_Measurements
 		{
-			float length = 76;
 			float width = 23.75f;
+			float length = 76;
 
 			public float wall_north = 76;
 			public float wall_north_right = 15;
@@ -1554,8 +1723,8 @@ public class RoomIndex : MonoBehaviour
 		// ----- ----- ----- ----- ----- ----- ----- Deck Covered ----- ----- ----- ----- ----- ----- ----- 
 		public class DeckCovered_Measurements
 		{
-			float length = 40f;
 			float width	 = 158f;
+			float length = 40f;
 
 			public float railing_west = 185f;
 
@@ -1573,8 +1742,8 @@ public class RoomIndex : MonoBehaviour
 		public class DeckUncovered_Measurements
 		{
 
-			float length = 28f;
 			float width = 185f;
+			float length = 28f;
 
 			public float railing_west = 185f;
 
