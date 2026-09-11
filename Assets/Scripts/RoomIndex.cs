@@ -862,143 +862,119 @@ public class RoomIndex : MonoBehaviour
 	}
 
 
+
+
+	PostSection PT_Living_NW			= new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Living_SW			= new PostSection(nameof(PT_Living_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Hallway_NW			= new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Dining_NE			= new PostSection(nameof(PT_Dining_NE), 1, WL_Thick, WL_Thick);
+	PostSection PT_Laundry_SE			= new PostSection(nameof(PT_Laundry_SE), 1, WL_Thick, WL_Thick);
+	PostSection PT_Laundry_SW			= new PostSection(nameof(PT_Laundry_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Laundry_NW			= new PostSection(nameof(PT_Laundry_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Kitchen_NW			= new PostSection(nameof(PT_Kitchen_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Kitchen_SW			= new PostSection(nameof(PT_Kitchen_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_EntryCloset_NE	= new PostSection(nameof(PT_EntryCloset_NE), 1, WL_Thick, WL_Thick);
+	PostSection PT_EntryCloset_SE	= new PostSection(nameof(PT_EntryCloset_SE), 1, WL_Thick, WL_Thick);
+	PostSection PT_EntryCloset_NW	= new PostSection(nameof(PT_EntryCloset_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Hallway_SE			= new PostSection(nameof(PT_Hallway_SE), 1, WL_Thick, WL_Thick);
+	PostSection PT_Hallway_SW			= new PostSection(nameof(PT_Hallway_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Bathroom_NW		= new PostSection(nameof(PT_Bathroom_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Bathroom_SW		= new PostSection(nameof(PT_Bathroom_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Bedroom_NW			= new PostSection(nameof(PT_Bedroom_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Bedroom_SW			= new PostSection(nameof(PT_Bedroom_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Bedroom_SE			= new PostSection(nameof(PT_Bedroom_SE), 1, WL_Thick, WL_Thick);
+	PostSection PT_BedCloset_NW		= new PostSection(nameof(PT_BedCloset_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_BedCloset_SW		= new PostSection(nameof(PT_BedCloset_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_StoreEntry_SW	= new PostSection(nameof(PT_StoreEntry_SW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Store_NW				= new PostSection(nameof(PT_Store_NW), 1, WL_Thick, WL_Thick);
+	PostSection PT_Store_NE				= new PostSection(nameof(PT_Store_NE), 1, WL_Thick, WL_Thick);
+
+
+
 	public void Assign_Post_SpawnPositions()
 	{
-		// Living Room NW
+		// Living Post NW
 		Vector3 PT_SpawnPos_Living_NW = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PostSection PT_Living_NW = new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
 		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
-
-		// Living Room SW
+		// Living Post SW
 		Vector3 PT_SpawnPos_Living_SW = (Rm_Living.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Living_SW = new PostSection(nameof(PT_Living_SW), 1, WL_Thick, WL_Thick);
 		PT_Living_SW.SpawnPos = PT_SpawnPos_Living_SW;
 
-
-		// Hallway NW
+		// Hallway Post NW
 		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Hallway_NW = new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
 		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
 
-
-
-		// Dining Room NE
+		// Dining Post NE
 		Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
-		PostSection PT_Dining_NE = new PostSection(nameof(PT_Dining_NE), 1, WL_Thick, WL_Thick);
 		PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
 
-
-
-		// Laundry Room SE
+		// Laundry Post SE
 		Vector3 PT_SpawnPos_Laundry_SE = (Rm_Laundry.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PostSection PT_Laundry_SE = new PostSection(nameof(PT_Laundry_SE), 1, WL_Thick, WL_Thick);
 		PT_Laundry_SE.SpawnPos = PT_SpawnPos_Laundry_SE;
-
-		// Laundry Room SW
+		// Laundry Post SW
 		Vector3 PT_SpawnPos_Laundry_SW = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Laundry_SW = new PostSection(nameof(PT_Laundry_SW), 1, WL_Thick, WL_Thick);
 		PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
-
-		// Laundry Room NW
+		// Laundry Post NW
 		Vector3 PT_SpawnPos_Laundry_NW = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Laundry_NW = new PostSection(nameof(PT_Laundry_NW), 1, WL_Thick, WL_Thick);
 		PT_Laundry_NW.SpawnPos = PT_SpawnPos_Laundry_NW;
 
-
-
-		// Kitchen Wall NW - 98 Length
+		// Kitchen Post NW - 98 Length
 		Vector3 PT_SpawnPos_Kitchen_NW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
-		PostSection PT_Kitchen_NW = new PostSection(nameof(PT_Kitchen_NW), 1, WL_Thick, WL_Thick);
 		PT_Kitchen_NW.SpawnPos = PT_SpawnPos_Kitchen_NW;
-
-		// Kitchen Wall NW - 98 Length
+		// Kitchen Post NW - 98 Length
 		Vector3 PT_SpawnPos_Kitchen_SW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3((98 - 14 - WL_Thick), 0, -WL_Thick));
-		PostSection PT_Kitchen_SW = new PostSection(nameof(PT_Kitchen_SW), 1, WL_Thick, WL_Thick);
 		PT_Kitchen_SW.SpawnPos = PT_SpawnPos_Kitchen_SW;
 
-
-
-		// Entryway Closet Wall NE
+		// Entryway Closet Post NE
 		Vector3 PT_SpawnPos_EntryCloset_NE = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
-		PostSection PT_EntryCloset_NE = new PostSection(nameof(PT_EntryCloset_NE), 1, WL_Thick, WL_Thick);
 		PT_EntryCloset_NE.SpawnPos = PT_SpawnPos_EntryCloset_NE;
-
-		// Entryway Closet Wall SE
+		// Entryway Closet Post SE
 		Vector3 PT_SpawnPos_EntryCloset_SE = (Rm_EntryCloset.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PostSection PT_EntryCloset_SE = new PostSection(nameof(PT_EntryCloset_SE), 1, WL_Thick, WL_Thick);
 		PT_EntryCloset_SE.SpawnPos = PT_SpawnPos_EntryCloset_SE;
-
-		// EntryWay Closet Wall NW
+		// EntryWay Closet Post NW
 		Vector3 PT_SpawnPos_EntryCloset_NW = (Rm_EntryCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_EntryCloset_NW = new PostSection(nameof(PT_EntryCloset_NW), 1, WL_Thick, WL_Thick);
 		PT_EntryCloset_NW.SpawnPos = PT_SpawnPos_EntryCloset_NW;
 
-
-
-		// Hallway Wall SE
+		// Hallway Post SE
 		Vector3 PT_SpawnPos_Hallway_SE = (Rm_Hallway.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PostSection PT_Hallway_SE = new PostSection(nameof(PT_Hallway_SE), 1, WL_Thick, WL_Thick);
 		PT_Hallway_SE.SpawnPos = PT_SpawnPos_Hallway_SE;
-
-		// Hallway Wall SW
+		// Hallway Post SW
 		Vector3 PT_SpawnPos_Hallway_SW = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Hallway_SW = new PostSection(nameof(PT_Hallway_SW), 1, WL_Thick, WL_Thick);
 		PT_Hallway_SW.SpawnPos = PT_SpawnPos_Hallway_SW;
 
-
-
-		// Bathroom Wall NW
+		// Bathroom Post NW
 		Vector3 PT_SpawnPos_Bathroom_NW = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PostSection PT_Bathroom_NW = new PostSection(nameof(PT_Bathroom_NW), 1, WL_Thick, WL_Thick);
 		PT_Bathroom_NW.SpawnPos = PT_SpawnPos_Bathroom_NW;
-
-		// Bathroom Wall SW
+		// Bathroom Post SW
 		Vector3 PT_SpawnPos_Bathroom_SW = (Rm_Bath.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Bathroom_SW = new PostSection(nameof(PT_Bathroom_SW), 1, WL_Thick, WL_Thick);
 		PT_Bathroom_SW.SpawnPos = PT_SpawnPos_Bathroom_SW;
 
-
-		// Bedroom Wall NW
+		// Bedroom Post NW
 		Vector3 PT_SpawnPos_Bedroom_NW = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PostSection PT_Bedroom_NW = new PostSection(nameof(PT_Bedroom_NW), 1, WL_Thick, WL_Thick);
 		PT_Bedroom_NW.SpawnPos = PT_SpawnPos_Bedroom_NW;
-		
-		// Bedroom Wall SW
+		// Bedroom Post SW
 		Vector3 PT_SpawnPos_Bedroom_SW = (Rm_Bed.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_Bedroom_SW = new PostSection(nameof(PT_Bedroom_SW), 1, WL_Thick, WL_Thick);
 		PT_Bedroom_SW.SpawnPos = PT_SpawnPos_Bedroom_SW;
-
-		// Bedroom Wall SE
+		// Bedroom Post SE
 		Vector3 PT_SpawnPos_Bedroom_SE = (Rm_Bed.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PostSection PT_Bedroom_SE = new PostSection(nameof(PT_Bedroom_SE), 1, WL_Thick, WL_Thick);
 		PT_Bedroom_SE.SpawnPos = PT_SpawnPos_Bedroom_SE;
 
-
-		// BedCloset Wall NW
+		// BedCloset Post NW
 		Vector3 PT_SpawnPos_BedCloset_NW = (Rm_BedCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PostSection PT_BedCloset_NW = new PostSection(nameof(PT_BedCloset_NW), 1, WL_Thick, WL_Thick);
 		PT_BedCloset_NW.SpawnPos = PT_SpawnPos_BedCloset_NW;
-
-		// BedCloset Wall SW
+		// BedCloset Post SW
 		Vector3 PT_SpawnPos_BedCloset_SW = (Rm_BedCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_BedCloset_SW = new PostSection(nameof(PT_BedCloset_SW), 1, WL_Thick, WL_Thick);
 		PT_BedCloset_SW.SpawnPos = PT_SpawnPos_BedCloset_SW;
 
-
-		// StoreEntry Wall SW
+		// StoreEntry Post SW
 		Vector3 PT_SpawnPos_StoreEntry_SW = (Rm_StoreEntry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PostSection PT_StoreEntry_SW = new PostSection(nameof(PT_StoreEntry_SW), 1, WL_Thick, WL_Thick);
 		PT_StoreEntry_SW.SpawnPos = PT_SpawnPos_StoreEntry_SW;
 
-		
-		// Storeroom Wall NW
+		// Storeroom Post NW
 		Vector3 PT_SpawnPos_Store_NW = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PostSection PT_Store_NW = new PostSection(nameof(PT_Store_NW), 1, WL_Thick, WL_Thick);
 		PT_Store_NW.SpawnPos = PT_SpawnPos_Store_NW;
-
-		// Storeroom Wall NE
+		// Storeroom Post NE
 		Vector3 PT_SpawnPos_Store_NE = (Rm_Store.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
-		PostSection PT_Store_NE = new PostSection(nameof(PT_Store_NE), 1, WL_Thick, WL_Thick);
 		PT_Store_NE.SpawnPos = PT_SpawnPos_Store_NE;
 
 
@@ -1038,6 +1014,7 @@ public class RoomIndex : MonoBehaviour
 
 		All_PostSectionList.Add(PT_Store_NW);
 		All_PostSectionList.Add(PT_Store_NE);
+
 
 	}
 
