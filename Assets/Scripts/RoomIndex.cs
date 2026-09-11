@@ -31,12 +31,32 @@ public class RoomIndex : MonoBehaviour
 	private static int _postID	 = 1;
 
 
-	public static List<FloorSection> All_FloorSectionList = new List<FloorSection>();
-	public static List<WallSection>  All_WallSectionList	= new List<WallSection>();
-	public static List<PostSection>  All_PostSectionList  = new List<PostSection>();
+	public static List<Structure> All_FloorSectionList = new List<Structure>();
+	public static List<Structure> All_WallSectionList	 = new List<Structure>();
+	public static List<Structure> All_PostSectionList  = new List<Structure>();
 
 
-	// ----- ----- ----- ----- ----- ----- ----- Base Class Structure : Interface ----- ----- ----- ----- ----- ----- ----- 
+
+
+
+
+	public void Start()
+	{
+		AssignVertexLists();
+
+		Assign_Wall_SpawnPositions();
+
+		Assign_Post_SpawnPositions();
+
+		ConsoleLogVertexList(All_FloorSectionList);
+	}
+
+
+
+
+
+
+	// ----- ----- ----- ----- ----- ----- ----- Base Structure Class : Interface ----- ----- ----- ----- ----- ----- ----- 
 
 	public class Structure
 	{
@@ -56,6 +76,96 @@ public class RoomIndex : MonoBehaviour
 
 		protected const float SqftConversion = 144f; // 12x12 inches
 	}
+
+
+
+
+
+
+	// ----- ----- ----- ----- ----- ----- ----- Vertex Class ----- ----- ----- ----- ----- ----- ----- 
+	public class Vertex
+	{
+		private int ID;
+		public string Name;
+		public int Level;
+		public Vector3 Position;
+		public int Order;  // Order of the vertex in the room (0 = BottomLeft, 1 = BottomRight, 2 = TopRight, 3 = TopLeft)
+		public bool IsActive;
+
+		// -----  Constructor ----- 
+		public Vertex(string name, int level, Vector3 position, int order = 0, bool isActive = true)
+		{
+			ID = _vertexID;
+			_vertexID = _vertexID + 1;
+
+			Name = name;
+			Level = level;
+			Position = position;
+			Order = order;
+			IsActive = isActive;
+		}
+	}
+
+	public void Generate_Structure_VertexList(Structure structure)
+	{
+		Vector3 BottomLeft = new Vector3(structure.SpawnPos.x, structure.SpawnPos.y, structure.SpawnPos.z);
+		Vector3 BottomRight = new Vector3(structure.SpawnPos.x + structure.Width, structure.SpawnPos.y, structure.SpawnPos.z);
+		Vector3 TopRight = new Vector3(structure.SpawnPos.x + structure.Width, structure.SpawnPos.y, structure.SpawnPos.z + structure.Length);
+		Vector3 TopLeft = new Vector3(structure.SpawnPos.x, structure.SpawnPos.y, structure.SpawnPos.z + structure.Length);
+
+		string Vx_Name = "Vx_" + structure.Name.Substring(3);
+
+		// Ex: Vertex Vx_TopLeft = new Vertex("Vx_Living_TopLeft", 1, Rm_Living_TopLeft);
+		Vertex Vx_BottomLeft = new Vertex(Vx_Name + "_" + nameof(BottomLeft), structure.Level, BottomLeft, 0);
+		Vertex Vx_BottomRight = new Vertex(Vx_Name + "_" + nameof(BottomRight), structure.Level, BottomRight, 1);
+		Vertex Vx_TopRight = new Vertex(Vx_Name + "_" + nameof(TopRight), structure.Level, TopRight, 2);
+		Vertex Vx_TopLeft = new Vertex(Vx_Name + "_" + nameof(TopLeft), structure.Level, TopLeft, 3);
+
+		List<Vertex> VertexList = new List<Vertex> {
+			Vx_BottomLeft,
+			Vx_BottomRight,
+			Vx_TopRight,
+			Vx_TopLeft
+		};
+
+		// Update Structure VxList
+		structure.VxList = VertexList;
+
+	}
+
+
+	// Helper to safely get a vertex by Order
+	Vertex GetVertex(Structure structure, int order)
+	{
+		if (structure == null || structure.VxList == null)
+		{
+			Debug.LogError($"Structure or VxList is null when looking for Order {order}");
+			return null;
+		}
+
+		Vertex vertex = structure.VxList.Find(v => v.Order == order);
+
+		if (vertex == null)
+		{
+			Debug.LogError($"Could not find vertex with Order {order} on structure '{structure.Name}'");
+		}
+
+		return vertex;
+	}
+
+
+	public void AssignVertexLists()
+	{
+		foreach (FloorSection floor in All_FloorSectionList)
+		{
+			Generate_Structure_VertexList(floor);
+		}
+
+		Assign_Floor_SpawnPositions();
+
+	}
+
+
 
 
 
@@ -92,7 +202,7 @@ public class RoomIndex : MonoBehaviour
 	
 
 
-	// ----- ----- ----- ----- ----- ----- ----- Initializer ----- ----- ----- ----- ----- ----- -----
+	// ----- ----- ----- ----- ----- ----- ----- Floor Initializer ----- ----- ----- ----- ----- ----- -----
 
 	public static FloorSection Rm_Living				 = new FloorSection("Rm_Living",				 "LivingRoom",				 1, 151.75f,   152f, "LVP");
 	public static FloorSection Rm_Dining				 = new FloorSection("Rm_Dining",				 "DiningRoom",				 1, 125.75f, 95.25f, "LVP");
@@ -118,104 +228,6 @@ public class RoomIndex : MonoBehaviour
 	public static FloorSection Rm_UpperBedCloset = new FloorSection("Rm_UpperBedCloset", "UpperBedroomCloset", 2,  23.75f,    76f, "Carpet");
 
 
-
-	public void Start()
-	{
-		AssignVertexLists();
-
-		Assign_Wall_SpawnPositions();
-
-		Assign_Post_SpawnPositions();
-
-		ConsoleLogVertexList(All_FloorSectionList);
-	}
-
-
-
-	// ----- ----- ----- ----- ----- ----- ----- Vertex Class ----- ----- ----- ----- ----- ----- ----- 
-	public class Vertex
-	{
-		private int			ID;
-		public	string	Name;
-		public	int			Level;	
-		public	Vector3 Position;
-		public	int			Order;  // Order of the vertex in the room (0 = BottomLeft, 1 = BottomRight, 2 = TopRight, 3 = TopLeft)
-		public	bool		IsActive;
-
-		// -----  Constructor ----- 
-		public Vertex(string name, int level, Vector3 position, int order = 0, bool isActive = true)
-		{
-			ID				 = _vertexID;
-			_vertexID  = _vertexID + 1;
-
-			Name			 = name;
-			Level			 = level;
-			Position	 = position;
-			Order			 = order;
-			IsActive	 = isActive;
-		}
-	}
-
-	public void Generate_Structure_VertexList(Structure structure)
-	{
-		Vector3 BottomLeft	= new Vector3(structure.SpawnPos.x,										 structure.SpawnPos.y,	structure.SpawnPos.z);
-		Vector3 BottomRight = new Vector3(structure.SpawnPos.x + structure.Width,	 structure.SpawnPos.y,	structure.SpawnPos.z);
-		Vector3 TopRight		= new Vector3(structure.SpawnPos.x + structure.Width,	 structure.SpawnPos.y,  structure.SpawnPos.z + structure.Length);
-		Vector3 TopLeft			= new Vector3(structure.SpawnPos.x,										 structure.SpawnPos.y,	structure.SpawnPos.z + structure.Length);
-
-		string Vx_Name = "Vx_" + structure.Name.Substring(3);
-
-		// Ex: Vertex Vx_TopLeft = new Vertex("Vx_Living_TopLeft", 1, Rm_Living_TopLeft);
-		Vertex Vx_BottomLeft		= new Vertex(Vx_Name + "_" + nameof(BottomLeft),	 structure.Level, BottomLeft,	 0);
-		Vertex Vx_BottomRight		= new Vertex(Vx_Name + "_" + nameof(BottomRight),  structure.Level, BottomRight, 1);
-		Vertex Vx_TopRight			= new Vertex(Vx_Name + "_" + nameof(TopRight),		 structure.Level, TopRight,		 2);
-		Vertex Vx_TopLeft				= new Vertex(Vx_Name + "_" + nameof(TopLeft),			 structure.Level, TopLeft,		 3);
-
-		List<Vertex> VertexList = new List<Vertex> {
-			Vx_BottomLeft,
-			Vx_BottomRight,
-			Vx_TopRight,
-			Vx_TopLeft
-		};
-
-		// Update Structure VxList
-		structure.VxList = VertexList;
-
-	}
-
-
-
-		// Helper to safely get a vertex by Order
-	Vertex GetVertex(Structure structure, int order)
-	{
-		if (structure == null || structure.VxList == null)
-		{
-			Debug.LogError($"Structure or VxList is null when looking for Order {order}");
-			return null;
-		}
-
-		Vertex vertex = structure.VxList.Find(v => v.Order == order);
-
-		if (vertex == null)
-		{
-			Debug.LogError($"Could not find vertex with Order {order} on structure '{structure.Name}'");
-		}
-
-		return vertex;
-	}
-
-
-
-
-	public void AssignVertexLists()
-	{
-		foreach (FloorSection floor in All_FloorSectionList) {
-			Generate_Structure_VertexList(floor);
-		}
-		
-		Assign_Floor_SpawnPositions();
-
-	}
 
 	// Assign Spawn Positions for each room based on the vertex positions
 	public void Assign_Floor_SpawnPositions()
@@ -506,20 +518,20 @@ public class RoomIndex : MonoBehaviour
 
 
 
-	public void ConsoleLogVertexList(List<FloorSection> topList)
+	public void ConsoleLogVertexList(List<Structure> topList)
 	{
-		string consoleLog = "Room Vertices: \n";
-
 		if (topList == null || topList.Count == 0){ 
-			Debug.Log("No Floors in List.");
+			Debug.Log("No objects in List.");
 			return;
 		}
+
+		string consoleLog = $"{topList[0].ClassRef} Vertices: \n";
 		
-		consoleLog += $"Room Vertices in {topList}: \n";
-		foreach (FloorSection floor in topList) 
+		consoleLog += $"{topList[0].ClassRef} Vertices in {topList}: \n";
+		foreach (Structure obj in topList) 
 		{
-			consoleLog += $"--{floor.Name} \n";
-			foreach (Vertex vx in floor.VxList) 
+			consoleLog += $"--{obj.Name} \n";
+			foreach (Vertex vx in obj.VxList) 
 			{
 				consoleLog +=
 					$"----{vx.Name} \n" +

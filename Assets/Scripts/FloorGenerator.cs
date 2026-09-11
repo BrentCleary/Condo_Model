@@ -28,7 +28,7 @@ public class FloorGenerator : MonoBehaviour
 		wallSectionContainer  = CreateContainer("obj_WallSectionContainer");
 		postSectionContainer  = CreateContainer("obj_PostSectionContainer");
 
-		foreach (RoomIndex.FloorSection floor in RoomIndex.All_FloorSectionList)
+		foreach (RoomIndex.Structure floor in RoomIndex.All_FloorSectionList)
 		{
 			if (floor != null)
 			{
@@ -68,7 +68,7 @@ public class FloorGenerator : MonoBehaviour
 	}
 
 
-	public void GenerateFloor(RoomIndex.FloorSection floor)
+	public void GenerateFloor(RoomIndex.Structure floor)
 	{
 		float width  = floor.Width;
 		float length = floor.Length;
@@ -100,9 +100,9 @@ public class FloorGenerator : MonoBehaviour
 	}
 
 
-	public void GenerateVertexCube(List<RoomIndex.FloorSection> topList)
+	public void GenerateVertexCube(List<RoomIndex.Structure> topList)
 	{
-		foreach (RoomIndex.FloorSection floor in topList)
+		foreach (RoomIndex.Structure floor in topList)
 		{
 			foreach (var vertex in floor.VxList)
 			{
