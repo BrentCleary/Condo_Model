@@ -15,7 +15,7 @@ public class RoomIndex : MonoBehaviour
 
 	public float LevelOneWallHeight = 93.5f; // Height of the first floor walls in Unity units
 
-	public static float WL_Thick = 5; // Wall thickness in inches
+	public const float WL_Thick = 5; // Wall thickness in inches
 
 
 	// Floor Types
@@ -48,7 +48,7 @@ public class RoomIndex : MonoBehaviour
 
 		Assign_Post_SpawnPositions();
 
-		ConsoleLogVertexList(All_FloorSectionList);
+		ConsoleLogVertexList(All_PostSectionList);
 	}
 
 
@@ -847,47 +847,61 @@ public class RoomIndex : MonoBehaviour
 	{
 
 		// -----  Constructor ----- 
-		public PostSection(string name, int level, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
+		public PostSection(string name, int level, Vector3 spawnPos, float width = WL_Thick, float length = WL_Thick, bool isActive = true)
 		{
 			ID = _postID;
 			_postID = _postID + 1;
 
 			Name = name;
 			Level = level;
-			Width = width;
-			Length = length;
+			SpawnPos = spawnPos;
 
 			VxList = new List<Vertex>();
 		}
 	}
 
+	
 
 
 
-	PostSection PT_Living_NW			= new PostSection(nameof(PT_Living_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Living_SW			= new PostSection(nameof(PT_Living_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Hallway_NW			= new PostSection(nameof(PT_Hallway_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Dining_NE			= new PostSection(nameof(PT_Dining_NE), 1, WL_Thick, WL_Thick);
-	PostSection PT_Laundry_SE			= new PostSection(nameof(PT_Laundry_SE), 1, WL_Thick, WL_Thick);
-	PostSection PT_Laundry_SW			= new PostSection(nameof(PT_Laundry_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Laundry_NW			= new PostSection(nameof(PT_Laundry_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Kitchen_NW			= new PostSection(nameof(PT_Kitchen_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Kitchen_SW			= new PostSection(nameof(PT_Kitchen_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_EntryCloset_NE	= new PostSection(nameof(PT_EntryCloset_NE), 1, WL_Thick, WL_Thick);
-	PostSection PT_EntryCloset_SE	= new PostSection(nameof(PT_EntryCloset_SE), 1, WL_Thick, WL_Thick);
-	PostSection PT_EntryCloset_NW	= new PostSection(nameof(PT_EntryCloset_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Hallway_SE			= new PostSection(nameof(PT_Hallway_SE), 1, WL_Thick, WL_Thick);
-	PostSection PT_Hallway_SW			= new PostSection(nameof(PT_Hallway_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Bathroom_NW		= new PostSection(nameof(PT_Bathroom_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Bathroom_SW		= new PostSection(nameof(PT_Bathroom_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Bedroom_NW			= new PostSection(nameof(PT_Bedroom_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Bedroom_SW			= new PostSection(nameof(PT_Bedroom_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Bedroom_SE			= new PostSection(nameof(PT_Bedroom_SE), 1, WL_Thick, WL_Thick);
-	PostSection PT_BedCloset_NW		= new PostSection(nameof(PT_BedCloset_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_BedCloset_SW		= new PostSection(nameof(PT_BedCloset_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_StoreEntry_SW	= new PostSection(nameof(PT_StoreEntry_SW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Store_NW				= new PostSection(nameof(PT_Store_NW), 1, WL_Thick, WL_Thick);
-	PostSection PT_Store_NE				= new PostSection(nameof(PT_Store_NE), 1, WL_Thick, WL_Thick);
+
+
+	PostSection PT_Living_NW			= new PostSection(nameof(PT_Living_NW),				1, new Vector3(-5, 1, -5));
+	PostSection PT_Living_SW			= new PostSection(nameof(PT_Living_SW),				1, new Vector3(158.25f, 1, -5));
+	
+	PostSection PT_Hallway_NW			= new PostSection(nameof(PT_Hallway_NW),			1, new Vector3(158.25f, 1, 111));
+	
+	PostSection PT_Dining_NE			= new PostSection(nameof(PT_Dining_NE),				1, new Vector3(-5, 1, 247.25f));
+	
+	PostSection PT_Laundry_SE			= new PostSection(nameof(PT_Laundry_SE),			1, new Vector3(275.5f, 1, 247.25f));
+	PostSection PT_Laundry_SW			= new PostSection(nameof(PT_Laundry_SW),			1, new Vector3(275.5f, 1, 151.75f));
+	PostSection PT_Laundry_NW			= new PostSection(nameof(PT_Laundry_NW),			1, new Vector3(239.75f, 1, 151.75f));
+	PostSection PT_Laundry_NE			= new PostSection(nameof(PT_Laundry_NE),			1, new Vector3(239.75f, 1, 247.25f));
+	
+	PostSection PT_Kitchen_NW			= new PostSection(nameof(PT_Kitchen_NW),			1, new Vector3(111.75f, 1, 151.75f));
+	PostSection PT_Kitchen_SW			= new PostSection(nameof(PT_Kitchen_SW),			1, new Vector3(204.75f, 1, 151.75f));
+	
+	PostSection PT_EntryCloset_NE	= new PostSection(nameof(PT_EntryCloset_NE),	1, new Vector3(330.5f, 1, 192));
+	PostSection PT_EntryCloset_SE	= new PostSection(nameof(PT_EntryCloset_SE),	1, new Vector3(387.25f, 1, 192));
+	PostSection PT_EntryCloset_NW	= new PostSection(nameof(PT_EntryCloset_NW),	1, new Vector3(330.5f, 1, 152));
+	
+	PostSection PT_Hallway_SE			= new PostSection(nameof(PT_Hallway_SE),			1, new Vector3(387.25f, 1, 152));
+	PostSection PT_Hallway_SW			= new PostSection(nameof(PT_Hallway_SW),			1, new Vector3(387.25f, 1, 111));
+	
+	PostSection PT_Bathroom_NW		= new PostSection(nameof(PT_Bathroom_NW),			1, new Vector3(311.25f, 1, 19));
+	PostSection PT_Bathroom_SW		= new PostSection(nameof(PT_Bathroom_SW),			1, new Vector3(387.25f, 1, 19));
+	
+	PostSection PT_Bedroom_NW			= new PostSection(nameof(PT_Bedroom_NW),			1, new Vector3(158.25f, 1, -51));
+	PostSection PT_Bedroom_SW			= new PostSection(nameof(PT_Bedroom_SW),			1, new Vector3(311.25f, 1, -51));
+	PostSection PT_Bedroom_SE			= new PostSection(nameof(PT_Bedroom_SE),			1, new Vector3(311.25f, 1, 111));
+	
+	PostSection PT_BedCloset_NW		= new PostSection(nameof(PT_BedCloset_NW),		1, new Vector3(311.25f, 1, -59));
+	PostSection PT_BedCloset_SW		= new PostSection(nameof(PT_BedCloset_SW),		1, new Vector3(387.25f, 1, -59));
+	
+	PostSection PT_StoreEntry_SW	= new PostSection(nameof(PT_StoreEntry_SW),		1, new Vector3(387.25f, 1, -162));
+	
+	PostSection PT_Store_NW				= new PostSection(nameof(PT_Store_NW),				1, new Vector3(185.75f, 1, -162));
+	PostSection PT_Store_NE				= new PostSection(nameof(PT_Store_NE),				1, new Vector3(185.75f, 1, -29.5f));
 
 
 
@@ -896,86 +910,115 @@ public class RoomIndex : MonoBehaviour
 		// Living Post NW
 		Vector3 PT_SpawnPos_Living_NW = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
 		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
+		Generate_Structure_VertexList(PT_Living_NW);
 		// Living Post SW
 		Vector3 PT_SpawnPos_Living_SW = (Rm_Living.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Living_SW.SpawnPos = PT_SpawnPos_Living_SW;
+		Generate_Structure_VertexList(PT_Living_SW);
 
 		// Hallway Post NW
 		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
+		Generate_Structure_VertexList(PT_Hallway_NW);
 
 		// Dining Post NE
 		Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
 		PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
+		Generate_Structure_VertexList(PT_Dining_NE);
 
 		// Laundry Post SE
 		Vector3 PT_SpawnPos_Laundry_SE = (Rm_Laundry.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
 		PT_Laundry_SE.SpawnPos = PT_SpawnPos_Laundry_SE;
+		Generate_Structure_VertexList(PT_Laundry_SE);
 		// Laundry Post SW
 		Vector3 PT_SpawnPos_Laundry_SW = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
+		Generate_Structure_VertexList(PT_Laundry_SW);
 		// Laundry Post NW
 		Vector3 PT_SpawnPos_Laundry_NW = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Laundry_NW.SpawnPos = PT_SpawnPos_Laundry_NW;
+		Generate_Structure_VertexList(PT_Laundry_NW);
+		// Laundry Post NE
+		Vector3 PT_SpawnPos_Laundry_NE = (Rm_Laundry.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
+		PT_Laundry_NE.SpawnPos = PT_SpawnPos_Laundry_NE;
+		Generate_Structure_VertexList(PT_Laundry_NE);
+
 
 		// Kitchen Post NW - 98 Length
 		Vector3 PT_SpawnPos_Kitchen_NW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
 		PT_Kitchen_NW.SpawnPos = PT_SpawnPos_Kitchen_NW;
+		Generate_Structure_VertexList(PT_Kitchen_NW);
 		// Kitchen Post NW - 98 Length
 		Vector3 PT_SpawnPos_Kitchen_SW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3((98 - 14 - WL_Thick), 0, -WL_Thick));
 		PT_Kitchen_SW.SpawnPos = PT_SpawnPos_Kitchen_SW;
+		Generate_Structure_VertexList(PT_Kitchen_SW);
 
 		// Entryway Closet Post NE
 		Vector3 PT_SpawnPos_EntryCloset_NE = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
 		PT_EntryCloset_NE.SpawnPos = PT_SpawnPos_EntryCloset_NE;
+		Generate_Structure_VertexList(PT_EntryCloset_NE);
 		// Entryway Closet Post SE
 		Vector3 PT_SpawnPos_EntryCloset_SE = (Rm_EntryCloset.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
 		PT_EntryCloset_SE.SpawnPos = PT_SpawnPos_EntryCloset_SE;
+		Generate_Structure_VertexList(PT_EntryCloset_SE);
 		// EntryWay Closet Post NW
 		Vector3 PT_SpawnPos_EntryCloset_NW = (Rm_EntryCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		PT_EntryCloset_NW.SpawnPos = PT_SpawnPos_EntryCloset_NW;
+		Generate_Structure_VertexList(PT_EntryCloset_NW);
 
 		// Hallway Post SE
 		Vector3 PT_SpawnPos_Hallway_SE = (Rm_Hallway.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
 		PT_Hallway_SE.SpawnPos = PT_SpawnPos_Hallway_SE;
+		Generate_Structure_VertexList(PT_Hallway_SE);
 		// Hallway Post SW
 		Vector3 PT_SpawnPos_Hallway_SW = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Hallway_SW.SpawnPos = PT_SpawnPos_Hallway_SW;
+		Generate_Structure_VertexList(PT_Hallway_SW);
 
 		// Bathroom Post NW
 		Vector3 PT_SpawnPos_Bathroom_NW = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
 		PT_Bathroom_NW.SpawnPos = PT_SpawnPos_Bathroom_NW;
+		Generate_Structure_VertexList(PT_Bathroom_NW);
 		// Bathroom Post SW
 		Vector3 PT_SpawnPos_Bathroom_SW = (Rm_Bath.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Bathroom_SW.SpawnPos = PT_SpawnPos_Bathroom_SW;
+		Generate_Structure_VertexList(PT_Bathroom_SW);
 
 		// Bedroom Post NW
 		Vector3 PT_SpawnPos_Bedroom_NW = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
 		PT_Bedroom_NW.SpawnPos = PT_SpawnPos_Bedroom_NW;
+		Generate_Structure_VertexList(PT_Bedroom_NW);
 		// Bedroom Post SW
 		Vector3 PT_SpawnPos_Bedroom_SW = (Rm_Bed.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_Bedroom_SW.SpawnPos = PT_SpawnPos_Bedroom_SW;
+		Generate_Structure_VertexList(PT_Bedroom_SW);
 		// Bedroom Post SE
 		Vector3 PT_SpawnPos_Bedroom_SE = (Rm_Bed.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
 		PT_Bedroom_SE.SpawnPos = PT_SpawnPos_Bedroom_SE;
+		Generate_Structure_VertexList(PT_Bedroom_SE);
 
 		// BedCloset Post NW
 		Vector3 PT_SpawnPos_BedCloset_NW = (Rm_BedCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
 		PT_BedCloset_NW.SpawnPos = PT_SpawnPos_BedCloset_NW;
+		Generate_Structure_VertexList(PT_BedCloset_NW);
 		// BedCloset Post SW
 		Vector3 PT_SpawnPos_BedCloset_SW = (Rm_BedCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_BedCloset_SW.SpawnPos = PT_SpawnPos_BedCloset_SW;
+		Generate_Structure_VertexList(PT_BedCloset_SW);
 
 		// StoreEntry Post SW
 		Vector3 PT_SpawnPos_StoreEntry_SW = (Rm_StoreEntry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
 		PT_StoreEntry_SW.SpawnPos = PT_SpawnPos_StoreEntry_SW;
+		Generate_Structure_VertexList(PT_StoreEntry_SW);
 
 		// Storeroom Post NW
 		Vector3 PT_SpawnPos_Store_NW = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
 		PT_Store_NW.SpawnPos = PT_SpawnPos_Store_NW;
+		Generate_Structure_VertexList(PT_Store_NW);
 		// Storeroom Post NE
 		Vector3 PT_SpawnPos_Store_NE = (Rm_Store.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
 		PT_Store_NE.SpawnPos = PT_SpawnPos_Store_NE;
+		Generate_Structure_VertexList(PT_Store_NE);
 
 
 
@@ -989,6 +1032,7 @@ public class RoomIndex : MonoBehaviour
 		All_PostSectionList.Add(PT_Laundry_SE);
 		All_PostSectionList.Add(PT_Laundry_SW);
 		All_PostSectionList.Add(PT_Laundry_NW);
+		All_PostSectionList.Add(PT_Laundry_NE);
 
 		All_PostSectionList.Add(PT_Kitchen_NW);
 		All_PostSectionList.Add(PT_Kitchen_SW);
@@ -1783,6 +1827,78 @@ public class RoomIndex : MonoBehaviour
 	//public static FloorSection Rm_UpperBed = new FloorSection("UpperBedroom", "Rm_UpperBed", 2, 165f, 76f, "Carpet");
 	//public static FloorSection Rm_UpperBedEntry = new FloorSection("UpperBedroomEntry", "Rm_UpperBedEntry", 2, 87f, 54.75f, "Carpet");
 	//public static FloorSection Rm_UpperBedCloset = new FloorSection("UpperBedroomCloset", "Rm_UpperBedCloset", 2, 23.75f, 76f, "Carpet");
+
+
+
+
+
+
+
+
+
+
+
+	// 09/12/2026
+	// Post SpawnPositions Calculated from Room Vertex Positions
+
+	//	--PT_Living_NW 
+	//new Vector3(-5, 1, -5)
+	//--PT_Living_SW
+	//new Vector3(158.25, 1, -5)
+	//--PT_Hallway_NW 
+	//new Vector3(158.25, 1, 111)
+	//--PT_Dining_NE 
+	//new Vector3(-5, 1, 247.25)
+	//--PT_Laundry_SE 
+	//new Vector3(275.5, 1, 247.25)
+	//--PT_Laundry_SW 
+	//new Vector3(275.5, 1, 151.75)
+	//--PT_Laundry_NW 
+	//new Vector3(239.75, 1, 151.75)
+	//--PT_Laundry_NE 
+	//new Vector3(239.75, 1, 247.25)
+	//--PT_Kitchen_NW 
+	//new Vector3(111.75, 1, 151.75)
+	//--PT_Kitchen_SW 
+	//new Vector3(204.75, 1, 151.75)
+	//--PT_EntryCloset_NE 
+	//new Vector3(330.5, 1, 192)
+	//--PT_EntryCloset_SE 
+	//new Vector3(387.25, 1, 192)
+	//--PT_EntryCloset_NW 
+	//new Vector3(330.5, 1, 152)
+	//--PT_Hallway_SE 
+	//new Vector3(387.25, 1, 152)
+	//--PT_Hallway_SW 
+	//new Vector3(387.25, 1, 111)
+	//--PT_Bathroom_NW 
+	//new Vector3(311.25, 1, 19)
+	//--PT_Bathroom_SW 
+	//new Vector3(387.5, 1, 19)
+	//--PT_Bedroom_NW 
+	//new Vector3(158.25, 1, -51)
+	//--PT_Bedroom_SW 
+	//new Vector3(311.25, 1, -51)
+	//--PT_Bedroom_SE 
+	//new Vector3(311.25, 1, 111)
+	//--PT_BedCloset_NW 
+	//new Vector3(311.25, 1, -59)
+	//--PT_BedCloset_SW 
+	//new Vector3(387.25, 1, -59)
+	//--PT_StoreEntry_SW 
+	//new Vector3(387.25, 1, -162)
+	//--PT_Store_NW 
+	//new Vector3(185.75, 1, -162)
+	//--PT_Store_NE 
+	//new Vector3(185.75, 1, -29.5)
+
+
+
+
+
+
+
+
 
 	#endregion
 
