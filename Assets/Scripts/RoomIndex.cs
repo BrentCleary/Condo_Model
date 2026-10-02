@@ -65,6 +65,7 @@ public class RoomIndex : MonoBehaviour
 		public int		 Level;
 		public float	 Width;   // North - South
 		public float	 Length;  // East - West
+		public float	 Height;		// Height
 		public float	 Sqft;
 		public bool		 IsActive;
 		
@@ -111,18 +112,18 @@ public class RoomIndex : MonoBehaviour
 
 	public void Generate_Structure_VertexList(Structure structure)
 	{
-		Vector3 BottomLeft = new Vector3(structure.SpawnPos.x, structure.SpawnPos.y, structure.SpawnPos.z);
+		Vector3 BottomLeft	= new Vector3(structure.SpawnPos.x,										structure.SpawnPos.y, structure.SpawnPos.z);
 		Vector3 BottomRight = new Vector3(structure.SpawnPos.x + structure.Width, structure.SpawnPos.y, structure.SpawnPos.z);
-		Vector3 TopRight = new Vector3(structure.SpawnPos.x + structure.Width, structure.SpawnPos.y, structure.SpawnPos.z + structure.Length);
-		Vector3 TopLeft = new Vector3(structure.SpawnPos.x, structure.SpawnPos.y, structure.SpawnPos.z + structure.Length);
+		Vector3 TopRight		= new Vector3(structure.SpawnPos.x + structure.Width, structure.SpawnPos.y, structure.SpawnPos.z + structure.Length);
+		Vector3 TopLeft			= new Vector3(structure.SpawnPos.x,										structure.SpawnPos.y, structure.SpawnPos.z + structure.Length);
 
 		string Vx_Name = "Vx_" + structure.Name.Substring(3);
 
 		// Ex: Vertex Vx_TopLeft = new Vertex("Vx_Living_TopLeft", 1, Rm_Living_TopLeft);
-		Vertex Vx_BottomLeft = new Vertex(Vx_Name + "_" + nameof(BottomLeft), structure.Level, BottomLeft, 0);
+		Vertex Vx_BottomLeft	= new Vertex(Vx_Name + "_" + nameof(BottomLeft), structure.Level, BottomLeft, 0);
 		Vertex Vx_BottomRight = new Vertex(Vx_Name + "_" + nameof(BottomRight), structure.Level, BottomRight, 1);
-		Vertex Vx_TopRight = new Vertex(Vx_Name + "_" + nameof(TopRight), structure.Level, TopRight, 2);
-		Vertex Vx_TopLeft = new Vertex(Vx_Name + "_" + nameof(TopLeft), structure.Level, TopLeft, 3);
+		Vertex Vx_TopRight		= new Vertex(Vx_Name + "_" + nameof(TopRight), structure.Level, TopRight, 2);
+		Vertex Vx_TopLeft			= new Vertex(Vx_Name + "_" + nameof(TopLeft), structure.Level, TopLeft, 3);
 
 		List<Vertex> VertexList = new List<Vertex> {
 			Vx_BottomLeft,
@@ -208,7 +209,7 @@ public class RoomIndex : MonoBehaviour
 
 
 		// -----  Constructor ----- 
-		public FloorSection(string name, string room_Name, int level, float width, float length, string floorType, bool isActive = true, Vector3 spawnPos = default(Vector3))
+		public FloorSection(string name, string room_Name, int level, float width, float length, string floorType, float height = .5f, bool isActive = true, Vector3 spawnPos = default(Vector3))
 		{
 			ID				= _floorID;
 			_floorID	= _floorID + 1;
@@ -219,6 +220,7 @@ public class RoomIndex : MonoBehaviour
 			SpawnPos  = spawnPos;
 			Width     = width;	// North-South
 			Length    = length; // East-West
+			Height    = height; // Up-Down
 			Sqft      = length * width / SqftConversion;
 			FloorType = floorType;
 			IsActive  = isActive;
@@ -592,7 +594,7 @@ public class RoomIndex : MonoBehaviour
 
 
 		// -----  Constructor ----- 
-		public WallSection(string name, int level, WL_Direction direction, float width, float length, bool isActive = true, Vector3 spawnPos = default(Vector3))
+		public WallSection(string name, int level, WL_Direction direction, float width, float length, float height = 0, bool isActive = true, Vector3 spawnPos = default(Vector3))
 		{
 			ID = _wallID;
 			_wallID = _wallID + 1;
@@ -602,6 +604,7 @@ public class RoomIndex : MonoBehaviour
 			Direction = direction;
 			Width			= width;
 			Length		= length;
+			Height		= height;
 
 			VxList = new List<Vertex>();
 		}
@@ -640,21 +643,24 @@ public class RoomIndex : MonoBehaviour
 
 		// Laundry Room (East-West) wall - 90.5 Length
 		Vector3 WL_SpawnPos_Laundry_EntryWay = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, 0));
-		WallSection WL_Laundry_EntryWay = new WallSection(nameof(WL_Laundry_EntryWay), 1, WL_Direction.EW, WL_Thick, 90.5f, true);
+		WallSection WL_Laundry_EntryWay = new WallSection(nameof(WL_Laundry_EntryWay), 1, WL_Direction.EW, WL_Thick, 90.5f);
 		WL_Laundry_EntryWay.SpawnPos = WL_SpawnPos_Laundry_EntryWay;
 
 		// Laundry Room Exterior East (East-West) wall - 35.75 Length
 		Vector3 WL_SpawnPos_Laundry_Exterior_East = (Rm_Laundry.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
-		WallSection WL_Laundry_Exterior_East = new WallSection(nameof(WL_Laundry_Exterior_East), 1, WL_Direction.EW, 35.75f, WL_Thick, true);
+		WallSection WL_Laundry_Exterior_East = new WallSection(nameof(WL_Laundry_Exterior_East), 1, WL_Direction.EW, 35.75f, WL_Thick);
 		WL_Laundry_Exterior_East.SpawnPos = WL_SpawnPos_Laundry_Exterior_East;
 
-
+		// Laundry Interior Wall (East-West) wall - 30 Length
+		Vector3 WL_SpawnPos_Laundry_Interior = (Rm_Laundry.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, -30));
+		WallSection WL_Laundry_Interior = new WallSection(nameof(WL_Laundry_Interior), 1, WL_Direction.EW, WL_Thick, 30f);
+		WL_Laundry_Interior.SpawnPos = WL_SpawnPos_Laundry_Interior;
 
 
 
 		// EntryCloset (East-West) wall - 5 Length
 		Vector3 WL_SpawnPos_EntryCloset_Entryway = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, -WL_Thick));
-		WallSection WL_EntryCloset_Entry = new WallSection(nameof(WL_EntryCloset_Entry), 1, WL_Direction.EW, WL_Thick, 5.0f, true);
+		WallSection WL_EntryCloset_Entry = new WallSection(nameof(WL_EntryCloset_Entry), 1, WL_Direction.EW, WL_Thick, 5.0f);
 		WL_EntryCloset_Entry.SpawnPos = WL_SpawnPos_EntryCloset_Entryway;
 
 		// EntryCloset Exterior South (East-West) wall - 40.25 Length
@@ -791,7 +797,35 @@ public class RoomIndex : MonoBehaviour
 		// Store (North-South) wall - 120 Length
 		Vector3 WL_SpawnPos_Store_Exterior_West = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
 		WallSection WL_Store_Exterior_West = new WallSection(nameof(WL_Store_Exterior_West), 1, WL_Direction.NS, 120f, WL_Thick);
-		WL_Store_Exterior_West.SpawnPos = WL_SpawnPos_Store_Exterior_West; 
+		WL_Store_Exterior_West.SpawnPos = WL_SpawnPos_Store_Exterior_West;
+
+
+
+
+
+		// ----- Kitchen Cabinet Walls -----
+
+		//Back Wall
+		Vector3 WL_SpawnPos_Kitchen_OvenRange = new Vector3 { x = 160.75f, y = 0, z = 154.25f };
+		WallSection WL_Kitchen_OvenRange = new WallSection(nameof(WL_Kitchen_OvenRange), 1, WL_Direction.NS, 32.75f, WL_Thick, 94);
+		WL_Kitchen_OvenRange.SpawnPos = WL_SpawnPos_Kitchen_OvenRange;
+
+		
+		Vector3 WL_SpawnPos_Kitchen_Landing = new Vector3 { x = 160.75f, y = 0, z = 154.25f };
+		WallSection WL_Kitchen_Landing = new WallSection(nameof(WL_Kitchen_Landing), 1, WL_Direction.NS, 98, WL_Thick, 38);
+		WL_Kitchen_Landing.SpawnPos = WL_SpawnPos_Kitchen_Landing;
+
+		// Bottom Wall
+		// UnityEditor.TransformWorldPlacementJSON:{ "position":{ "x":160.75,"y":19.040000915527345,"z":154.25},"rotation":{ "x":0.0,"y":0.0,"z":0.0,"w":1.0},"scale":{ "x":98.0,"y":38.0,"z":5.0} }
+
+
+
+
+
+
+		// ----- Cabinets -----
+
+
 
 
 
@@ -803,6 +837,7 @@ public class RoomIndex : MonoBehaviour
 		All_WallSectionList.Add(WL_Laundry_HallWay);
 		All_WallSectionList.Add(WL_Laundry_EntryWay);
 		All_WallSectionList.Add(WL_Laundry_Exterior_East);
+		All_WallSectionList.Add(WL_Laundry_Interior);
 
 		All_WallSectionList.Add(WL_EntryCloset_Entry);
 		All_WallSectionList.Add(WL_EntryCloset_Exterior_South);
@@ -836,6 +871,11 @@ public class RoomIndex : MonoBehaviour
 
 		All_WallSectionList.Add(WL_Store_Exterior_West);
 
+		//All_WallSectionList.Add(WL_Kitchen_OvenRange);
+		//All_WallSectionList.Add(WL_Kitchen_Landing);
+
+
+
 	}
 
 
@@ -855,6 +895,8 @@ public class RoomIndex : MonoBehaviour
 			Name = name;
 			Level = level;
 			SpawnPos = spawnPos;
+			Width = width;
+			Length = length;
 
 			VxList = new List<Vertex>();
 		}
@@ -908,117 +950,119 @@ public class RoomIndex : MonoBehaviour
 	public void Assign_Post_SpawnPositions()
 	{
 		// Living Post NW
-		Vector3 PT_SpawnPos_Living_NW = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
+		//Vector3 PT_SpawnPos_Living_NW = (Rm_Living.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		//PT_Living_NW.SpawnPos = PT_SpawnPos_Living_NW;
 		Generate_Structure_VertexList(PT_Living_NW);
 		// Living Post SW
-		Vector3 PT_SpawnPos_Living_SW = (Rm_Living.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Living_SW.SpawnPos = PT_SpawnPos_Living_SW;
+		//Vector3 PT_SpawnPos_Living_SW = (Rm_Living.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Living_SW.SpawnPos = PT_SpawnPos_Living_SW;
 		Generate_Structure_VertexList(PT_Living_SW);
 
 		// Hallway Post NW
-		Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
+		//Vector3 PT_SpawnPos_Hallway_NW = (Rm_Hallway.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Hallway_NW.SpawnPos = PT_SpawnPos_Hallway_NW;
 		Generate_Structure_VertexList(PT_Hallway_NW);
 
 		// Dining Post NE
-		Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
-		PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
+		//Vector3 PT_SpawnPos_Dining_NE = (Rm_Dining.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
+		//PT_Dining_NE.SpawnPos = PT_SpawnPos_Dining_NE;
 		Generate_Structure_VertexList(PT_Dining_NE);
 
 		// Laundry Post SE
-		Vector3 PT_SpawnPos_Laundry_SE = (Rm_Laundry.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PT_Laundry_SE.SpawnPos = PT_SpawnPos_Laundry_SE;
+		//Vector3 PT_SpawnPos_Laundry_SE = (Rm_Laundry.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		//PT_Laundry_SE.SpawnPos = PT_SpawnPos_Laundry_SE;
 		Generate_Structure_VertexList(PT_Laundry_SE);
 		// Laundry Post SW
-		Vector3 PT_SpawnPos_Laundry_SW = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
+		//Vector3 PT_SpawnPos_Laundry_SW = (Rm_Laundry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Laundry_SW.SpawnPos = PT_SpawnPos_Laundry_SW;
 		Generate_Structure_VertexList(PT_Laundry_SW);
 		// Laundry Post NW
-		Vector3 PT_SpawnPos_Laundry_NW = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Laundry_NW.SpawnPos = PT_SpawnPos_Laundry_NW;
+		//Vector3 PT_SpawnPos_Laundry_NW = (Rm_Laundry.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Laundry_NW.SpawnPos = PT_SpawnPos_Laundry_NW;
 		Generate_Structure_VertexList(PT_Laundry_NW);
 		// Laundry Post NE
-		Vector3 PT_SpawnPos_Laundry_NE = (Rm_Laundry.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
-		PT_Laundry_NE.SpawnPos = PT_SpawnPos_Laundry_NE;
+		//Vector3 PT_SpawnPos_Laundry_NE = (Rm_Laundry.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
+		//PT_Laundry_NE.SpawnPos = PT_SpawnPos_Laundry_NE;
 		Generate_Structure_VertexList(PT_Laundry_NE);
 
 
 		// Kitchen Post NW - 98 Length
-		Vector3 PT_SpawnPos_Kitchen_NW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
-		PT_Kitchen_NW.SpawnPos = PT_SpawnPos_Kitchen_NW;
+		//Vector3 PT_SpawnPos_Kitchen_NW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3(-14, 0, -WL_Thick));
+		//PT_Kitchen_NW.SpawnPos = PT_SpawnPos_Kitchen_NW;
 		Generate_Structure_VertexList(PT_Kitchen_NW);
 		// Kitchen Post NW - 98 Length
-		Vector3 PT_SpawnPos_Kitchen_SW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3((98 - 14 - WL_Thick), 0, -WL_Thick));
-		PT_Kitchen_SW.SpawnPos = PT_SpawnPos_Kitchen_SW;
+		//Vector3 PT_SpawnPos_Kitchen_SW = (Rm_Kitchen.VxList.Find(v => v.Order == 0).Position + new Vector3((98 - 14 - WL_Thick), 0, -WL_Thick));
+		//PT_Kitchen_SW.SpawnPos = PT_SpawnPos_Kitchen_SW;
 		Generate_Structure_VertexList(PT_Kitchen_SW);
 
 		// Entryway Closet Post NE
-		Vector3 PT_SpawnPos_EntryCloset_NE = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
-		PT_EntryCloset_NE.SpawnPos = PT_SpawnPos_EntryCloset_NE;
+		//Vector3 PT_SpawnPos_EntryCloset_NE = (Rm_EntryCloset.VxList.Find(v => v.Order == 3).Position + new Vector3(0, 0, 0));
+		//PT_EntryCloset_NE.SpawnPos = PT_SpawnPos_EntryCloset_NE;
 		Generate_Structure_VertexList(PT_EntryCloset_NE);
 		// Entryway Closet Post SE
-		Vector3 PT_SpawnPos_EntryCloset_SE = (Rm_EntryCloset.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PT_EntryCloset_SE.SpawnPos = PT_SpawnPos_EntryCloset_SE;
+		//Vector3 PT_SpawnPos_EntryCloset_SE = (Rm_EntryCloset.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		//PT_EntryCloset_SE.SpawnPos = PT_SpawnPos_EntryCloset_SE;
 		Generate_Structure_VertexList(PT_EntryCloset_SE);
 		// EntryWay Closet Post NW
-		Vector3 PT_SpawnPos_EntryCloset_NW = (Rm_EntryCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
-		PT_EntryCloset_NW.SpawnPos = PT_SpawnPos_EntryCloset_NW;
+		//Vector3 PT_SpawnPos_EntryCloset_NW = (Rm_EntryCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_EntryCloset_NW.SpawnPos = PT_SpawnPos_EntryCloset_NW;
 		Generate_Structure_VertexList(PT_EntryCloset_NW);
 
 		// Hallway Post SE
-		Vector3 PT_SpawnPos_Hallway_SE = (Rm_Hallway.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PT_Hallway_SE.SpawnPos = PT_SpawnPos_Hallway_SE;
+		//Vector3 PT_SpawnPos_Hallway_SE = (Rm_Hallway.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		//PT_Hallway_SE.SpawnPos = PT_SpawnPos_Hallway_SE;
 		Generate_Structure_VertexList(PT_Hallway_SE);
 		// Hallway Post SW
-		Vector3 PT_SpawnPos_Hallway_SW = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Hallway_SW.SpawnPos = PT_SpawnPos_Hallway_SW;
+		//Vector3 PT_SpawnPos_Hallway_SW = (Rm_Hallway.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Hallway_SW.SpawnPos = PT_SpawnPos_Hallway_SW;
 		Generate_Structure_VertexList(PT_Hallway_SW);
 
 		// Bathroom Post NW
-		Vector3 PT_SpawnPos_Bathroom_NW = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PT_Bathroom_NW.SpawnPos = PT_SpawnPos_Bathroom_NW;
+		//Vector3 PT_SpawnPos_Bathroom_NW = (Rm_Bath.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		//PT_Bathroom_NW.SpawnPos = PT_SpawnPos_Bathroom_NW;
 		Generate_Structure_VertexList(PT_Bathroom_NW);
 		// Bathroom Post SW
-		Vector3 PT_SpawnPos_Bathroom_SW = (Rm_Bath.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Bathroom_SW.SpawnPos = PT_SpawnPos_Bathroom_SW;
+		//Vector3 PT_SpawnPos_Bathroom_SW = (Rm_Bath.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Bathroom_SW.SpawnPos = PT_SpawnPos_Bathroom_SW;
 		Generate_Structure_VertexList(PT_Bathroom_SW);
 
 		// Bedroom Post NW
-		Vector3 PT_SpawnPos_Bedroom_NW = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PT_Bedroom_NW.SpawnPos = PT_SpawnPos_Bedroom_NW;
+		//Vector3 PT_SpawnPos_Bedroom_NW = (Rm_Bed.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		//PT_Bedroom_NW.SpawnPos = PT_SpawnPos_Bedroom_NW;
 		Generate_Structure_VertexList(PT_Bedroom_NW);
-		// Bedroom Post SW
-		Vector3 PT_SpawnPos_Bedroom_SW = (Rm_Bed.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_Bedroom_SW.SpawnPos = PT_SpawnPos_Bedroom_SW;
+		//// Bedroom Post SW
+		//Vector3 PT_SpawnPos_Bedroom_SW = (Rm_Bed.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_Bedroom_SW.SpawnPos = PT_SpawnPos_Bedroom_SW;
 		Generate_Structure_VertexList(PT_Bedroom_SW);
-		// Bedroom Post SE
-		Vector3 PT_SpawnPos_Bedroom_SE = (Rm_Bed.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
-		PT_Bedroom_SE.SpawnPos = PT_SpawnPos_Bedroom_SE;
+		//// Bedroom Post SE
+		//Vector3 PT_SpawnPos_Bedroom_SE = (Rm_Bed.VxList.Find(v => v.Order == 2).Position + new Vector3(0, 0, 0));
+		//PT_Bedroom_SE.SpawnPos = PT_SpawnPos_Bedroom_SE;
 		Generate_Structure_VertexList(PT_Bedroom_SE);
 
 		// BedCloset Post NW
-		Vector3 PT_SpawnPos_BedCloset_NW = (Rm_BedCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PT_BedCloset_NW.SpawnPos = PT_SpawnPos_BedCloset_NW;
+		//Vector3 PT_SpawnPos_BedCloset_NW = (Rm_BedCloset.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		//PT_BedCloset_NW.SpawnPos = PT_SpawnPos_BedCloset_NW;
 		Generate_Structure_VertexList(PT_BedCloset_NW);
 		// BedCloset Post SW
-		Vector3 PT_SpawnPos_BedCloset_SW = (Rm_BedCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_BedCloset_SW.SpawnPos = PT_SpawnPos_BedCloset_SW;
+		//Vector3 PT_SpawnPos_BedCloset_SW = (Rm_BedCloset.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_BedCloset_SW.SpawnPos = PT_SpawnPos_BedCloset_SW;
 		Generate_Structure_VertexList(PT_BedCloset_SW);
 
 		// StoreEntry Post SW
-		Vector3 PT_SpawnPos_StoreEntry_SW = (Rm_StoreEntry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
-		PT_StoreEntry_SW.SpawnPos = PT_SpawnPos_StoreEntry_SW;
+		//Vector3 PT_SpawnPos_StoreEntry_SW = (Rm_StoreEntry.VxList.Find(v => v.Order == 1).Position + new Vector3(0, 0, -WL_Thick));
+		//PT_StoreEntry_SW.SpawnPos = PT_SpawnPos_StoreEntry_SW;
 		Generate_Structure_VertexList(PT_StoreEntry_SW);
 
 		// Storeroom Post NW
-		Vector3 PT_SpawnPos_Store_NW = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
-		PT_Store_NW.SpawnPos = PT_SpawnPos_Store_NW;
+		//Vector3 PT_SpawnPos_Store_NW = (Rm_Store.VxList.Find(v => v.Order == 0).Position + new Vector3(-WL_Thick, 0, -WL_Thick));
+		//PT_Store_NW.SpawnPos = PT_SpawnPos_Store_NW;
 		Generate_Structure_VertexList(PT_Store_NW);
 		// Storeroom Post NE
-		Vector3 PT_SpawnPos_Store_NE = (Rm_Store.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
-		PT_Store_NE.SpawnPos = PT_SpawnPos_Store_NE;
+		//Vector3 PT_SpawnPos_Store_NE = (Rm_Store.VxList.Find(v => v.Order == 3).Position + new Vector3(-WL_Thick, 0, 0));
+		//PT_Store_NE.SpawnPos = PT_SpawnPos_Store_NE;
 		Generate_Structure_VertexList(PT_Store_NE);
+
+
 
 
 

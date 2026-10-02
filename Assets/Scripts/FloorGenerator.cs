@@ -72,6 +72,7 @@ public class FloorGenerator : MonoBehaviour
 	{
 		float width  = floor.Width;
 		float length = floor.Length;
+		float height = floor.Height;
 
 		GameObject floorTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		floorTile.name = floor.Name;
@@ -83,7 +84,7 @@ public class FloorGenerator : MonoBehaviour
 		// (X = width, Z = length, Y = thickness)
 		floorTile.transform.localPosition = floor.SpawnPos
 											+ new Vector3(width * 0.5f, LevelOneHeight, length * 0.5f);
-		floorTile.transform.localScale = new Vector3(width, 0.1f, length);
+		floorTile.transform.localScale = new Vector3(width, height, length);
 
 		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
 		if (floor.Level == 2) { floorTile.SetActive(false); }
@@ -139,6 +140,7 @@ public class FloorGenerator : MonoBehaviour
 	{
 		float width  = wall.Width;
 		float length = wall.Length;
+		float height = wall.Height;
 
 		GameObject wallTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		wallTile.name = wall.Name;
@@ -150,18 +152,28 @@ public class FloorGenerator : MonoBehaviour
 		// (X = width, Z = length, Y = thickness)
 		wallTile.transform.localPosition = wall.SpawnPos
 											+ new Vector3(width * 0.5f, LevelOneWallHeight * 0.5f, length * 0.5f);
-		wallTile.transform.localScale = new Vector3(width, LevelOneWallHeight, length);
+
+		if(wall.Height == 0)
+		{
+			wallTile.transform.localScale = new Vector3(width, LevelOneWallHeight, length);
+		}
+		else
+		{
+			wallTile.transform.localScale = new Vector3(width, height, length);
+		}
 
 		// Turn off 2nd FloorSection if it exists, to avoid overlapping colors
 		if (wall.Level == 2) { wallTile.SetActive(false); }
 
-		Material wallMat = wallTile.GetComponent<Renderer>().material;
 
+
+		// Set the wall material properties
+		Material wallMat = wallTile.GetComponent<Renderer>().material;
 		SetMaterialTransparency(wallMat, 0.5f); // Set alpha to 0.5 for transparency
 
-		Color currentColor = Color.whiteSmoke; // Default color
-		currentColor.a = 0.5f; // Set alpha to 0.5 for transparency
-		wallMat.color = currentColor;
+			Color currentColor = Color.whiteSmoke; // Default color
+			currentColor.a = 0.5f; // Set alpha to 0.5 for transparency
+			wallMat.color = currentColor;
 
 		wallTile.GetComponent<Renderer>().material = wallMat;
 	}
